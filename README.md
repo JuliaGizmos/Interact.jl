@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/shashi/Interact.jl.png)](https://travis-ci.org/shashi/Interact.jl)
 
-Beginning javascript integration with IPython, React.jl and IJulia
+Interactive widgets with IJulia and React.jl
 
 TODO
 ====
