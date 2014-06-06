@@ -6,8 +6,6 @@ try
 catch
 end
 
-uuid4() = string(Base.Random.uuid4())
-
 function writemime(io:: IO, :: MIME{symbol("text/html")}, w :: InputWidget)
     wtype = typeof(w)
     while super(wtype) <: InputWidget
@@ -17,7 +15,7 @@ function writemime(io:: IO, :: MIME{symbol("text/html")}, w :: InputWidget)
     widgettype = string(typeof(w).name.name)
     inputtype  = string(wtype.parameters[1].name.name)
 
-    id = string(uuid4())
+    id = register_widget(w)
     el_id = "widget-$(id)"
 
     write(io, "<div class=\"input-widget ", lowercase(widgettype),

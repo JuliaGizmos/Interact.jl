@@ -1,7 +1,9 @@
-(function (IPython, $) {
-    var comm_manager = IPython.notebook.kernel.comm_manager;
-    console.log(comm_manager);
+(function (IPython, $, Widgets) {
 
+    var comm_manager = IPython.notebook.kernel.comm_manager;
+
+    // coordingate with Comm and redraw Signals
+    // XXX: Test using React here to improve performance
     $([IPython.events]).on(
 	'output_appended.OutputArea', function (event, type, value, md, toinsert) {
     	if (md && md.reactive) {
@@ -27,4 +29,17 @@
     	    });
     	});
     });
-})(IPython, jQuery);
+
+    // Set up communication for Widgets
+    Widgets.commInitializer = function (widget) {
+	var comm = comm_manager.new_comm(
+	    "InputWidget", {widget_id: widget.id}
+	);
+	widget.sendUpdate = function () {
+	    // `this` is a widget here.
+	    // TODO: I have a feeling there's some
+	    //       IPython bookkeeping to be done here.
+	    comm.send({value: this.getState()});
+	}
+    };
+})(IPython, jQuery, InputWidgets);

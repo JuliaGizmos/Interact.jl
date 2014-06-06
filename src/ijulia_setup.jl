@@ -1,7 +1,6 @@
 # IJulia specific code goes here.
 # Assume IJulia is running
 
-
 const ijulia_js  = readall(joinpath(dirname(Base.source_path()), "ijulia.js"))
 
 try
@@ -11,7 +10,10 @@ end
 
 using  Main.IJulia
 using  Main.IJulia.CommManager
+import Main.IJulia.CommManager: register_comm
 import Main.IJulia: metadata
+
+export register_comm
 
 const comms = Dict{Int, Comm}()
 const signals = Dict{String, Signal}()
@@ -52,3 +54,25 @@ mimewritable(m :: MIME, s :: Signal) =
 
 writemime(m :: MIME, s :: Signal) =
     writemime(m, s.value)
+
+import Base.convert
+
+function register_comm(comm :: Comm{:InputWidget}, msg)
+    w_id = msg.content["data"]["widget_id"]
+    w = get_widget(w_id)
+
+    function recv_value(msg)
+        v =  msg.content["data"]["value"]
+        target_type = typeof(w.value)
+        if target_type <: Integer
+            v = int(v)
+        elseif target_type <: FloatingPoint
+            v = float(v)
+        else
+            v = convert(target_type, v)
+        end
+        recv(w, v)
+    end
+
+    on_msg(comm, recv_value)
+end
