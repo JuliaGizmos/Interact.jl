@@ -144,3 +144,26 @@ function recv{T}(widget :: InputWidget{T}, value :: T)
     end
 end
 
+uuid4() = string(Base.Random.uuid4())
+
+const id_to_widget = Dict{String, InputWidget}()
+const widget_to_id = Dict{InputWidget, String}()
+
+function register_widget(w :: InputWidget)
+    if haskey(widget_to_id, w)
+        return widget_to_id[w]
+    else
+        id = string(uuid4())
+        widget_to_id[w] = id
+        id_to_widget[id] = w
+        return id
+    end        
+end
+
+function get_widget(id :: String)
+    if haskey(id_to_widget, id)
+        return id_to_widget[id]
+    else
+        warn("Widget with id $(id) does not exist.")
+    end
+end
