@@ -138,16 +138,17 @@ end
 
 
 function detach!{T}(input :: Input{T})
-    map((w, set) -> detach(w, input), inputs)
+    map((w, set) -> detach!(w, input), inputs)
 end
-
 
 function recv{T}(widget :: InputWidget{T}, value :: T)
     # Hand-off received value to the signal graph
     if haskey(inputs, widget)
         map(input -> push!(input, value), inputs[widget])
     else
-        warn("Received an update for a widget with no attached Input")
+        Base.warn_once(
+            "Received an update for a widget with no attached Input"
+        )
     end
 end
 
