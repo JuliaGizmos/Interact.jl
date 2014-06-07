@@ -5,6 +5,7 @@ IJulia-specific code is in `ijulia_setup.jl` for now (probably should factor out
 It will be possible for any environment to tap into the bulk of code here which will help in building interactive features.
 
 **To integrate Interact.jl with your IDE, you will have to implement the following:**
+
 1. When displaying a value of type `Signal{T}` render it as you'd render a value of type `T`.
 2. Set things up so that when the diplayed signal updates, you also redraw its display. You can use the `lift` operator to do this:
 ```julia
@@ -12,9 +13,11 @@ It will be possible for any environment to tap into the bulk of code here which 
 lift(v -> redraw(signal_identifier, v), signal)
 # the frontend should receive this message and redraw all displayed instances of the signal
 ```
-3. A value of type `InputWidget{T}` must be rendered as a GUI element corresponding to its concrete type. e.g. a `Slider{Int}` should be shown as a slider with integer values. Every InputWidget type has its own set of attributes that the display must use, see `widgets.jl`. If your IDE supports HTML/JS, you should use `widgets.js` packaged here for display/update.
+3. A value of type `InputWidget{T}` must be rendered as a GUI element corresponding to its concrete type. e.g. a `Slider{Int}` should be shown as a slider with integer values. Every InputWidget type has its own set of attributes that the display must use, see `widgets.jl`. If your IDE supports HTML/JS, `widgets.js` already does this for you! You only need to set up the communication.
 4. When a GUI element updates due to a user event, the GUI should, using some kind of messaging scheme, encode the update and send it to the backend.
-5. At the backend, you can attach an InputWidget{T} to an Input{T} using the attach function, (and detach using detach). `parse{T}(msg, :: InputWidget{T})` function takes a serialized representation (e.g. a Dict) of the message from a specific type of widget, and returns a value of type `T`. And finally `recv(widget, value)` hands-off the value to all the Input values attached to the widget. Ideally there should be a one-to-one mapping between Widgets and Inputs.
+5. You can attach an InputWidget{T} to an Input{T} using the `attach!` function, (and detach using detach!). `parse{T}(msg, :: InputWidget{T})` function takes a serialized representation (e.g. a JSON parsed Dict) of the message from a specific type of widget, and returns a value of type `T`. And finally `recv(widget, value)` hands-off the value to all the Input values attached to the widget. Ideally there should be a one-to-one mapping between Widgets and Inputs.
+
+For a better understanding see `ijulia.js` and `ijulia_setup.jl`
 
 Optimizations
 -------------
