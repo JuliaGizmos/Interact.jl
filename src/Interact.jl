@@ -2,7 +2,7 @@
 module Interact
 
 import Base: mimewritable, writemime
-export InputWidget, Slider, ToggleButton, Button, Text, Textarea,
+export InputWidget, Slider, ToggleButton, Button, Checkbox, Text, Textarea,
        NumberText, RadioButtons, Dropdown, HTML, Latex, set_debug,
        attach!, detach!
 

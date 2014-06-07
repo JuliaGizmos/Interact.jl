@@ -20,6 +20,15 @@ end
 abstract InputWidget{T}  # A widget that takes input of type T
 
 
+# A type for values with labels (e.g. radio button options)
+type Labeled{T}
+    label :: String
+    value :: T
+end
+
+Labeled(x) = Labeled(ucfirst(string(x)), x)
+convert{T}(::Type{Labeled{T}}, x::T) = Labeled(x)
+
 type Slider{T <: Number} <: InputWidget{T}
     label :: String
     value :: T
@@ -37,16 +46,16 @@ end
 
 type ToggleButton <: InputWidget{Symbol}
     label :: String
-    value   :: Input{Symbol}
-    options :: (Symbol, Symbol)
+    value   :: Symbol
+    options :: (Labeled{Symbol}, Labeled{Symbol})
 end
 
 
-type Button <: InputWidget{()}
+type Button <: InputWidget{Nothing}
     label :: String
-    value :: ()
+    value :: Nothing
+    Button(l::String) = new(l, nothing)
 end
-
 
 type Text{T} <: InputWidget{T}
     label :: String
@@ -59,25 +68,17 @@ type Textarea{String} <: InputWidget{String}
     value :: String
 end
 
-
-type NumberText{T <: Number} <: InputWidget{T}
-    label :: String
-    value :: T
-    range :: (T, T)
-end
-
-
 type RadioButtons <: InputWidget{Symbol}
     label :: String
     value :: Symbol
-    options :: Vector{Symbol}
+    options :: Vector{Labeled{Symbol}}
 end
 
 
 type Dropdown <: InputWidget{Symbol}
     label :: String
     value :: Symbol
-    options :: Vector{Symbol}
+    options :: Vector{Labeled{Symbol}}
 end
 
 

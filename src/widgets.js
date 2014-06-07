@@ -46,8 +46,98 @@
     }
     Slider.prototype = Widget;
 
+    var Checkbox = function (typ, id, init) {
+	var attr = { type: "checkbox",
+		     checked: init.value },
+	    elem = createElem("input", attr),
+	    self = this;
+
+	this.getState = function () {
+	    return elem.checked;
+	}
+	elem.onchange = function () {
+	    self.sendUpdate();
+	}
+
+	this.id = id;
+	this.elem = elem;
+	this.label = init.label;
+
+	InputWidgets.commInitializer(this);
+    }
+    Checkbox.prototype = Widget;
+
+    var Button = function (typ, id, init) {
+	var attr = { type:    "button",
+		     value:   init.label },
+	    elem = createElem("input", attr),
+	    self = this;
+	this.getState = function () {
+	    return null;
+	}
+	elem.onclick = function () {
+	    self.sendUpdate();
+	}
+
+	this.id = id;
+	this.elem = elem;
+	this.label = init.label;
+
+	InputWidgets.commInitializer(this);
+    }
+    Button.prototype = Widget;
+
+    var Text = function (typ, id, init) {
+	var attr = { type:  "text",
+		     placeholder: init.label,
+		     value: init.value },
+	    elem = createElem("input", attr),
+	    self = this;
+	this.getState = function () {
+	    return elem.value;
+	}
+	elem.onkeyup = function () {
+	    self.sendUpdate();
+	}
+
+	this.id = id;
+	this.elem = elem;
+	this.label = init.label;
+
+	InputWidgets.commInitializer(this);
+    }
+    Text.prototype = Widget;
+
+    var Textarea = function (typ, id, init) {
+	var attr = { placeholder: init.label },
+	    elem = createElem("textarea", attr, init.value),
+	    self = this;
+	this.getState = function () {
+	    return elem.value;
+	}
+	elem.onchange = function () {
+	    self.sendUpdate();
+	}
+
+	this.id = id;
+	this.elem = elem;
+	this.label = init.label;
+
+	InputWidgets.commInitializer(this);
+    }
+    Textarea.prototype = Widget;
+    
+    // RadioButtons
+    // Dropdown
+    // HTML
+    // Latex
+
     var InputWidgets = {
 	Slider: Slider,
+	Checkbox: Checkbox,
+	Button: Button,
+	Text: Text,
+	Textarea: Textarea,
 	// a central way to initalize communication
 	// for widgets.
 	commInitializer: function (widget) {
