@@ -1,5 +1,6 @@
 (function (IPython, $, Widgets) {
 
+    Widgets.debug = true; // log messages etc in console.
     var comm_manager = IPython.notebook.kernel.comm_manager;
 
     // coordingate with Comm and redraw Signals
@@ -14,7 +15,7 @@
 
     comm_manager.register_target("Signal", function (comm) {
     	comm.on_msg(function (msg) {
-	    console.log("MSG", msg);
+	    Widgets.log("message received", msg);
     	    var val = msg.content.data.value;
     	    $(".signal-" + comm.comm_id).each(function() {
     		var self = this;
@@ -39,6 +40,7 @@
 	    // `this` is a widget here.
 	    // TODO: I have a feeling there's some
 	    //       IPython bookkeeping to be done here.
+	    Widgets.log("State changed", this, this.getState());
 	    comm.send({value: this.getState()});
 	}
     };

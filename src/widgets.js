@@ -20,8 +20,7 @@
 	getState: function () {
 	    return this.elem.value;
 	},
-	sendUpdate: function () {
-	}
+	sendUpdate: undefined
     };
 
     var Slider = function (typ, id, init) {
@@ -34,7 +33,6 @@
 	    self = this;
 
 	elem.onchange = function () {
-	    console.log("state change", self.getState());
 	    self.sendUpdate();
 	}
 
@@ -138,6 +136,12 @@
 	Button: Button,
 	Text: Text,
 	Textarea: Textarea,
+	debug: false,
+	log: function () {
+	    if (InputWidgets.debug) {
+		console.log.apply(console, arguments);
+	    }
+	},
 	// a central way to initalize communication
 	// for widgets.
 	commInitializer: function (widget) {
