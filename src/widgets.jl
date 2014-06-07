@@ -99,10 +99,16 @@ function parse{T}(msg, ::InputWidget{T})
     return msg :: T
 end
 
+
+# default cases
+
+parse{T <: Integer}(v, ::InputWidget{T}) = int(v)
+parse{T <: FloatingPoint}(v, ::InputWidget{T}) = float(v)
+parse(v, ::InputWidget{Bool}) = bool(v)
+
 # Should we enforce a one-to-one mapping?
 # Having multiple inputs might allow for unnecessarily complex stateful code?
 const inputs = Dict{InputWidget, Set{Input}}()
-
 
 function attach!{T}(widget :: InputWidget{T}, input :: Input{T})
     if ~haskey(inputs, widget)

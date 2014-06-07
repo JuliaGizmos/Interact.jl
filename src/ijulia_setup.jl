@@ -59,19 +59,12 @@ import Base.convert
 
 function register_comm(comm :: Comm{:InputWidget}, msg)
     w_id = msg.content["data"]["widget_id"]
+
     w = get_widget(w_id)
 
     function recv_value(msg)
         v =  msg.content["data"]["value"]
-        target_type = typeof(w.value)
-        if target_type <: Integer
-            v = int(v)
-        elseif target_type <: FloatingPoint
-            v = float(v)
-        else
-            v = convert(target_type, v)
-        end
-        recv(w, v)
+        recv(w, parse(v, w))
     end
 
     on_msg(comm, recv_value)
