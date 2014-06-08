@@ -55,8 +55,6 @@ mimewritable(m :: MIME, s :: Signal) =
 writemime(m :: MIME, s :: Signal) =
     writemime(m, s.value)
 
-import Base.convert
-
 function register_comm(comm :: Comm{:InputWidget}, msg)
     w_id = msg.content["data"]["widget_id"]
 

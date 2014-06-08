@@ -4,7 +4,7 @@ using JSON
 
 import Base.convert
 
-const react_js = readall(joinpath(Pkg.dir("Interact"), "data", "react.min.js"))
+#const react_js = readall(joinpath(Pkg.dir("Interact"), "data", "react.min.js"))
 #const transform_js = readall(joinpath(Pkg.dir("Interact"), "data", "JSXTransformer.min.js"))
 
 # Include the the d3 javascript library
