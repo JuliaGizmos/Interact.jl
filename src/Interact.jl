@@ -3,15 +3,12 @@ module Interact
 
 import Base: mimewritable, writemime
 export InputWidget, Slider, ToggleButton, Button, Checkbox, Text, Textarea,
-       NumberText, RadioButtons, Dropdown, HTML, Latex, set_debug,
-       attach!, detach!
+       RadioButtons, Dropdown, HTML, Latex, set_debug,  attach!, detach!,
+       register_widget, get_widget, parse, recv
+
 
 include("widgets.jl")
+include("html_setup.jl")
 
-
-if isdefined(Main, :IJulia)
-    include("js_setup.jl")
-    include("ijulia_setup.jl")
-end
 
 end # module
