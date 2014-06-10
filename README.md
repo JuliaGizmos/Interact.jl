@@ -9,5 +9,4 @@ Library for creating interactive environments with Julia.
 * A decent set of `InputWidget`s and their JS counterparts.
 * JavaScript API
 * JSONInterop
-* JavaScript to use API in IJulia
 * DiffPatch mechanism
