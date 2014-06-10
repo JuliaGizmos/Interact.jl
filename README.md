@@ -10,5 +10,4 @@ Library for creating interactive environments with Julia.
 * JavaScript API
 * JSONInterop
 * JavaScript to use API in IJulia
-* Fix bugs with Gadfly + IJulia
 * DiffPatch mechanism
