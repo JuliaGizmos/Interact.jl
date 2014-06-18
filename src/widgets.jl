@@ -82,19 +82,6 @@ type Dropdown <: InputWidget{Symbol}
     options :: Vector{Labeled{Symbol}}
 end
 
-
-type HTML <: InputWidget{String}
-    label :: String
-    value :: String
-end
-
-
-type Latex <: InputWidget{String}
-    label :: String
-    value :: String
-end
-
-
 function parse{T}(msg, ::InputWidget{T})
     # Should return a value of type T, by default
     # msg itself is assumed to be the value.
