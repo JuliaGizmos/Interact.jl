@@ -31,6 +31,7 @@ Labeled(x) = Labeled(ucfirst(string(x)), x)
 convert{T}(::Type{Labeled{T}}, x::T) = Labeled(x)
 
 type Slider{T <: Number} <: InputWidget{T}
+    input :: Input{T}
     label :: String
     value :: T
     min   :: T
@@ -40,12 +41,14 @@ end
 
 
 type Checkbox <: InputWidget{Bool}
+    input :: Input{Bool}
     label :: String
     value :: Bool
 end
 
 
 type ToggleButton <: InputWidget{Symbol}
+    input :: Input{Symbol}
     label :: String
     value   :: Symbol
     options :: (Labeled{Symbol}, Labeled{Symbol})
@@ -59,17 +62,20 @@ type Button <: InputWidget{Nothing}
 end
 
 type Text{T} <: InputWidget{T}
+    input :: Input{T}
     label :: String
     value :: T
 end
 
 
 type Textarea{String} <: InputWidget{String}
+    input :: Input{String}
     label :: String
     value :: String
 end
 
 type RadioButtons <: InputWidget{Symbol}
+    input :: Input{Symbol}
     label :: String
     value :: Symbol
     options :: Vector{Labeled{Symbol}}
@@ -77,15 +83,17 @@ end
 
 
 type Dropdown <: InputWidget{Symbol}
+    input :: Input{Symbol}
     label :: String
     value :: Symbol
     options :: Vector{Labeled{Symbol}}
 end
 
+
 function parse{T}(msg, ::InputWidget{T})
     # Should return a value of type T, by default
     # msg itself is assumed to be the value.
-    return msg :: T
+    return convert(T, msg)
 end
 
 
@@ -95,49 +103,9 @@ parse{T <: Integer}(v, ::InputWidget{T}) = int(v)
 parse{T <: FloatingPoint}(v, ::InputWidget{T}) = float(v)
 parse(v, ::InputWidget{Bool}) = bool(v)
 
-# Should we enforce a one-to-one mapping?
-# Having multiple inputs might allow for unnecessarily complex stateful code?
-const inputs = Dict{InputWidget, Set{Input}}()
-
-function attach!{T}(widget :: InputWidget{T}, input :: Input{T})
-    if ~haskey(inputs, widget)
-        inputs[widget] = Set{Input}()
-    end
-    push!(inputs[widget], input)
-    return nothing
-end
-
-
-function detach!{T}(widget :: InputWidget{T}, input :: Input{T})
-    if haskey(inputs, widget)
-        try
-            pop!(inputs[widget], input)
-        catch
-        end
-    end
-end
-
-
-function detach!{T}(widget :: InputWidget{T})
-    if haskey(inputs, widget)
-        empty!(inputs[widget])
-    end
-end
-
-
-function detach!{T}(input :: Input{T})
-    map((w, set) -> detach!(w, input), inputs)
-end
-
-function recv{T}(widget :: InputWidget{T}, value :: T)
+function recv{T}(widget :: InputWidget{T}, value)
     # Hand-off received value to the signal graph
-    if haskey(inputs, widget)
-        map(input -> push!(input, value), inputs[widget])
-    else
-        Base.warn_once(
-            "Received an update for a widget with no attached Input"
-        )
-    end
+    push!(widget.input, parse(value, widget))
 end
 
 uuid4() = string(Base.Random.uuid4())
