@@ -4,6 +4,8 @@ using JSON
 
 import Base.convert
 
+export signal
+
 #const react_js = readall(joinpath(Pkg.dir("Interact"), "data", "react.min.js"))
 #const transform_js = readall(joinpath(Pkg.dir("Interact"), "data", "JSXTransformer.min.js"))
 
