@@ -20,7 +20,7 @@ end
 
 abstract InputWidget{T}  # A widget that takes input of type T
 
-
+signal(w :: InputWidget) = w.input
 # A type for values with labels (e.g. radio button options)
 type Labeled{T}
     label :: String
