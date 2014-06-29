@@ -3,7 +3,7 @@ module Interact
 
 import Base: mimewritable, writemime
 export InputWidget, Slider, ToggleButton, Button, Checkbox,
-       Text, Textarea, RadioButtons, Dropdown, set_debug,
+       Textbox, Textarea, RadioButtons, Dropdown, set_debug,
        attach!, detach!, register_widget, get_widget, parse, recv
 
 

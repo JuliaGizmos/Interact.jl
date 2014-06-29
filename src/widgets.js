@@ -26,8 +26,8 @@
     var Slider = function (typ, id, init) {
 	var attr = { type:  "range",
 		     value: init.value,
-		     min:   init.min,
-		     max:   init.max,
+		     min:   init.start,
+		     max:   init.stop,
 		     step:  init.step },
 	    elem = createElem("input", attr),
 	    self = this;

@@ -1,4 +1,5 @@
 
+
 using React
 using JSON
 
@@ -9,38 +10,56 @@ export signal
 #const react_js = readall(joinpath(Pkg.dir("Interact"), "data", "react.min.js"))
 #const transform_js = readall(joinpath(Pkg.dir("Interact"), "data", "JSXTransformer.min.js"))
 
-# Include the the d3 javascript library
 function prepare_display(d::Display)
     display(d, "text/html", """<script charset="utf-8">$(react_js)</script>""")
 end
 
 try
-    display("text/html", """<script charset="utf-8">$(react_js)</script>""")
+    #display("text/html", """<script charset="utf-8">$(react_js)</script>""")
 catch
 end
 
-
-abstract InputWidget{T}  # A widget that takes input of type T
+abstract Widget{T}
+abstract InputWidget{T}  <: Widget{T} # A widget that takes input of type T
 
 signal(w :: InputWidget) = w.input
+
 # A type for values with labels (e.g. radio button options)
-type Labeled{T}
+type Label{T}
     label :: String
     value :: T
 end
 
-Labeled(x) = Labeled(ucfirst(string(x)), x)
-convert{T}(::Type{Labeled{T}}, x::T) = Labeled(x)
+Label(x) = Label(ucfirst(string(x)), x)
+convert{T}(::Type{Label{T}}, x::T) = Label(x)
+
+function tojson(w :: InputWidget)
+    json(w)
+end
 
 type Slider{T <: Number} <: InputWidget{T}
     input :: Input{T}
     label :: String
     value :: T
-    min   :: T
-    max   :: T
-    step  :: T
+    range :: Range{T}
+    ## Slider(input, label, value, range) =
+    ##    !in(value, range) ?
+    ##         throw(BoundsError()) :
+    ##         new(input, label, value, range)
 end
 
+Slider{T}(range :: Range{T};
+          value=first(range),
+          input=Input(value),
+          label="") =
+              Slider(input, label, value, range)
+
+tojson(s :: Slider) =
+    json({:label=>s.label,
+          :value=>s.value,
+          :start=>first(s.range),
+          :step=>step(s.range),
+          :stop=>last(s.range)})
 
 type Checkbox <: InputWidget{Bool}
     input :: Input{Bool}
@@ -48,27 +67,55 @@ type Checkbox <: InputWidget{Bool}
     value :: Bool
 end
 
+Checkbox(; input=Input(false), label="", value=false) =
+    Checkbox(input, label, value)
 
 type ToggleButton <: InputWidget{Symbol}
-    input :: Input{Symbol}
-    label :: String
+    input   :: Input{Symbol}
+    label   :: String
     value   :: Symbol
-    options :: (Labeled{Symbol}, Labeled{Symbol})
+    options :: (Label{Symbol}...)
 end
 
+ToggleButton(options :: Label{Symbol}...;
+             input=Input(option1), label="", value=option1) =
+                 ToggleButton(input, label, value, (option1, option2))
 
 type Button <: InputWidget{Nothing}
+    input :: Input{Nothing}
     label :: String
     value :: Nothing
-    Button(l::String) = new(l, nothing)
+    Button(inp :: Input{Nothing}, l::String) =
+        new(inp, l, nothing)
 end
 
-type Text{T} <: InputWidget{T}
+Button(label; input=Input(nothing)) =
+    Button(input, label)
+
+type Textbox{T <: Union(Number, String)} <: InputWidget{T}
     input :: Input{T}
     label :: String
     value :: T
 end
 
+function empty(t::Type)
+    if is(t, Number) zero(t)
+    elseif is(t, String) ""
+    end
+end
+
+Textbox(; typ=String, label="",
+        value=empty(typ),
+        input=Input(value)) =
+    Textbox(input, label, value)
+
+function Textbox(val; kwargs...)
+    if !haskey(kwargs, "input")
+        input = Input(val)
+    end
+    kwargs["value"] = val
+    Textbox(;kwargs...)
+end
 
 type Textarea{String} <: InputWidget{String}
     input :: Input{String}
@@ -76,20 +123,50 @@ type Textarea{String} <: InputWidget{String}
     value :: String
 end
 
+Textarea(; label="",
+         value="",
+         input=Input(value)) =
+    Textarea(input, label, value)
+
+function Textarea(val; kwargs...)
+    if !haskey(kwargs, "input")
+        input = Input(val)
+    end
+    kwargs["value"] = val
+    Textarea(;kwargs...)
+end
+
 type RadioButtons <: InputWidget{Symbol}
     input :: Input{Symbol}
     label :: String
     value :: Symbol
-    options :: Vector{Labeled{Symbol}}
+    options :: Vector{Label{Symbol}}
 end
 
+RadioButtons(options :: Vector{Label{Symbol}};
+             label = "",
+             value=options[1].value,
+             input=Input(value)) =
+                 RadioButtons(input, label, value, options)
+
+RadioButtons(options :: Vector{Symbol}; kwargs...) =
+    RadioButtons(map(Label, options); kwargs...)
 
 type Dropdown <: InputWidget{Symbol}
     input :: Input{Symbol}
     label :: String
     value :: Symbol
-    options :: Vector{Labeled{Symbol}}
+    options :: Vector{Label{Symbol}}
 end
+
+Dropdown(options :: Vector{Label{Symbol}};
+         label = "",
+         value=options[1].value,
+         input=Input(value)) =
+             Dropdown(input, label, value, options)
+
+Dropdown(options :: Vector{Symbol}; kwargs...) =
+    Dropdown(map(Label, options); kwargs...)
 
 
 function parse{T}(msg, ::InputWidget{T})

@@ -21,6 +21,6 @@ function writemime(io:: IO, :: MIME{symbol("text/html")}, w :: InputWidget)
     write(io, "<div class=\"input-widget ", lowercase(widgettype),
           "\"  id=\"", el_id, "\"></div><script>(function(\$,W) {",
           "\$('#", el_id, "').empty().append((new W.",
-          widgettype, "(\"", inputtype, "\",\"", id, "\",", json(w), ")",
+          widgettype, "(\"", inputtype, "\",\"", id, "\",", tojson(w), ")",
           ").elem);})(jQuery,InputWidgets)</script>")
 end
