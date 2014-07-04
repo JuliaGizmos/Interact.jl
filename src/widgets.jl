@@ -102,11 +102,7 @@ type Textbox{T <: Union(Number, String)} <: InputWidget{T}
     value :: T
 end
 
-Textbox(input :: Input{String},
-        label :: String,
-        range::Range,
-        value :: String) =
-            throw(ArgumentError("You cannot set a range on a string textbox"))
+
 
 function empty(t::Type)
     if is(t, Number) zero(t)
@@ -114,18 +110,28 @@ function empty(t::Type)
     end
 end
 
-Textbox(; typ=String, label="",
-        value=empty(typ),
-        range=nothing,
-        input=Input(value)) =
-    Textbox(input, label, range, value)
-
-function Textbox(val; kwargs...)
-    if !haskey(kwargs, "input")
-        input = Input(val)
+function Textbox(; typ=String, label="",
+                 value=empty(typ),
+                 range=nothing,
+                 input=Input(value))
+    if isa(value, String) && !isa(range, Nothing)
+        throw(ArgumentError(
+               "You cannot set a range on a string textbox"
+             ))
     end
-    kwargs["value"] = val
-    Textbox(;kwargs...)
+    Textbox(input, label, range, value)
+end
+
+Textbox(val; kwargs...) =
+    Textbox(value=val; kwargs...)
+
+function parse{T <: Number}(val, w::Textbox{T})
+    v = convert(T, val)
+    if isa(w.range, Range)
+        v = max(first(w.range),
+                min(last(w.range), v))
+    end
+    v
 end
 
 type Textarea{String} <: InputWidget{String}
@@ -139,13 +145,8 @@ Textarea(; label="",
          input=Input(value)) =
     Textarea(input, label, value)
 
-function Textarea(val; kwargs...)
-    if !haskey(kwargs, "input")
-        input = Input(val)
-    end
-    kwargs["value"] = val
-    Textarea(;kwargs...)
-end
+Textarea(val; kwargs...) =
+    Textarea(value=val; kwargs...)
 
 type RadioButtons <: InputWidget{Symbol}
     input :: Input{Symbol}

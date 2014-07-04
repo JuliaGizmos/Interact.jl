@@ -124,7 +124,7 @@
 	InputWidgets.commInitializer(this);
     }
     Textarea.prototype = Widget;
-    
+
     // RadioButtons
     // Dropdown
     // HTML
