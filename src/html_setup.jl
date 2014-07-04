@@ -6,7 +6,7 @@ try
 catch
 end
 
-function writemime(io:: IO, :: MIME{symbol("text/html")}, w :: InputWidget)
+function writemime(io, :: MIME{symbol("text/html")}, w :: InputWidget)
     wtype = typeof(w)
     while super(wtype) <: InputWidget
         wtype = super(wtype)
