@@ -96,8 +96,15 @@ Button(label; input=Input(nothing)) =
 type Textbox{T <: Union(Number, String)} <: InputWidget{T}
     input :: Input{T}
     label :: String
+    range :: Union(Nothing, Range)
     value :: T
 end
+
+Textbox(input :: Input{String},
+        label :: String,
+        range::Range,
+        value :: String) =
+            throw(ArgumentError("You cannot set a range on a string textbox"))
 
 function empty(t::Type)
     if is(t, Number) zero(t)
@@ -107,8 +114,9 @@ end
 
 Textbox(; typ=String, label="",
         value=empty(typ),
+        range=nothing,
         input=Input(value)) =
-    Textbox(input, label, value)
+    Textbox(input, label, range, value)
 
 function Textbox(val; kwargs...)
     if !haskey(kwargs, "input")
