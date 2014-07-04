@@ -5,7 +5,7 @@ using JSON
 
 import Base.convert
 
-export signal
+export signal, statedict
 
 #const react_js = readall(joinpath(Pkg.dir("Interact"), "data", "react.min.js"))
 #const transform_js = readall(joinpath(Pkg.dir("Interact"), "data", "JSXTransformer.min.js"))
@@ -33,8 +33,14 @@ end
 Label(x) = Label(ucfirst(string(x)), x)
 convert{T}(::Type{Label{T}}, x::T) = Label(x)
 
-function tojson(w :: InputWidget)
-    json(w)
+function statedict(w :: InputWidget)
+    attrs = names(w)
+    for n in attrs
+        if n in [:input, :label]
+            continue
+        end
+        msg[n] = getfield(w, n)
+    end
 end
 
 type Slider{T <: Number} <: InputWidget{T}
@@ -42,10 +48,6 @@ type Slider{T <: Number} <: InputWidget{T}
     label :: String
     value :: T
     range :: Range{T}
-    ## Slider(input, label, value, range) =
-    ##    !in(value, range) ?
-    ##         throw(BoundsError()) :
-    ##         new(input, label, value, range)
 end
 
 Slider{T}(range :: Range{T};
@@ -54,12 +56,11 @@ Slider{T}(range :: Range{T};
           label="") =
               Slider(input, label, value, range)
 
-tojson(s :: Slider) =
-    json({:label=>s.label,
-          :value=>s.value,
-          :start=>first(s.range),
-          :step=>step(s.range),
-          :stop=>last(s.range)})
+statedict(s :: Slider) =
+    {:value=>s.value,
+     :min=>first(s.range),
+     :step=>step(s.range),
+     :max=>last(s.range) }
 
 type Checkbox <: InputWidget{Bool}
     input :: Input{Bool}
