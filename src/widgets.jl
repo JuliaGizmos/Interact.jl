@@ -34,6 +34,7 @@ Label(x) = Label(ucfirst(string(x)), x)
 convert{T}(::Type{Label{T}}, x::T) = Label(x)
 
 function statedict(w :: InputWidget)
+    msg = Dict()
     attrs = names(w)
     for n in attrs
         if n in [:input, :label]
@@ -41,6 +42,7 @@ function statedict(w :: InputWidget)
         end
         msg[n] = getfield(w, n)
     end
+    msg
 end
 
 type Slider{T <: Number} <: InputWidget{T}
