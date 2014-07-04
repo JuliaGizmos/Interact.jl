@@ -1,3 +1,4 @@
+import Base: writemime, mimewritable
 
 const widgets_js = readall(joinpath(dirname(Base.source_path()), "widgets.js"))
 
