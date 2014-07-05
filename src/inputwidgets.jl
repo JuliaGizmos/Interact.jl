@@ -1,16 +1,13 @@
 
+using DataStructures
 import Base.convert
 
-export InputWidget, Label, Slider, ToggleButton, Button,
+export Label, Slider, ToggleButton, Button,
        Checkbox, Textbox, Textarea, RadioButtons, Dropdown
 
 # A type for values with labels (e.g. radio button options)
-type Label{T}
-    label::String
-    value::T
-end
+typealias Label{T} OrderedDict{String, T}
 
-Label(x) = Label(ucfirst(string(x)), x)
 convert{T}(::Type{Label{T}}, x::T) = Label(x)
 
 ########################## Slider ############################
@@ -27,12 +24,6 @@ Slider{T}(range::Range{T};
           input=Input(value),
           label="") =
               Slider(input, label, value, range)
-
-statedict(s::Slider) =
-    {:value=>s.value,
-     :min=>first(s.range),
-     :step=>step(s.range),
-     :max=>last(s.range)}
 
 ######################### Checkbox ###########################
 
@@ -118,6 +109,7 @@ Textbox(val; kwargs...) =
 function parse{T<:Number}(val, w::Textbox{T})
     v = convert(T, val)
     if isa(w.range, Range)
+        # force value to stay in range
         v = max(first(w.range),
                 min(last(w.range), v))
     end
@@ -142,10 +134,11 @@ Textarea(val; kwargs...) =
 
 ##################### RadioButtons ######################
 
-type RadioButtons <: InputWidget{Symbol}
-    input::Input{Symbol}
+type RadioButtons{T} <: InputWidget{T}
+    input::Input{T}
     label::String
-    value::Symbol
+    value::T
+    value_name::String
     options::Vector{Label{Symbol}}
 end
 
@@ -160,19 +153,24 @@ RadioButtons(options::Vector{Symbol}; kwargs...) =
 
 ##################### Dropdown ########################
 
-type Dropdown <: InputWidget{Symbol}
-    input::Input{Symbol}
+type Dropdown{T} <: InputWidget{T}
+    input::Input{T}
     label::String
-    value::Symbol
-    options::Vector{Label{Symbol}}
+    value::T
+    value_label::String
+    options::Label{T}
+    # TODO: existential checks
 end
 
-Dropdown(options::Vector{Label{Symbol}};
-         label = "",
-         value=options[1].value,
-         input=Input(value)) =
-             Dropdown(input, label, value, options)
+Dropdown{T}(options::Label{T};
+            label = "",
+            value_label=first(options)[1],
+            value=options[value_label],
+            input=Input(value)) =
+                Dropdown(input, label, value, value_label, options)
 
-Dropdown(options::Vector{Symbol}; kwargs...) =
-    Dropdown(map(Label, options); kwargs...)
-
+function Dropdown{T}(options::Vector{T}; kwargs...)
+    opts = Label{T}()
+    map(v->opts[string(v)] = v, options)
+    Dropdown(opts; kwargs...)
+end

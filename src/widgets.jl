@@ -2,9 +2,8 @@
 using React
 using JSON
 
-export signal, statedict
-
-export register_widget, get_widget, parse, recv
+export signal, statedict, InputWidget,
+       register_widget, get_widget, parse, recv
 
 # A widget
 abstract Widget
