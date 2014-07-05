@@ -2,9 +2,8 @@
 import Base: writemime
 export HTML
 
-
-type HTML <: Widget{String}
-    value :: String
+type HTML <: Widget
+    value::String
 end
 
 # assume we already have HTML

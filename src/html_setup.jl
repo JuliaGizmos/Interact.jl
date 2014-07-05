@@ -1,4 +1,4 @@
-import Base: writemime, mimewritable
+import Base: writemime
 
 const widgets_js = readall(joinpath(dirname(Base.source_path()), "widgets.js"))
 
@@ -7,7 +7,7 @@ try
 catch
 end
 
-function writemime(io, :: MIME{symbol("text/html")}, w :: InputWidget)
+function writemime(io, ::MIME{symbol("text/html")}, w::InputWidget)
     wtype = typeof(w)
     while super(wtype) <: InputWidget
         wtype = super(wtype)
