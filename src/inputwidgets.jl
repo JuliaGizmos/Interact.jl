@@ -39,16 +39,27 @@ end
 Checkbox(; input=Input(false), label="", value=false) =
     Checkbox(input, label, value)
 
-type ToggleButton <: InputWidget{Symbol}
+type ToggleButton <: InputWidget{Bool}
+    input :: Input{Bool}
+    label :: String
+    value :: Bool
+end
+ToggleButton(; input=Input(false), label="", value=false) =
+    ToggleButton(input, label, value)
+
+ToggleButton(label; kwargs...) =
+    ToggleButton(label=label; kwargs...)
+
+type Selection <: InputWidget{Symbol}
     input   :: Input{Symbol}
     label   :: String
     value   :: Symbol
     options :: (Label{Symbol}...)
 end
 
-ToggleButton(options :: Label{Symbol}...;
-             input=Input(option1), label="", value=option1) =
-                 ToggleButton(input, label, value, (option1, option2))
+Selection(options :: Label{Symbol}...;
+          input=Input(option1), label="", value=option1) =
+              Selection(input, label, value, (option1, option2))
 
 type Button <: InputWidget{Nothing}
     input :: Input{Nothing}
