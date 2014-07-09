@@ -145,6 +145,14 @@ function Options{T}(view::Symbol,
     Options(view, opts; kwargs...)
 end
 
+function Options{K, V}(view::Symbol,
+                    options::Dict{K, V};
+                    kwargs...)
+    opts = Label{V}()
+    map(v->opts[string(v[1])] = v[2], options)
+    Options(view, opts; kwargs...)
+end
+
 Dropdown(opts; kwargs...) =
     Options(:Dropdown, opts; kwargs...)
 
