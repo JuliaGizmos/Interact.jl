@@ -2,13 +2,8 @@
 using DataStructures
 import Base.convert
 
-export Label, Slider, ToggleButton, Button, Options, Checkbox,
-       Textbox, Textarea, RadioButtons, Dropdown, Select
-
-# A type for values with labels (e.g. radio button options)
-typealias Label{T} OrderedDict{String, T}
-
-convert{T}(::Type{Label{T}}, x::T) = Label(x)
+export Slider, ToggleButton, Button, Options, Checkbox, Textbox,
+       Textarea, RadioButtons, Dropdown, Select, ToggleButtons
 
 ########################## Slider ############################
 
@@ -126,11 +121,11 @@ type Options{view, T} <: InputWidget{T}
     label::String
     value::T
     value_label::String
-    options::Label{T}
+    options::OrderedDict{String, T}
     # TODO: existential checks
 end
 
-Options{T}(view::Symbol, options::Label{T};
+Options{T}(view::Symbol, options::OrderedDict{String, T};
         label = "",
         value_label=first(options)[1],
         value=options[value_label],
@@ -140,15 +135,15 @@ Options{T}(view::Symbol, options::Label{T};
 function Options{T}(view::Symbol,
                     options::Vector{T};
                     kwargs...)
-    opts = Label{T}()
-    map(v->opts[string(v)] = v, options)
+    opts = OrderedDict{String, T}()
+    map(v -> opts[string(v)] = v, options)
     Options(view, opts; kwargs...)
 end
 
 function Options{K, V}(view::Symbol,
                     options::Dict{K, V};
                     kwargs...)
-    opts = Label{V}()
+    opts = OrderedDict{String, V}()
     map(v->opts[string(v[1])] = v[2], options)
     Options(view, opts; kwargs...)
 end
@@ -161,3 +156,6 @@ RadioButtons(opts; kwargs...) =
 
 Select(opts; kwargs...) =
     Options(:Select, opts; kwargs...)
+
+ToggleButtons(opts; kwargs...) =
+    Options(:ToggleButtons, opts; kwargs...)
