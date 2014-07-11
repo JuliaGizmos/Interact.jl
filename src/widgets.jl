@@ -2,8 +2,8 @@
 using React
 using JSON
 
-export signal, statedict, InputWidget,
-       register_widget, get_widget, parse, recv
+export signal, statedict, Widget, InputWidget, register_widget,
+       get_widget, parse, recv, update_view
 
 # A widget
 abstract Widget
@@ -37,9 +37,19 @@ parse{T <: Integer}(v, ::InputWidget{T}) = int(v)
 parse{T <: FloatingPoint}(v, ::InputWidget{T}) = float(v)
 parse(v, ::InputWidget{Bool}) = bool(v)
 
+function update_view(w::Widget)
+    # update the view of a widget.
+    # child packages need to override.
+end
+
 function recv{T}(widget ::InputWidget{T}, value)
     # Hand-off received value to the signal graph
-    push!(widget.input, parse(value, widget))
+    parsed = parse(value, widget)
+    push!(widget.input, parsed)
+    widget.value = parsed
+    if value != parsed
+        update_view(widget)
+    end
 end
 
 uuid4() = string(Base.Random.uuid4())
