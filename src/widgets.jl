@@ -2,6 +2,7 @@
 using React
 using JSON
 
+import React.signal
 export signal, statedict, Widget, InputWidget, register_widget,
        get_widget, parse, recv, update_view
 
