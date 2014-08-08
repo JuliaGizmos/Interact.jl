@@ -36,10 +36,10 @@ macro manipulate(expr)
     fst(t) = t[1]
     snd(t) = t[2]
     widgets = map(snd, mapping)
-    result = Expr(:call, :lift,
+    result = esc(Expr(:call, :lift,
                   Expr(:->,
                        Expr(:tuple, map(fst, mapping)...), ex),
-                  map(signal, widgets)...)
+                  map(signal, widgets)...))
     # TODO: `hstack` widgets instead of just display()-ing them
     return Expr(:block, map(w->Expr(:call, :display, w), widgets)..., result)
 end
