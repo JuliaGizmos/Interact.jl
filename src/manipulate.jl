@@ -1,14 +1,13 @@
 export @manipulate
 
 function make_widget(spec::Expr, m::Module)
-    if spec.head != :comparison ||
-        spec.args[2] != :(<=) ||
+    if spec.head != :in ||
         !isa(spec.args[1], Symbol)
-        error("Widget spec must be of the form <symbol> <= <domain>")
+        error("Widget spec must be of the form <symbol> in <domain>")
     end
     sym    = spec.args[1]
     label  = string(sym)
-    domain = eval(m, spec.args[3])
+    domain = eval(m, spec.args[2])
     if isa(domain, Widget)
         return sym, domain
     elseif isa(domain, Range)
