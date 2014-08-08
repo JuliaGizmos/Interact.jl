@@ -26,7 +26,9 @@ function make_widget(spec::Expr, m::Module)
 end
 
 macro manipulate(expr)
-    # expr.head!=:tuple
+    if expr.head != :tuple
+        error("@manipulate syntax is: @manipulate Expr, widgetspec...")
+    end
     ex = expr.args[1]
     specs = expr.args[2:end]
     m = current_module()
