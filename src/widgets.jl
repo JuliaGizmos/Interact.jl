@@ -1,81 +1,197 @@
 
-using React
-using JSON
+using DataStructures
+import Base.convert
 
-import React.signal
-export signal, statedict, Widget, InputWidget, register_widget,
-       get_widget, parse, recv, update_view
+export Slider, ToggleButton, Button, Options, Checkbox, Textbox,
+       Textarea, RadioButtons, Dropdown, Select, ToggleButtons
 
-# A widget
-abstract Widget
+### Input widgets
 
-# A widget that takes input of type T
-abstract InputWidget{T}  <: Widget
+########################## Slider ############################
 
-signal(w::InputWidget) = w.input
-
-function statedict(w::InputWidget)
-    msg = Dict()
-    attrs = names(w)
-    for n in attrs
-        if n in [:input, :label]
-            continue
-        end
-        msg[n] = getfield(w, n)
-    end
-    msg
+type Slider{T<:Number} <: InputWidget{T}
+    input::Input{T}
+    label::String
+    value::T
+    range::Range{T}
 end
 
-function parse{T}(msg, ::InputWidget{T})
-    # Should return a value of type T, by default
-    # msg itself is assumed to be the value.
-    return convert(T, msg)
+Slider{T}(range::Range{T};
+          value=first(range),
+          input::Signal{T}=Input(value),
+          label="") =
+              Slider(input, label, value, range)
+
+######################### Checkbox ###########################
+
+type Checkbox <: InputWidget{Bool}
+    input::Input{Bool}
+    label::String
+    value::Bool
 end
 
-# default cases
+Checkbox(; input=Input(false), label="", value=false) =
+    Checkbox(input, label, value)
 
-parse{T <: Integer}(v, ::InputWidget{T}) = int(v)
-parse{T <: FloatingPoint}(v, ::InputWidget{T}) = float(v)
-parse(v, ::InputWidget{Bool}) = bool(v)
+###################### ToggleButton ########################
 
-function update_view(w::Widget)
-    # update the view of a widget.
-    # child packages need to override.
+type ToggleButton <: InputWidget{Bool}
+    input::Input{Bool}
+    label::String
+    value::Bool
 end
 
-function recv{T}(widget ::InputWidget{T}, value)
-    # Hand-off received value to the signal graph
-    parsed = parse(value, widget)
-    push!(widget.input, parsed)
-    widget.value = parsed
-    if value != parsed
-        update_view(widget)
-    end
+ToggleButton(; input=Input(false), label="", value=false) =
+    ToggleButton(input, label, value)
+
+ToggleButton(label; kwargs...) =
+    ToggleButton(label=label; kwargs...)
+
+######################### Button ###########################
+
+type Button <: InputWidget{Nothing}
+    input::Input{Nothing}
+    label::String
+    value::Nothing
+    Button(inp::Input{Nothing}, l::String) =
+        new(inp, l, nothing)
 end
 
-uuid4() = string(Base.Random.uuid4())
+Button(label; input=Input(nothing)) =
+    Button(input, label)
 
-const id_to_widget = Dict{String, InputWidget}()
-const widget_to_id = Dict{InputWidget, String}()
+######################## Textbox ###########################
 
-function register_widget(w::InputWidget)
-    if haskey(widget_to_id, w)
-        return widget_to_id[w]
-    else
-        id = string(uuid4())
-        widget_to_id[w] = id
-        id_to_widget[id] = w
-        return id
-    end        
+type Textbox{T <: Union(Number, String)} <: InputWidget{T}
+    input::Input{T}
+    label::String
+    range::Union(Nothing, Range)
+    value::T
 end
 
-function get_widget(id::String)
-    if haskey(id_to_widget, id)
-        return id_to_widget[id]
-    else
-        warn("Widget with id $(id) does not exist.")
+function empty(t::Type)
+    if is(t, Number) zero(t)
+    elseif is(t, String) ""
     end
 end
 
-include("inputwidgets.jl")
-include("outputwidgets.jl")
+function Textbox(; typ=String, label="",
+                 value=empty(typ),
+                 range=nothing,
+                 input=Input(value))
+    if isa(value, String) && !isa(range, Nothing)
+        throw(ArgumentError(
+               "You cannot set a range on a string textbox"
+             ))
+    end
+    Textbox(input, label, range, value)
+end
+
+Textbox(val; kwargs...) =
+    Textbox(value=val; kwargs...)
+
+function parse{T<:Number}(val, w::Textbox{T})
+    v = convert(T, val)
+    if isa(w.range, Range)
+        # force value to stay in range
+        v = max(first(w.range),
+                min(last(w.range), v))
+    end
+    v
+end
+
+######################### Textarea ###########################
+
+type Textarea{String} <: InputWidget{String}
+    input::Input{String}
+    label::String
+    value::String
+end
+
+Textarea(; label="",
+         value="",
+         input=Input(value)) =
+    Textarea(input, label, value)
+
+Textarea(val; kwargs...) =
+    Textarea(value=val; kwargs...)
+
+##################### SelectionWidgets ######################
+
+type Options{view, T} <: InputWidget{T}
+    input::Input{T}
+    label::String
+    value::T
+    value_label::String
+    options::OrderedDict{String, T}
+    # TODO: existential checks
+end
+
+Options{T}(view::Symbol, options::OrderedDict{String, T};
+        label = "",
+        value_label=first(options)[1],
+        value=options[value_label],
+        input=Input(value)) =
+            Options{view, T}(input, label, value, value_label, options)
+
+function Options{T}(view::Symbol,
+                    options::Vector{T};
+                    kwargs...)
+    opts = OrderedDict{String, T}()
+    map(v -> opts[string(v)] = v, options)
+    Options(view, opts; kwargs...)
+end
+
+function Options{K, V}(view::Symbol,
+                    options::Dict{K, V};
+                    kwargs...)
+    opts = OrderedDict{String, V}()
+    map(v->opts[string(v[1])] = v[2], options)
+    Options(view, opts; kwargs...)
+end
+
+Dropdown(opts; kwargs...) =
+    Options(:Dropdown, opts; kwargs...)
+
+RadioButtons(opts; kwargs...) =
+    Options(:RadioButtons, opts; kwargs...)
+
+Select(opts; kwargs...) =
+    Options(:Select, opts; kwargs...)
+
+ToggleButtons(opts; kwargs...) =
+    Options(:ToggleButtons, opts; kwargs...)
+
+
+### Output Widgets
+
+export HTML, Latex, Progress
+
+
+type HTML <: Widget
+    value::String
+end
+
+# assume we already have HTML
+## writemime(io::IO, m::MIME{symbol("text/html")}, h::HTML) =
+##     write(io, h.value)
+
+type Latex <: Widget
+    value::String
+end
+
+## # assume we already have Latex
+## writemime(io::IO, m::MIME{symbol("application/x-latex")}, l::Latex) =
+##     write(io, l.value)
+
+type Progress <: Widget
+    signal::Signal{Int}
+    label::String
+    value::Int
+    range::Range
+end
+
+Progress(;label="", value=0, signal=Input(value), range=0:100) =
+    Progress(signal, label, value, range)
+
+Progress(signal; kwargs...) = Progress(signal=signal; kwargs...)
