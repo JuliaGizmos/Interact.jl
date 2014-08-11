@@ -80,6 +80,7 @@ function get_widget(id::String)
 end
 
 include("widgets.jl")
+include("compose.jl")
 include("manipulate.jl")
 include("html_setup.jl")
 
