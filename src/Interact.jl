@@ -1,7 +1,6 @@
 module Interact
 
 using React
-using JSON
 
 import Base: mimewritable, writemime
 import React.signal
