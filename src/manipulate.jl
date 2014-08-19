@@ -24,21 +24,18 @@ function make_widget(spec::Expr, m::Module)
     end
 end
 
-macro manipulate(expr)
-    if expr.head != :tuple
-        error("@manipulate syntax is: @manipulate Expr, widgetspec...")
-    end
-    ex = expr.args[1]
-    specs = expr.args[2:end]
+macro manipulate(ex, specs...)
     m = current_module()
     mapping = map(s->make_widget(s, m), specs)
     fst(t) = t[1]
     snd(t) = t[2]
     widgets = map(snd, mapping)
-    result = esc(Expr(:call, :lift,
+    result = Expr(:call, :lift,
                   Expr(:->,
                        Expr(:tuple, map(fst, mapping)...), ex),
-                  map(signal, widgets)...))
+                  map(signal, widgets)...)
     # TODO: `hstack` widgets instead of just display()-ing them
-    return Expr(:block, map(w->Expr(:call, :display, w), widgets)..., result)
+    return Expr(:block,
+                map(w -> Expr(:call, :display, w), widgets)...,
+                esc(result))
 end
