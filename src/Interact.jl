@@ -5,7 +5,7 @@ using React
 import Base: mimewritable, writemime
 import React.signal
 export signal, statedict, Widget, InputWidget, register_widget,
-       get_widget, parse, recv, update_view
+       get_widget, parse, recv, update_view, ijulia_init
 
 # A widget
 abstract Widget
@@ -78,9 +78,30 @@ function get_widget(id::String)
     end
 end
 
+function ijulia_init()
+    if isdefined(Main, :IJulia)
+        ijulia = nothing
+        try
+            ijulia = Pkg.installed("IJuliaWidgets")
+        catch
+        end
+        if ijulia == nothing
+        warn("You need to install IJuliaWidgets package to be able to use Interact ",
+             "properly inside IJulia. Run Pkg.add(\"IJuliaWidgets\")")
+        else
+            if !isdefined(Main, :_ijwidgets_included)
+                eval(Main, :(_ijwidgets_included = true))
+                eval(Main, :(using IJuliaWidgets;))
+            end
+        end
+    end
+end
+
 include("widgets.jl")
 include("compose.jl")
 include("manipulate.jl")
 include("html_setup.jl")
 
 end # module
+
+Interact.ijulia_init()
