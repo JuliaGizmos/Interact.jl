@@ -169,16 +169,20 @@ export HTML, Latex, Progress
 
 
 type HTML <: Widget
+    label::String
     value::String
 end
+HTML(value; label="") = HTML(label, value)
 
 # assume we already have HTML
 ## writemime(io::IO, m::MIME{symbol("text/html")}, h::HTML) =
 ##     write(io, h.value)
 
 type Latex <: Widget
+    label::String
     value::String
 end
+Latex(value; label="") = Latex(label, value)
 
 ## # assume we already have Latex
 ## writemime(io::IO, m::MIME{symbol("application/x-latex")}, l::Latex) =
