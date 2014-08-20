@@ -1,12 +1,29 @@
 # Interact
 
-[![Build Status](https://travis-ci.org/shashi/Interact.jl.png)](https://travis-ci.org/shashi/Interact.jl)
+# Getting Started
 
-Library for creating interactive environments with Julia.
+To install Interact, run the following in the Julia REPL:
+```{.julia execute="false"}
+Pkg.add("Interact")
+```
 
-## TODO
+You will also need [`IJuliaWidgets.jl`](https://github.com/shashi/IJuliaWidgets.jl) for Interact to function inside IJulia Notebooks:
+```{.julia execute="false"}
+Pkg.add("IJuliaWidgets")
+```
+This of course assumes that you have a fairly recent [`IJulia`](https://github.com/JuliaLang/IJulia.jl) set up.
 
-* A decent set of `InputWidget`s and their JS counterparts.
-* JavaScript API
-* JSONInterop
-* DiffPatch mechanism
+To start using, import both React and Interact into your IJulia notebook.
+```{.julia execute="true"}
+using React, Interact
+```
+
+# Example notebooks
+
+The best way to learn to use the interactive widgets is to try out the example notebooks in the doc/notebooks/ directory. Start up IJulia from doc/notebooks/:
+
+```{.shell execute="false"}
+ipython notebook --profile julia
+```
+
+A full API documentation is in the works.
