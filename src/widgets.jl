@@ -185,13 +185,10 @@ end
 ##     write(io, l.value)
 
 type Progress <: Widget
-    signal::Signal{Int}
     label::String
     value::Int
     range::Range
 end
 
-Progress(;label="", value=0, signal=Input(value), range=0:100) =
-    Progress(signal, label, value, range)
-
-Progress(signal; kwargs...) = Progress(signal=signal; kwargs...)
+Progress(;label="", value=0, range=0:100) =
+    Progress(label, value, range)
