@@ -13,6 +13,8 @@ function widget(domain, label)
         return Checkbox(value=domain, label=label)
     elseif isa(domain, String)
         return Textbox(domain, label=label)
+    elseif isa(domain, Number)
+        return Textbox(typ = Number, value = domain, label=label)
     else
         # XXX: TODO: Add React.constant - a constant signal.
         error("There is no widget for the value ", domain)
