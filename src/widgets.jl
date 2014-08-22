@@ -2,8 +2,11 @@
 using DataStructures
 import Base.convert, Base.median
 
-export Slider, ToggleButton, Button, Options, Checkbox, Textbox,
-       Textarea, RadioButtons, Dropdown, Select, ToggleButtons
+export Slider, slider, ToggleButton, togglebuttons, Button, button,
+       Options, Checkbox, checkbox, Textbox, textbox, Textarea, textarea,
+       RadioButtons, radiobuttons, Dropdown, dropdown, Select, select,
+       ToggleButtons, togglebuttons, HTML, html, Latex, latex,
+       Progress, progress
 
 median(r::Range) = r[(1+length(r))>>1]
 
@@ -18,7 +21,8 @@ type Slider{T<:Number} <: InputWidget{T}
     range::Range{T}
 end
 
-Slider{T}(range::Range{T};
+slider(args...) = Sldier(args...)
+slider{T}(range::Range{T};
           value=median(range),
           input::Signal{T}=Input(value),
           label="") =
@@ -32,7 +36,8 @@ type Checkbox <: InputWidget{Bool}
     value::Bool
 end
 
-Checkbox(; input=Input(false), label="", value=false) =
+checkbox(args...) = Checkbox(args...)
+checkbox(; input=Input(false), label="", value=false) =
     Checkbox(input, label, value)
 
 ###################### ToggleButton ########################
@@ -43,11 +48,13 @@ type ToggleButton <: InputWidget{Bool}
     value::Bool
 end
 
-ToggleButton(; input=Input(false), label="", value=false) =
+togglebutton(args...) = ToggleButton(args...)
+
+togglebutton(; input=Input(false), label="", value=false) =
     ToggleButton(input, label, value)
 
-ToggleButton(label; kwargs...) =
-    ToggleButton(label=label; kwargs...)
+togglebutton(label; kwargs...) =
+    togglebutton(label=label; kwargs...)
 
 ######################### Button ###########################
 
@@ -59,7 +66,7 @@ type Button <: InputWidget{Nothing}
         new(inp, l, nothing)
 end
 
-Button(label; input=Input(nothing)) =
+button(label; input=Input(nothing)) =
     Button(input, label)
 
 ######################## Textbox ###########################
@@ -89,7 +96,8 @@ function Textbox(; typ=String, label="",
     Textbox(input, label, range, value)
 end
 
-Textbox(val; kwargs...) =
+textbox(;kwargs...) = Textbox(;kwargs...)
+textbox(val; kwargs...) =
     Textbox(value=val; kwargs...)
 
 function parse{T<:Number}(val, w::Textbox{T})
@@ -110,13 +118,15 @@ type Textarea{String} <: InputWidget{String}
     value::String
 end
 
-Textarea(; label="",
+textarea(args...) = Textarea(args...)
+
+textarea(; label="",
          value="",
          input=Input(value)) =
     Textarea(input, label, value)
 
-Textarea(val; kwargs...) =
-    Textarea(value=val; kwargs...)
+textarea(val; kwargs...) =
+    textarea(value=val; kwargs...)
 
 ##################### SelectionWidgets ######################
 
@@ -152,16 +162,16 @@ function Options{K, V}(view::Symbol,
     Options(view, opts; kwargs...)
 end
 
-Dropdown(opts; kwargs...) =
+dropdown(opts; kwargs...) =
     Options(:Dropdown, opts; kwargs...)
 
-RadioButtons(opts; kwargs...) =
+radiobuttons(opts; kwargs...) =
     Options(:RadioButtons, opts; kwargs...)
 
-Select(opts; kwargs...) =
+select(opts; kwargs...) =
     Options(:Select, opts; kwargs...)
 
-ToggleButtons(opts; kwargs...) =
+togglebuttons(opts; kwargs...) =
     Options(:ToggleButtons, opts; kwargs...)
 
 
@@ -174,7 +184,8 @@ type HTML <: Widget
     label::String
     value::String
 end
-HTML(value; label="") = HTML(label, value)
+html(label, value) = HTML(label, value)
+html(value; label="") = HTML(label, value)
 
 # assume we already have HTML
 ## writemime(io::IO, m::MIME{symbol("text/html")}, h::HTML) =
@@ -184,7 +195,8 @@ type Latex <: Widget
     label::String
     value::String
 end
-Latex(value; label="") = Latex(label, value)
+latex(label, value) = Latex(label, value)
+latex(value; label="") = Latex(label, value)
 
 ## # assume we already have Latex
 ## writemime(io::IO, m::MIME{symbol("application/x-latex")}, l::Latex) =
@@ -196,5 +208,6 @@ type Progress <: Widget
     range::Range
 end
 
-Progress(;label="", value=0, range=0:100) =
+progress(args...) = Progress(args...)
+progress(;label="", value=0, range=0:100) =
     Progress(label, value, range)
