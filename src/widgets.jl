@@ -1,9 +1,20 @@
 
 using DataStructures
-import Base.convert
+import Base.convert, Base.median
 
 export Slider, ToggleButton, Button, Options, Checkbox, Textbox,
        Textarea, RadioButtons, Dropdown, Select, ToggleButtons
+
+function median{T}(r::Range{T})
+    mid = (first(r) + last(r)) / 2
+    # snap to the nearest value in range
+    # This is subject to floating point calculation errors
+    # but should never throw an InexactError if T is integral
+    st = step(r)
+    multiple = ((mid - first(r)) / st)
+    offset = multiple - round(multiple)
+    convert(T, mid - offset * st)
+end
 
 ### Input widgets
 
@@ -17,7 +28,7 @@ type Slider{T<:Number} <: InputWidget{T}
 end
 
 Slider{T}(range::Range{T};
-          value=first(range),
+          value=median(range),
           input::Signal{T}=Input(value),
           label="") =
               Slider(input, label, value, range)
