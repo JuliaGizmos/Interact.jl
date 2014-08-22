@@ -1,23 +1,12 @@
 export @manipulate
 
-function widget(domain, label)
-    if isa(domain, Signal)
-        return domain
-    elseif isa(domain, Widget)
-        return domain
-    elseif isa(domain, Range)
-        return Slider(domain, label=label)
-    elseif isa(domain, Tuple) || isa(domain, Vector)
-        return ToggleButtons(domain, label=label)
-    elseif isa(domain, Bool)
-        return Checkbox(value=domain, label=label)
-    elseif isa(domain, String)
-        return Textbox(domain, label=label)
-    else
-        # XXX: TODO: Add React.constant - a constant signal.
-        error("There is no widget for the value ", domain)
-    end
-end
+widget(x::Signal, label="") = x
+widget(x::Widget, label="") = x
+widget(x::Range, label="") = slider(x, label=label)
+widget(x::AbstractVector, label="") = togglebuttons(x, label=label)
+widget(x::Bool, label="") = checkbox(x, label="")
+widget(x::String, label="") = textbox(x, label=label)
+widget(x, label="") = error("There is no widget for this domain: ", x)
 
 function make_widget(binding)
     if binding.head != :(=)
