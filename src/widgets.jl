@@ -36,6 +36,8 @@ type Checkbox <: InputWidget{Bool}
 end
 
 checkbox(args...) = Checkbox(args...)
+checkbox(value::Bool; input=Input(false), label="") =
+    Checkbox(input, label, value)
 checkbox(; input=Input(false), label="", value=false) =
     Checkbox(input, label, value)
 
