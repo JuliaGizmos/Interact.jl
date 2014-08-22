@@ -1,41 +1,61 @@
 export @manipulate
 
-function make_widget(spec::Expr, m::Module)
-    if spec.head != :in ||
-        !isa(spec.args[1], Symbol)
-        error("Widget spec must be of the form <symbol> in <domain>")
-    end
-    sym    = spec.args[1]
-    label  = string(sym)
-    domain = eval(m, spec.args[2])
-    if isa(domain, Widget)
-        return sym, domain
+function widget(domain, label)
+    if isa(domain, Signal)
+        return domain
+    elseif isa(domain, Widget)
+        return domain
     elseif isa(domain, Range)
-        return sym, Slider(domain, label=label)
+        return Slider(domain, label=label)
     elseif isa(domain, Tuple) || isa(domain, Vector)
-        return sym, ToggleButtons(domain, label=label)
+        return ToggleButtons(domain, label=label)
     elseif isa(domain, Bool)
-        return sym, Checkbox(value=domain, label=label)
+        return Checkbox(value=domain, label=label)
     elseif isa(domain, String)
-        return sym, Textbox(domain, label=label)
+        return Textbox(domain, label=label)
     else
-        # XXX: What can be done?
+        # XXX: TODO: Add React.constant - a constant signal.
         error("There is no widget for the value ", domain)
     end
 end
 
-macro manipulate(ex, specs...)
-    m = current_module()
-    mapping = map(s->make_widget(s, m), specs)
-    fst(t) = t[1]
-    snd(t) = t[2]
-    widgets = map(snd, mapping)
-    result = Expr(:call, :lift,
-                  Expr(:->,
-                       Expr(:tuple, map(fst, mapping)...), ex),
-                  map(signal, widgets)...)
-    # TODO: `hstack` widgets instead of just display()-ing them
-    return Expr(:block,
-                map(w -> Expr(:call, :display, w), widgets)...,
-                esc(result))
+function make_widget(binding)
+    if binding.head != :(=)
+        error("@manipulate syntax error.")
+    end
+    sym, expr = binding.args
+    Expr(:(=), esc(sym),
+         Expr(:call, widget, esc(expr), string(sym)))
+end
+
+function display_widgets(widgetvars)
+    map(v -> Expr(:call, esc(:display), esc(v)), widgetvars)
+end
+
+function lift_block(block, symbols)
+    lambda = Expr(:(->), Expr(:tuple, symbols...),
+                  block)
+    Expr(:call, React.lift, lambda, symbols...)
+end
+
+function symbols(bindings)
+    map(x->x.args[1], bindings)
+end
+
+macro manipulate(expr)
+    if expr.head != :for
+        error("@manipulate syntax is @manipulate for ",
+              " [<variable>=<domain>,]... <expression> end")
+    end
+    block = expr.args[2]
+    if expr.args[1].head == :block
+        bindings = expr.args[1].args
+    else
+        bindings = [expr.args[1]]
+    end
+    syms = symbols(bindings)
+    Expr(:let, Expr(:block,
+                    display_widgets(syms)...,
+                    esc(lift_block(block, syms))),
+         map(make_widget, bindings)...)
 end
