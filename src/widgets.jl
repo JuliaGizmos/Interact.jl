@@ -5,16 +5,7 @@ import Base.convert, Base.median
 export Slider, ToggleButton, Button, Options, Checkbox, Textbox,
        Textarea, RadioButtons, Dropdown, Select, ToggleButtons
 
-function median{T}(r::Range{T})
-    mid = (first(r) + last(r)) / 2
-    # snap to the nearest value in range
-    # This is subject to floating point calculation errors
-    # but should never throw an InexactError if T is integral
-    st = step(r)
-    multiple = ((mid - first(r)) / st)
-    offset = multiple - round(multiple)
-    convert(T, mid - offset * st)
-end
+median(r::Range) = r[(1+length(r))>>1]
 
 ### Input widgets
 
