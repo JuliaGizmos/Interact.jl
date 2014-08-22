@@ -1,13 +1,5 @@
 export @manipulate
 
-widget(x::Signal, label="") = x
-widget(x::Widget, label="") = x
-widget(x::Range, label="") = slider(x, label=label)
-widget(x::AbstractVector, label="") = togglebuttons(x, label=label)
-widget(x::Bool, label="") = checkbox(x, label="")
-widget(x::String, label="") = textbox(x, label=label)
-widget(x, label="") = error("There is no widget for this domain: ", x)
-
 function make_widget(binding)
     if binding.head != :(=)
         error("@manipulate syntax error.")

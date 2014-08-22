@@ -1,4 +1,3 @@
-
 using DataStructures
 import Base.convert, Base.median
 
@@ -6,7 +5,7 @@ export Slider, slider, ToggleButton, togglebuttons, Button, button,
        Options, Checkbox, checkbox, Textbox, textbox, Textarea, textarea,
        RadioButtons, radiobuttons, Dropdown, dropdown, Select, select,
        ToggleButtons, togglebuttons, HTML, html, Latex, latex,
-       Progress, progress
+       Progress, progress, widget
 
 median(r::Range) = r[(1+length(r))>>1]
 
@@ -211,3 +210,13 @@ end
 progress(args...) = Progress(args...)
 progress(;label="", value=0, range=0:100) =
     Progress(label, value, range)
+
+# Make a widget out of a domain
+widget(x::Signal, label="") = x
+widget(x::Widget, label="") = x
+widget(x::Range, label="") = slider(x, label=label)
+widget(x::AbstractVector, label="") = togglebuttons(x, label=label)
+widget(x::Bool, label="") = checkbox(x, label="")
+widget(x::String, label="") = textbox(x, label=label)
+widget(x, label="") = error("There is no widget for this domain: ", x)
+
