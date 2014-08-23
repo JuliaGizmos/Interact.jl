@@ -84,7 +84,11 @@ include("manipulate.jl")
 include("html_setup.jl")
 
 if isdefined(Main, :IJulia)
-    include("IJulia/setup.jl")
+    if Pkg.installed("IJulia") >= v"0.1.3-"
+        include("IJulia/setup.jl")
+    else
+        warn("Interact requires IJulia >= v0.1.3 to work properly.")
+    end
 end
 
 end # module
