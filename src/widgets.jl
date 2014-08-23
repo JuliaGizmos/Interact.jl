@@ -217,6 +217,7 @@ widget(x::Signal, label="") = x
 widget(x::Widget, label="") = x
 widget(x::Range, label="") = slider(x, label=label)
 widget(x::AbstractVector, label="") = togglebuttons(x, label=label)
+widget(x::Associative, label="") = togglebuttons(x, label=label)
 widget(x::Bool, label="") = checkbox(x, label="")
 widget(x::String, label="") = textbox(x, label=label)
 widget{T <: Number}(x::T, label="") = textbox(typ=T, value=x, label=label)
