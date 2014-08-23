@@ -175,7 +175,6 @@ select(opts; kwargs...) =
 togglebuttons(opts; kwargs...) =
     Options(:ToggleButtons, opts; kwargs...)
 
-
 ### Output Widgets
 
 export HTML, Latex, Progress
@@ -220,5 +219,3 @@ widget(x::Range, label="") = slider(x, label=label)
 widget(x::AbstractVector, label="") = togglebuttons(x, label=label)
 widget(x::Bool, label="") = checkbox(x, label="")
 widget(x::String, label="") = textbox(x, label=label)
-widget(x, label="") = error("There is no widget for this domain: ", x)
-
