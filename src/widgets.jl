@@ -1,7 +1,7 @@
 using DataStructures
 import Base.convert, Base.median
 
-export Slider, slider, ToggleButton, togglebuttons, Button, button,
+export Slider, slider, ToggleButton, togglebutton, Button, button,
        Options, Checkbox, checkbox, Textbox, textbox, Textarea, textarea,
        RadioButtons, radiobuttons, Dropdown, dropdown, Select, select,
        ToggleButtons, togglebuttons, HTML, html, Latex, latex,
@@ -51,7 +51,7 @@ end
 
 togglebutton(args...) = ToggleButton(args...)
 
-togglebutton(; signal=Input(false), label="", value=false) =
+togglebutton(; label="", value=false, signal=Input(value)) =
     ToggleButton(signal, label, value)
 
 togglebutton(label; kwargs...) =
@@ -59,16 +59,17 @@ togglebutton(label; kwargs...) =
 
 ######################### Button ###########################
 
-type Button <: InputWidget{Nothing}
-    signal::Input{Nothing}
+type Button{T} <: InputWidget{T}
+    signal::Input{T}
     label::String
-    value::Nothing
-    Button(inp::Input{Nothing}, l::String) =
-        new(inp, l, nothing)
+    value::T
 end
 
-button(label; signal=Input(nothing)) =
-    Button(signal, label)
+button(; value=nothing, label="", signal=Input(value)) =
+    Button(signal, label, value)
+
+button(label; kwargs...) =
+    button(label=label; kwargs...)
 
 ######################## Textbox ###########################
 
@@ -148,7 +149,7 @@ Options{T}(view::Symbol, options::OrderedDict{String, T};
             Options{view, T}(signal, label, value, value_label, options)
 
 function Options{T}(view::Symbol,
-                    options::Vector{T};
+                    options::AbstractArray{T};
                     kwargs...)
     opts = OrderedDict{String, T}()
     map(v -> opts[string(v)] = v, options)
@@ -156,7 +157,7 @@ function Options{T}(view::Symbol,
 end
 
 function Options{K, V}(view::Symbol,
-                    options::Dict{K, V};
+                    options::Associative{K, V};
                     kwargs...)
     opts = OrderedDict{String, V}()
     map(v->opts[string(v[1])] = v[2], options)
