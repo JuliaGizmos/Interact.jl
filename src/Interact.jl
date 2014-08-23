@@ -10,16 +10,16 @@ export signal, statedict, Widget, InputWidget, register_widget,
 # A widget
 abstract Widget
 
-# A widget that takes input of type T
+# A widget that gives out a signal of type T
 abstract InputWidget{T}  <: Widget
 
-signal(w::InputWidget) = w.input
+signal(w::InputWidget) = w.signal
 
 function statedict(w::Widget)
     msg = Dict()
     attrs = names(w)
     for n in attrs
-        if n in [:input, :label]
+        if n in [:signal, :label]
             continue
         end
         msg[n] = getfield(w, n)
@@ -47,7 +47,7 @@ end
 function recv{T}(widget ::InputWidget{T}, value)
     # Hand-off received value to the signal graph
     parsed = parse(value, widget)
-    push!(widget.input, parsed)
+    push!(signal(widget), parsed)
     widget.value = parsed
     if value != parsed
         update_view(widget)

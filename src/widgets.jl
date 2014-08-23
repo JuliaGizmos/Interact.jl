@@ -14,7 +14,7 @@ median(r::Range) = r[(1+length(r))>>1]
 ########################## Slider ############################
 
 type Slider{T<:Number} <: InputWidget{T}
-    input::Input{T}
+    signal::Input{T}
     label::String
     value::T
     range::Range{T}
@@ -23,36 +23,36 @@ end
 slider(args...) = Sldier(args...)
 slider{T}(range::Range{T};
           value=median(range),
-          input::Signal{T}=Input(value),
+          signal::Signal{T}=Input(value),
           label="") =
-              Slider(input, label, value, range)
+              Slider(signal, label, value, range)
 
 ######################### Checkbox ###########################
 
 type Checkbox <: InputWidget{Bool}
-    input::Input{Bool}
+    signal::Input{Bool}
     label::String
     value::Bool
 end
 
 checkbox(args...) = Checkbox(args...)
-checkbox(value::Bool; input=Input(false), label="") =
-    Checkbox(input, label, value)
-checkbox(; input=Input(false), label="", value=false) =
-    Checkbox(input, label, value)
+checkbox(value::Bool; signal=Input(false), label="") =
+    Checkbox(signal, label, value)
+checkbox(; signal=Input(false), label="", value=false) =
+    Checkbox(signal, label, value)
 
 ###################### ToggleButton ########################
 
 type ToggleButton <: InputWidget{Bool}
-    input::Input{Bool}
+    signal::Input{Bool}
     label::String
     value::Bool
 end
 
 togglebutton(args...) = ToggleButton(args...)
 
-togglebutton(; input=Input(false), label="", value=false) =
-    ToggleButton(input, label, value)
+togglebutton(; signal=Input(false), label="", value=false) =
+    ToggleButton(signal, label, value)
 
 togglebutton(label; kwargs...) =
     togglebutton(label=label; kwargs...)
@@ -60,20 +60,20 @@ togglebutton(label; kwargs...) =
 ######################### Button ###########################
 
 type Button <: InputWidget{Nothing}
-    input::Input{Nothing}
+    signal::Input{Nothing}
     label::String
     value::Nothing
     Button(inp::Input{Nothing}, l::String) =
         new(inp, l, nothing)
 end
 
-button(label; input=Input(nothing)) =
-    Button(input, label)
+button(label; signal=Input(nothing)) =
+    Button(signal, label)
 
 ######################## Textbox ###########################
 
 type Textbox{T <: Union(Number, String)} <: InputWidget{T}
-    input::Input{T}
+    signal::Input{T}
     label::String
     range::Union(Nothing, Range)
     value::T
@@ -88,13 +88,13 @@ end
 function Textbox(; typ=String, label="",
                  value=empty(typ),
                  range=nothing,
-                 input=Input(value))
+                 signal=Input(value))
     if isa(value, String) && !isa(range, Nothing)
         throw(ArgumentError(
                "You cannot set a range on a string textbox"
              ))
     end
-    Textbox(input, label, range, value)
+    Textbox(signal, label, range, value)
 end
 
 textbox(;kwargs...) = Textbox(;kwargs...)
@@ -114,7 +114,7 @@ end
 ######################### Textarea ###########################
 
 type Textarea{String} <: InputWidget{String}
-    input::Input{String}
+    signal::Input{String}
     label::String
     value::String
 end
@@ -123,8 +123,8 @@ textarea(args...) = Textarea(args...)
 
 textarea(; label="",
          value="",
-         input=Input(value)) =
-    Textarea(input, label, value)
+         signal=Input(value)) =
+    Textarea(signal, label, value)
 
 textarea(val; kwargs...) =
     textarea(value=val; kwargs...)
@@ -132,7 +132,7 @@ textarea(val; kwargs...) =
 ##################### SelectionWidgets ######################
 
 type Options{view, T} <: InputWidget{T}
-    input::Input{T}
+    signal::Input{T}
     label::String
     value::T
     value_label::String
@@ -144,8 +144,8 @@ Options{T}(view::Symbol, options::OrderedDict{String, T};
         label = "",
         value_label=first(options)[1],
         value=options[value_label],
-        input=Input(value)) =
-            Options{view, T}(input, label, value, value_label, options)
+        signal=Input(value)) =
+            Options{view, T}(signal, label, value, value_label, options)
 
 function Options{T}(view::Symbol,
                     options::Vector{T};
