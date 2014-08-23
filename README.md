@@ -2,20 +2,13 @@
 
 ## Getting Started
 
-To install Interact, run the following in the Julia REPL:
+Install:
 ```{.julia execute="false"}
 Pkg.clone("git://github.com/shashi/Interact.jl.git")
 ```
-
-You will also need [`IJuliaWidgets.jl`](https://github.com/shashi/IJuliaWidgets.jl) for Interact to function inside IJulia Notebooks:
+Include:
 ```{.julia execute="false"}
-Pkg.clone("git://github.com/shashi/IJuliaWidgets.jl.git")
-```
-This of course assumes that you have a fairly recent [`IJulia`](https://github.com/JuliaLang/IJulia.jl) set up.
-
-To start using, import both React and Interact into your IJulia notebook.
-```{.julia execute="true"}
-using React, Interact
+using Interact
 ```
 
 ## Example notebooks
@@ -28,4 +21,4 @@ ipython notebook --profile julia
 
 A full API documentation is in the works.
 
-Interact has been tested with IPython 2.1.0+
+Interact has been tested with IJulia on IPython 2.1.0+
