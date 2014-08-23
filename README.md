@@ -2,11 +2,11 @@
 
 ## Getting Started
 
-Install:
+To install run the following command in the Julia REPL:
 ```{.julia execute="false"}
-Pkg.clone("git://github.com/shashi/Interact.jl.git")
+Pkg.add("Interact")
 ```
-Include:
+To start using it in an IJulia notebook, include it:
 ```{.julia execute="false"}
 using Interact
 ```
@@ -18,7 +18,4 @@ The best way to learn to use the interactive widgets is to try out the example n
 ```{.shell execute="false"}
 ipython notebook --profile julia
 ```
-
-A full API documentation is in the works.
-
 Interact has been tested with IJulia on IPython 2.1.0+
