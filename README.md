@@ -1,8 +1,12 @@
 # Interact
 
+Interact.jl allows you to use interactive widgets such as sliders, dropdowns and checkboxes to play with your Julia code.
+
+![Screenshot](http://i.imgur.com/xLWjmNb.png)
+
 ## Getting Started
 
-To install run the following command in the Julia REPL:
+To install Interact, run the following command in the Julia REPL:
 ```{.julia execute="false"}
 Pkg.add("Interact")
 ```
