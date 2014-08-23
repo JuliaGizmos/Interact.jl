@@ -36,9 +36,9 @@ type Checkbox <: InputWidget{Bool}
 end
 
 checkbox(args...) = Checkbox(args...)
-checkbox(value::Bool; signal=Input(false), label="") =
+checkbox(value::Bool; signal=Input(value), label="") =
     Checkbox(signal, label, value)
-checkbox(; signal=Input(false), label="", value=false) =
+checkbox(; label="", value=false, signal(value)) =
     Checkbox(signal, label, value)
 
 ###################### ToggleButton ########################
