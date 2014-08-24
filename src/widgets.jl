@@ -38,7 +38,7 @@ end
 checkbox(args...) = Checkbox(args...)
 checkbox(value::Bool; signal=Input(value), label="") =
     Checkbox(signal, label, value)
-checkbox(; label="", value=false, signal(value)) =
+checkbox(; label="", value=false, signal=Input(value)) =
     Checkbox(signal, label, value)
 
 ###################### ToggleButton ########################
