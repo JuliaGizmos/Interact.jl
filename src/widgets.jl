@@ -196,8 +196,9 @@ type Latex <: Widget
     label::String
     value::String
 end
-latex(label, value) = Latex(label, value)
-latex(value; label="") = Latex(label, value)
+latex(label, value::String) = Latex(label, value)
+latex(value::String; label="") = Latex(label, value)
+latex(value; label="") = Latex(label, mimewritable("application/x-latex", value) ? stringmime("application/x-latex", value) : stringmime("text/latex", value))
 
 ## # assume we already have Latex
 ## writemime(io::IO, m::MIME{symbol("application/x-latex")}, l::Latex) =
