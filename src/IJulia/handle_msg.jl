@@ -20,7 +20,7 @@ end
 function handle_msg{view}(w::Options{view}, msg)
     try
         if msg.content["data"]["method"] == "backbone"
-            key = msg.content["data"]["sync_data"]["value_name"]
+            key = string(msg.content["data"]["sync_data"]["value_name"])
             if haskey(w.options, key)
                 recv(w, w.options[key])
             end
