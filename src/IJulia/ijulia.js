@@ -38,7 +38,7 @@
 	    });
 
 	    // coordingate with Comm and redraw Signals
-	    // XXX: Test using React here to improve performance
+	    // XXX: Test using Reactive here to improve performance
 	    $([IPython.events]).on(
 		'output_appended.OutputArea', function (event, type, value, md, toinsert) {
 		    if (md && md.reactive) {
