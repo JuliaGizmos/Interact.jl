@@ -1,13 +1,10 @@
 using DataStructures
-import Base.convert, Base.median
-
+import Base.convert
 export Slider, slider, ToggleButton, togglebutton, Button, button,
        Options, Checkbox, checkbox, Textbox, textbox, Textarea, textarea,
        RadioButtons, radiobuttons, Dropdown, dropdown, Select, select,
        ToggleButtons, togglebuttons, HTML, html, Latex, latex,
        Progress, progress, widget
-
-median(r::Range) = r[(1+length(r))>>1]
 
 ### Input widgets
 
@@ -20,9 +17,12 @@ type Slider{T<:Number} <: InputWidget{T}
     range::Range{T}
 end
 
+# differs from median(r) in that it always returns an element of the range
+medianelement(r::Range) = r[(1+length(r))>>1]
+
 slider(args...) = Sldier(args...)
 slider{T}(range::Range{T};
-          value=median(range),
+          value=medianelement(range),
           signal::Signal{T}=Input(value),
           label="") =
               Slider(signal, label, value, range)
@@ -196,8 +196,9 @@ type Latex <: Widget
     label::String
     value::String
 end
-latex(label, value) = Latex(label, value)
-latex(value; label="") = Latex(label, value)
+latex(label, value::String) = Latex(label, value)
+latex(value::String; label="") = Latex(label, value)
+latex(value; label="") = Latex(label, mimewritable("application/x-latex", value) ? stringmime("application/x-latex", value) : stringmime("text/latex", value))
 
 ## # assume we already have Latex
 ## writemime(io::IO, m::MIME{symbol("application/x-latex")}, l::Latex) =
