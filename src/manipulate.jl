@@ -16,7 +16,7 @@ end
 function lift_block(block, symbols)
     lambda = Expr(:(->), Expr(:tuple, symbols...),
                   block)
-    Expr(:call, React.lift, lambda, symbols...)
+    Expr(:call, Reactive.lift, lambda, symbols...)
 end
 
 function symbols(bindings)

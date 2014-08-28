@@ -1,9 +1,9 @@
 module Interact
 
-using React
+using Reactive
 
 import Base: mimewritable, writemime
-import React.signal
+import Reactive.signal
 export signal, statedict, Widget, InputWidget, register_widget,
        get_widget, parse, recv, update_view
 

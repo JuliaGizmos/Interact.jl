@@ -25,7 +25,7 @@ Optimizations
 A `DiffPatch.jl` module can be made which can take the diff of two values of the same type and create a delta, and also patch a delta over a value to get the next value. Frontends and backends can send the deltas when it becomes economical. A diff-patch mecahnism will be easy to plug in at both ends at a later stage without any breaking change to the external API. Right now the focus is on making things work.
 
 ### Throttle
-Will be adding features to throttle signals to send kernel-client messages at an optimal rate so that interactive IDEs feel responsive. I am planning to put this in a Timing module in React.jl.
+Will be adding features to throttle signals to send kernel-client messages at an optimal rate so that interactive IDEs feel responsive. I am planning to put this in a Timing module in Reactive.jl.
 
 Macro based API
 ---------------
@@ -41,7 +41,7 @@ Will be writing more about this in the later part of the project.
 
 Layout system
 -------------
-Sometimes we will need to group and lay widgets out in specific ways. I think this should be decoupled from interactive stuff. Having things like a container widget which builds a composite typed value will be unnecessarily complex in the context of React.jl. A Layout module would have the following:
+Sometimes we will need to group and lay widgets out in specific ways. I think this should be decoupled from interactive stuff. Having things like a container widget which builds a composite typed value will be unnecessarily complex in the context of Reactive.jl. A Layout module would have the following:
 
 A type `Element` which represents anything displayable (can use type promotion here to make specific types displayable). Element will be a [group](http://en.wikipedia.org/wiki/Group_(mathematics)) that has some useful operators:
 
