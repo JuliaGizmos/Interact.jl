@@ -19,7 +19,8 @@
 			var self = this;
 			var type = $(this).data("type");
 			if (val[type]) {
-			    var selector = $(self).empty();
+			    $(self).empty();
+			    var selector = $("<div/>");
 			    var oa = new IPython.OutputArea(_.extend(selector, {
 				selector: selector,
 				prompt_area: true,
@@ -32,6 +33,9 @@
 			    if (type === "text/latex" && MathJax) {
 				MathJax.Hub.Queue(["Typeset", MathJax.Hub, toinsert.get(0)]);
 			    }
+
+			    $(self).append(toinsert.children());
+			    selector.remove();
 			}
 		    });
 		    delete val;
@@ -45,7 +49,6 @@
 		'output_appended.OutputArea', function (event, type, value, md, toinsert) {
 		    if (md && md.reactive) {
 			// console.log(md.comm_id);
-			console.log(event);
 			toinsert.addClass("signal-" + md.comm_id);
 			toinsert.data("type", type);
 			// Signal back indicating the mimetype required
