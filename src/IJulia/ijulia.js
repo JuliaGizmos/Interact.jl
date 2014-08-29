@@ -1,4 +1,4 @@
-(function (IPython, $, _, Widgets) {
+(function (IPython, $, _, MathJax, Widgets) {
     $.event.special.destroyed = {
 	remove: function(o) {
 	    if (o.handler) {
@@ -29,7 +29,9 @@
 			    var toinsert = IPython.OutputArea.append_map[type].apply(
 				oa, [val[type], {}, selector]
 			    );
-			    delete toinsert;
+			    if (type === "text/latex" && MathJax) {
+				MathJax.Hub.Queue(["Typeset", MathJax.Hub, toinsert.get(0)]);
+			    }
 			}
 		    });
 		    delete val;
@@ -43,6 +45,7 @@
 		'output_appended.OutputArea', function (event, type, value, md, toinsert) {
 		    if (md && md.reactive) {
 			// console.log(md.comm_id);
+			console.log(event);
 			toinsert.addClass("signal-" + md.comm_id);
 			toinsert.data("type", type);
 			// Signal back indicating the mimetype required
@@ -79,4 +82,4 @@
 	    $([IPython.events]).on('status_started.Kernel', initComm);
 	}
     });
-})(IPython, jQuery, _, InputWidgets);
+})(IPython, jQuery, _, MathJax, InputWidgets);
