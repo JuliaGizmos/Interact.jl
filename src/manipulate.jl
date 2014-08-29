@@ -14,9 +14,8 @@ function display_widgets(widgetvars)
 end
 
 function lift_block(block, symbols)
-    lambda = Expr(:(->), Expr(:tuple, symbols...),
-                  block)
-    Expr(:call, Reactive.lift, lambda, symbols...)
+    lambda = Expr(:(->), Expr(:tuple, symbols...), block)
+    Expr(:call, Reactive.lift, lambda, Any, symbols...)
 end
 
 function symbols(bindings)
