@@ -2,7 +2,7 @@ module Interact
 
 using Reactive
 
-import Base: mimewritable, writemime
+import Base: mimewritable, writemime, parse, recv
 import Reactive.signal
 export signal, statedict, Widget, InputWidget, register_widget,
        get_widget, parse, recv, update_view
