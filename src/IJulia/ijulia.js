@@ -34,7 +34,7 @@
 				MathJax.Hub.Queue(["Typeset", MathJax.Hub, toinsert.get(0)]);
 			    }
 
-			    $(self).append(toinsert.children());
+			    $(self).append(toinsert.contents());
 			    selector.remove();
 			}
 		    });
