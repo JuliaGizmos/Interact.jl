@@ -7,6 +7,33 @@
 	}
     }
 
+    var redrawValue = function (container, type, val) {
+	var selector = $("<div/>");
+	var oa = new IPython.OutputArea(_.extend(selector, {
+	    selector: selector,
+	    prompt_area: true,
+	    events: IPython.events,
+	    keyboard_manager: IPython.keyboard_manager
+	})); // Hack to work with IPython 2.1.0
+
+	switch (type) {
+	case "image/png":
+            var _src = 'data:' + type + ';base64,' + val;
+	    $(container).find("img").attr('src', _src);
+	    break;
+	default:
+	    var toinsert = IPython.OutputArea.append_map[type].apply(
+		oa, [val, {}, selector]
+	    );
+	    $(container).empty().append(toinsert.contents());
+	    selector.remove();
+	}
+	if (type === "text/latex" && MathJax) {
+	    MathJax.Hub.Queue(["Typeset", MathJax.Hub, toinsert.get(0)]);
+	}
+    }
+
+
     $(document).ready(function() {
 	Widgets.debug = false; // log messages etc in console.
 	function initComm(evt, data) {
@@ -16,26 +43,9 @@
 		    //Widgets.log("message received", msg);
 		    var val = msg.content.data.value;
 		    $(".signal-" + comm.comm_id).each(function() {
-			var self = this;
 			var type = $(this).data("type");
 			if (val[type]) {
-			    $(self).empty();
-			    var selector = $("<div/>");
-			    var oa = new IPython.OutputArea(_.extend(selector, {
-				selector: selector,
-				prompt_area: true,
-				events: IPython.events,
-				keyboard_manager: IPython.keyboard_manager
-			    })); // Hack to work with IPython 2.1.0
-			    var toinsert = IPython.OutputArea.append_map[type].apply(
-				oa, [val[type], {}, selector]
-			    );
-			    if (type === "text/latex" && MathJax) {
-				MathJax.Hub.Queue(["Typeset", MathJax.Hub, toinsert.get(0)]);
-			    }
-
-			    $(self).append(toinsert.contents());
-			    selector.remove();
+			    redrawValue(this, type, val[type], type);
 			}
 		    });
 		    delete val;
