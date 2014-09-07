@@ -14,6 +14,7 @@ To start using it in an IJulia notebook, include it:
 ```{.julia execute="false"}
 using Interact
 ```
+[`GtkInteract`](https://github.com/jverzani/GtkInteract.jl) provides Gtk support for Interact, letting you use tools like `Winston` for plotting.
 
 ## Example notebooks
 
