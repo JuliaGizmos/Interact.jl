@@ -133,7 +133,7 @@ textarea(val; kwargs...) =
 ##################### SelectionWidgets ######################
 
 type Options{view, T} <: InputWidget{T}
-    signal::Input{T}
+    signal::Signal
     label::String
     value::T
     value_label::String
