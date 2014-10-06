@@ -20,7 +20,7 @@ end
 # differs from median(r) in that it always returns an element of the range
 medianelement(r::Range) = r[(1+length(r))>>1]
 
-slider(args...) = Sldier(args...)
+slider(args...) = Slider(args...)
 slider{T}(range::Range{T};
           value=medianelement(range),
           signal::Signal{T}=Input(value),
