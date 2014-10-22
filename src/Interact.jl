@@ -83,7 +83,7 @@ include("compose.jl")
 include("manipulate.jl")
 include("html_setup.jl")
 
-if isdefined(Main, :IJulia)
+if isdefined(Main, :IJulia) && Main.IJulia.inited
     if Pkg.installed("IJulia") >= v"0.1.3-"
         include("IJulia/setup.jl")
     else
