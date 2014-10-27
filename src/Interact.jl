@@ -8,7 +8,7 @@ export signal, statedict, Widget, InputWidget, register_widget,
        get_widget, parse, recv, update_view
 
 # A widget
-abstract Widget
+abstract Widget <: SignalSource
 
 # A widget that gives out a signal of type T
 abstract InputWidget{T}  <: Widget
