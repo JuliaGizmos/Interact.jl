@@ -2,6 +2,7 @@
 using JSON
 using Reactive
 using Interact
+using Compat
 
 import Interact.update_view
 export mimewritable, writemime
@@ -64,8 +65,8 @@ function init_comm(x::Signal)
         function notify(value)
             mimes = keys(filter((k,v) -> v > 0, subscriptions))
             if length(mimes) > 0
-                send_comm(comm, [:value =>
-                                 get_data_dict(value, mimes)])
+                send_comm(comm, @compat Dict(:value =>
+                                 get_data_dict(value, mimes)))
             end
         end
         lift(notify, x)
@@ -78,8 +79,8 @@ end
 
 function metadata(x :: Signal)
     comm = init_comm(x)
-    return ["reactive"=>true,
-            "comm_id"=>comm.id]
+    return @compat Dict("reactive"=>true,
+                        "comm_id"=>comm.id)
 end
 
 # Render the value of a signal.
@@ -131,17 +132,20 @@ JSON.print(io::IO, s::Signal) = JSON.print(io, s.value)
 ## ToggleButtonView ✓
 ## AccordionView W
 ## ContainerView W
-## HTMLView W
-## ImageView W
-## LatexView W
 ## PopupView W
 ## TabView W
 
 # Interact -> IJulia view names
-view_name(w::Widget) = string(typeof(w).name, "View")
+view_name(::HTML) = "HTMLView"
+view_name(::Latex) = "LatexView"
+view_name(::Progress) = "ProgressView"
 view_name{T<:Integer}(::Slider{T}) = "IntSliderView"
+view_name(::Button) = "ButtonView"
+view_name(::Textarea) = "TextareaView"
 view_name{T<:FloatingPoint}(::Slider{T}) = "FloatSliderView"
 view_name{T<:Integer}(::Textbox{T}) = "IntTextView"
+view_name(::Checkbox) = "CheckboxView"
+view_name(::ToggleButton) = "ToggleButtonView"
 view_name{T<:FloatingPoint}(::Textbox{T}) = "FloatTextView"
 view_name(::Textbox) = "TextView"
 view_name{view}(::Options{view}) = string(view, "View")
@@ -193,7 +197,7 @@ function create_view(w::Widget)
         nothing # display() nothing
     end
 
-    send_comm(comm, ["method"=>"display"])
+    send_comm(comm, @compat Dict("method"=>"display"))
 end
 
 function create_widget_signal(s)
