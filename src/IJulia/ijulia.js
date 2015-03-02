@@ -38,19 +38,20 @@
 	Widgets.debug = false; // log messages etc in console.
 	function initComm(evt, data) {
 	    var comm_manager = data.kernel.comm_manager;
+        //_.extend(comm_manager.targets, require("widgets/js/widget"))
 	    comm_manager.register_target("Signal", function (comm) {
-		comm.on_msg(function (msg) {
-		    //Widgets.log("message received", msg);
-		    var val = msg.content.data.value;
-		    $(".signal-" + comm.comm_id).each(function() {
-			var type = $(this).data("type");
-			if (val[type]) {
-			    redrawValue(this, type, val[type], type);
-			}
-		    });
-		    delete val;
-		    delete msg.content.data.value;
-		});
+            comm.on_msg(function (msg) {
+                //Widgets.log("message received", msg);
+                var val = msg.content.data.value;
+                $(".signal-" + comm.comm_id).each(function() {
+                var type = $(this).data("type");
+                if (val[type]) {
+                    redrawValue(this, type, val[type], type);
+                }
+                });
+                delete val;
+                delete msg.content.data.value;
+            });
 	    });
 
 	    // coordingate with Comm and redraw Signals
@@ -58,34 +59,22 @@
 	    $([IPython.events]).on(
 		'output_appended.OutputArea', function (event, type, value, md, toinsert) {
 		    if (md && md.reactive) {
-			// console.log(md.comm_id);
-			toinsert.addClass("signal-" + md.comm_id);
-			toinsert.data("type", type);
-			// Signal back indicating the mimetype required
-			var comm_manager = IPython.notebook.kernel.comm_manager;
-			var comm = comm_manager.comms[md.comm_id];
-			comm.send({action: "subscribe_mime",
-				   mime: type});
-			toinsert.bind("destroyed", function() {
-			    comm.send({action: "unsubscribe_mime",
-				       mime: type});
-			});
+                // console.log(md.comm_id);
+                toinsert.addClass("signal-" + md.comm_id);
+                toinsert.data("type", type);
+                // Signal back indicating the mimetype required
+                var comm_manager = IPython.notebook.kernel.comm_manager;
+                var comm = comm_manager.comms[md.comm_id];
+                comm.then(function (c) {
+                    c.send({action: "subscribe_mime",
+                       mime: type});
+                    toinsert.bind("destroyed", function() {
+                        c.send({action: "unsubscribe_mime",
+                               mime: type});
+                    });
+                })
 		    }
 	    });
-
-	    // Set up communication for Widgets
-	    Widgets.commInitializer = function (widget) {
-		var comm = comm_manager.new_comm(
-		    "InputWidget", {widget_id: widget.id}
-		);
-		widget.sendUpdate = function () {
-		    // `this` is a widget here.
-		    // TODO: I have a feeling there's some
-		    //       IPython bookkeeping to be done here.
-		    // Widgets.log("State changed", this, this.getState());
-		    comm.send({value: this.getState()});
-		}
-	    };
 	}
 
 	try {

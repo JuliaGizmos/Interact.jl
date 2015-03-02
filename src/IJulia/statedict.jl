@@ -6,5 +6,5 @@ statedict(s::Union(Slider, Progress)) =
 
 # when we say value to javascript, it really means value label
 statedict(d::Options) =
-    @compat Dict(:value_name=>d.value_label,
-         :value_names=>collect(keys(d.options)))
+    @compat Dict(:selected_label=>d.value_label,
+         :_options_labels=>collect(keys(d.options)))
