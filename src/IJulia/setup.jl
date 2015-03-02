@@ -154,6 +154,12 @@ function metadata{T <: Widget}(x :: Signal{T})
     Dict()
 end
 
+function add_ipy3_state!(state)
+    for attr in ["color" "background" "width" "height" "border_color" "border_width" "border_style" "font_style" "font_weight" "font_size" "font_family" "padding" "margin" "border_radius"]
+        state[attr] = ""
+    end
+end
+
 const widget_comms = Dict{Widget, Comm}()
 function update_view(w::InputWidget; src::InputWidget=w)
     msg = Dict()
@@ -165,6 +171,7 @@ function update_view(w::InputWidget; src::InputWidget=w)
     state["visible"] = true
     state["disabled"] = false
     state["readout"] = true
+    add_ipy3_state!(state)
     msg["state"] = merge(state, statedict(src))
     send_comm(widget_comms[w], msg)
 end
@@ -178,6 +185,8 @@ function update_view(w::Widget; src::Widget=w)
     state["description"] = w.label
     state["visible"] = true
     state["disabled"] = false
+    add_ipy3_state!(state)
+
     msg["state"] = merge(state, statedict(src))
     send_comm(widget_comms[w], msg)
     nothing
@@ -187,7 +196,9 @@ function create_view(w::Widget)
     if haskey(widget_comms, w)
         comm = widget_comms[w]
     else
-        comm = Comm(:WidgetModel)
+        comm = Comm("ipython.widget", data=Dict([
+            ("model_name", "WidgetModel")
+        ]))
         widget_comms[w] = comm
         # Send a full state update message.
         update_view(w)
