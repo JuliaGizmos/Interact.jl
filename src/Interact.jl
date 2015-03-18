@@ -63,7 +63,7 @@ function register_widget(w::InputWidget)
     if haskey(widget_to_id, w)
         return widget_to_id[w]
     else
-        id = string(uuid4())
+        id = uuid4()
         widget_to_id[w] = id
         id_to_widget[id] = w
         return id
