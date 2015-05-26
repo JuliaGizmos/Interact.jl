@@ -1,5 +1,4 @@
-using DataStructures
-import Base.convert
+import Base: convert, haskey, setindex!, getindex
 export Slider, slider, ToggleButton, togglebutton, Button, button,
        Options, Checkbox, checkbox, Textbox, textbox, Textarea, textarea,
        RadioButtons, radiobuttons, Dropdown, dropdown, Select, select,
@@ -132,34 +131,50 @@ textarea(val; kwargs...) =
 
 ##################### SelectionWidgets ######################
 
+immutable OptionDict{K, V}
+    keys::Vector{K}
+    dict::Dict{K, V}
+    OptionDict(kvs) = new(map(x -> x[1], kvs), Dict(kvs))
+end
+
+Base.getindex(x::OptionDict, y) = getindex(x.dict, y)
+Base.haskey(x::OptionDict, y) = haskey(x.dict, y)
+Base.keys(x::OptionDict) = x.keys
+function Base.setindex!(x::OptionDict, k, v)
+    if !haskey(x.dict, k)
+        push!(x.keys, k)
+    end
+    x.dict[k] = v
+    v
+end
 type Options{view, T} <: InputWidget{T}
     signal::Signal
     label::String
     value::T
     value_label::String
-    options::OrderedDict{String, T}
+    options::OptionDict{String, T}
     # TODO: existential checks
 end
 
-Options{T}(view::Symbol, options::OrderedDict{String, T};
+Options{K, V}(view::Symbol, options::OptionDict{K, V};
         label = "",
-        value_label=first(options)[1],
+        value_label=first(options.keys),
         value=options[value_label],
         signal=Input(value)) =
-            Options{view, T}(signal, label, value, value_label, options)
+            Options{view, V}(signal, label, value, value_label, options)
 
 function Options{T}(view::Symbol,
                     options::AbstractArray{T};
                     kwargs...)
-    opts = OrderedDict{String, T}()
+    opts = OptionDict{String, T}(String[])
     map(v -> opts[string(v)] = v, options)
     Options(view, opts; kwargs...)
 end
 
-function Options{K, V}(view::Symbol,
-                    options::Associative{K, V};
+function Options(view::Symbol,
+                    options::Union(Associative, AbstractArray{Tuple});
                     kwargs...)
-    opts = OrderedDict{String, V}()
+    opts = OptionDict{String, Any}(String[])
     map(v->opts[string(v[1])] = v[2], options)
     Options(view, opts; kwargs...)
 end
