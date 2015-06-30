@@ -72,7 +72,7 @@ button(label; kwargs...) =
 
 ######################## Textbox ###########################
 
-type Textbox{T <: Union(Number, String)} <: InputWidget{T}
+type Textbox{T} <: InputWidget{T}
     signal::Input{T}
     label::String
     range::Union(Nothing, Range)
@@ -85,24 +85,28 @@ function empty(t::Type)
     end
 end
 
-function Textbox(; typ=String, label="",
-                 value=empty(typ),
+function Textbox(; label="",
+                 value=utf8(""),
+                 # Allow unicode characters even if initiated with ASCII
+                 typ=typeof(value),
                  range=nothing,
-                 signal=Input(value))
+                 signal=Input{typ}(value))
     if isa(value, String) && !isa(range, Nothing)
         throw(ArgumentError(
                "You cannot set a range on a string textbox"
              ))
     end
-    Textbox(signal, label, range, value)
+    Textbox{typ}(signal, label, range, value)
 end
 
 textbox(;kwargs...) = Textbox(;kwargs...)
 textbox(val; kwargs...) =
     Textbox(value=val; kwargs...)
+textbox(val::String; kwargs...) =
+    Textbox(value=utf8(val); kwargs...)
 
 function parse{T<:Number}(val, w::Textbox{T})
-    v = convert(T, val)
+    v = parse(T, val)
     if isa(w.range, Range)
         # force value to stay in range
         v = max(first(w.range),
@@ -241,5 +245,5 @@ widget(x::Range, label="") = slider(x, label=label)
 widget(x::AbstractVector, label="") = togglebuttons(x, label=label)
 widget(x::Associative, label="") = togglebuttons(x, label=label)
 widget(x::Bool, label="") = checkbox(x, label=label)
-widget(x::String, label="") = textbox(x, label=label)
+widget(x::String, label="") = textbox(x, label=label, typ=String)
 widget{T <: Number}(x::T, label="") = textbox(typ=T, value=x, label=label)

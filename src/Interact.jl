@@ -47,6 +47,7 @@ end
 function recv{T}(widget ::InputWidget{T}, value)
     # Hand-off received value to the signal graph
     parsed = parse(value, widget)
+    println(STDERR, signal(widget))
     push!(signal(widget), parsed)
     widget.value = parsed
     if value != parsed
