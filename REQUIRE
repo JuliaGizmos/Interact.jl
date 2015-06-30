@@ -1,3 +1,4 @@
+julia 0.3
 JSON
 Compat
 Reactive 0.1.9
