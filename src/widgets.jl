@@ -131,16 +131,15 @@ textarea(val; kwargs...) =
 
 ##################### SelectionWidgets ######################
 
-immutable OptionDict{K, V}
-    keys::Vector{K}
-    dict::Dict{K, V}
-    OptionDict(kvs) = new(map(x -> x[1], kvs), Dict(kvs))
+immutable OptionDict
+    keys::Vector
+    dict::Dict
 end
 
 Base.getindex(x::OptionDict, y) = getindex(x.dict, y)
 Base.haskey(x::OptionDict, y) = haskey(x.dict, y)
 Base.keys(x::OptionDict) = x.keys
-function Base.setindex!(x::OptionDict, k, v)
+function Base.setindex!(x::OptionDict, v, k)
     if !haskey(x.dict, k)
         push!(x.keys, k)
     end
@@ -152,30 +151,36 @@ type Options{view, T} <: InputWidget{T}
     label::String
     value::T
     value_label::String
-    options::OptionDict{String, T}
-    # TODO: existential checks
+    options::OptionDict
 end
 
-Options{K, V}(view::Symbol, options::OptionDict{K, V};
+Options(view::Symbol, options::OptionDict;
         label = "",
         value_label=first(options.keys),
         value=options[value_label],
+        typ=typeof(value),
         signal=Input(value)) =
-            Options{view, V}(signal, label, value, value_label, options)
+            Options{view, typ}(signal, label, value, value_label, options)
 
-function Options{T}(view::Symbol,
-                    options::AbstractArray{T};
+addoption(opts, v::NTuple{2}) = opts[string(v[1])] = v[2]
+addoption(opts, v) = opts[string(v)] = v
+function Options(view::Symbol,
+                    options::AbstractArray;
                     kwargs...)
-    opts = OptionDict{String, T}(String[])
-    map(v -> opts[string(v)] = v, options)
+    opts = OptionDict(Any[], Dict())
+    for v in options
+        addoption(opts, v)
+    end
     Options(view, opts; kwargs...)
 end
 
 function Options(view::Symbol,
-                    options::Union(Associative, AbstractArray{Tuple});
+                    options::Associative;
                     kwargs...)
-    opts = OptionDict{String, Any}(String[])
-    map(v->opts[string(v[1])] = v[2], options)
+    opts = OptionDict(Any[], Dict())
+    for (k, v) in options
+        opts[string(k)] = v
+    end
     Options(view, opts; kwargs...)
 end
 
