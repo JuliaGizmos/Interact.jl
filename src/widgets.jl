@@ -143,6 +143,7 @@ end
 Base.getindex(x::OptionDict, y) = getindex(x.dict, y)
 Base.haskey(x::OptionDict, y) = haskey(x.dict, y)
 Base.keys(x::OptionDict) = x.keys
+Base.values(x::OptionDict) = [x.dict[k] for k in keys(x)]
 function Base.setindex!(x::OptionDict, v, k)
     if !haskey(x.dict, k)
         push!(x.keys, k)
