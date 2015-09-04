@@ -105,7 +105,7 @@ textbox(val; kwargs...) =
 textbox(val::String; kwargs...) =
     Textbox(value=utf8(val); kwargs...)
 
-function parse{T<:Number}(val, w::Textbox{T})
+function parse{T<:Number}(w::Textbox{T}, val)
     v = parse(T, val)
     if isa(w.range, Range)
         # force value to stay in range
