@@ -1,6 +1,6 @@
 module Interact
 
-using Reactive
+using Reactive, Compat
 
 import Base: mimewritable, writemime, parse, recv
 import Reactive.signal
@@ -35,9 +35,12 @@ end
 
 # default cases
 
-parse{T <: Integer}(::InputWidget{T}, v) = int(v)
-parse{T <: FloatingPoint}(::InputWidget{T}, v) = float(v)
-parse(::InputWidget{Bool}, v) = bool(v)
+parse{T <: Number}(::InputWidget{T}, v) = cnvt(T, v)
+
+cnvt(::Type{Bool}, v::AbstractString) = parse(Bool, v) # doesn't work, but needed for ambiguity resolution
+cnvt(::Type{Bool}, v) = v != 0
+cnvt{T}(::Type{T}, v::AbstractString) = parse(T, v)
+cnvt{T}(::Type{T}, v) = convert(T, v)
 
 function update_view(w)
     # update the view of a widget.
