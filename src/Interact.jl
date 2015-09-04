@@ -1,6 +1,6 @@
 module Interact
 
-using Reactive
+using Reactive, Compat
 
 import Base: mimewritable, writemime, parse, recv
 import Reactive.signal
@@ -27,7 +27,7 @@ function statedict(w::Widget)
     msg
 end
 
-function parse{T}(msg, ::InputWidget{T})
+function parse{T}(::InputWidget{T}, msg)
     # Should return a value of type T, by default
     # msg itself is assumed to be the value.
     return convert(T, msg)
@@ -35,9 +35,12 @@ end
 
 # default cases
 
-parse{T <: Integer}(v, ::InputWidget{T}) = int(v)
-parse{T <: FloatingPoint}(v, ::InputWidget{T}) = float(v)
-parse(v, ::InputWidget{Bool}) = bool(v)
+parse{T <: Number}(::InputWidget{T}, v) = cnvt(T, v)
+
+cnvt(::Type{Bool}, v::AbstractString) = parse(Bool, v) # doesn't work, but needed for ambiguity resolution
+cnvt(::Type{Bool}, v) = v != 0
+cnvt{T}(::Type{T}, v::AbstractString) = parse(T, v)
+cnvt{T}(::Type{T}, v) = convert(T, v)
 
 function update_view(w)
     # update the view of a widget.
@@ -46,7 +49,7 @@ end
 
 function recv{T}(widget ::InputWidget{T}, value)
     # Hand-off received value to the signal graph
-    parsed = parse(value, widget)
+    parsed = parse(widget, value)
     println(STDERR, signal(widget))
     push!(signal(widget), parsed)
     widget.value = parsed
