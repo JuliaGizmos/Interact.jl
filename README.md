@@ -11,10 +11,7 @@ To install Interact, run the following command in the Julia REPL:
 Pkg.add("Interact")
 ```
 
-**Note:** if you have IPython 3.0 installed, check out the master version:
-```{.julia execute="false"}
-Pkg.checkout("Interact")
-```
+** Note: ** Interact only works with IPython version 3.x, support for 4.x is a work in progress.
 
 To start using it in an IJulia notebook, include it:
 ```{.julia execute="false"}
