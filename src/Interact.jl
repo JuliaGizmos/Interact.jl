@@ -17,7 +17,7 @@ signal(w::InputWidget) = w.signal
 
 function statedict(w::Widget)
     msg = Dict()
-    attrs = names(w)
+    attrs = @compat fieldnames(w)
     for n in attrs
         if n in [:signal, :label]
             continue

@@ -7,9 +7,11 @@
 	}
     }
 
+    var OutputArea = IPython.version >= "4.0.0" ? require("notebook/js/outputarea").OutputArea : IPython.OutputArea;
+
     var redrawValue = function (container, type, val) {
 	var selector = $("<div/>");
-	var oa = new IPython.OutputArea(_.extend(selector, {
+	var oa = new OutputArea(_.extend(selector, {
 	    selector: selector,
 	    prompt_area: true,
 	    events: IPython.events,
@@ -22,7 +24,7 @@
 	    $(container).find("img").attr('src', _src);
 	    break;
 	default:
-	    var toinsert = IPython.OutputArea.append_map[type].apply(
+	    var toinsert = OutputArea.append_map[type].apply(
 		oa, [val, {}, selector]
 	    );
 	    $(container).empty().append(toinsert.contents());

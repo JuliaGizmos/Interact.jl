@@ -161,7 +161,11 @@ function add_ipy3_state!(state)
 end
 
 const widget_comms = Dict{Widget, Comm}()
-function update_view(w::InputWidget; src::InputWidget=w)
+function update_view(w; src=w)
+    send_comm(widget_comms[w], view_state(w, src=src))
+end
+
+function view_state(w::InputWidget; src::InputWidget=w)
     msg = Dict()
     msg["method"] = "update"
     state = Dict()
@@ -173,10 +177,10 @@ function update_view(w::InputWidget; src::InputWidget=w)
     state["readout"] = true
     add_ipy3_state!(state)
     msg["state"] = merge(state, statedict(src))
-    send_comm(widget_comms[w], msg)
+    msg
 end
 
-function update_view(w::Widget; src::Widget=w)
+function view_state(w::Widget; src::Widget=w)
     msg = Dict()
     msg["method"] = "update"
     state = Dict()
@@ -188,20 +192,20 @@ function update_view(w::Widget; src::Widget=w)
     add_ipy3_state!(state)
 
     msg["state"] = merge(state, statedict(src))
-    send_comm(widget_comms[w], msg)
-    nothing
+    msg
 end
 
 function create_view(w::Widget)
     if haskey(widget_comms, w)
         comm = widget_comms[w]
     else
-        comm = Comm("ipython.widget", data=Dict([
-            ("model_name", "WidgetModel")
-        ]))
+        comm = Comm("ipython.widget", data=merge(Dict{String, Any}([
+            ("model_name", "WidgetModel"),
+            ("_model_name", "WidgetModel"), # Jupyter 4.0 missing (https://github.com/ipython/ipywidgets/pull/84)
+        ]), view_state(w)))
         widget_comms[w] = comm
         # Send a full state update message.
-        update_view(w)
+        update_view(w) # This is redundant on 4.0 but keeps it working on Jupyter 3.0
 
         # dispatch messages to widget's handler
         comm.on_msg = msg -> handle_msg(w, msg)
