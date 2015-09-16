@@ -158,15 +158,19 @@ type Options{view, T} <: InputWidget{T}
     value::T
     value_label::String
     options::OptionDict
+    icons::AbstractArray
+    tooltips::AbstractArray
 end
 
 Options(view::Symbol, options::OptionDict;
         label = "",
         value_label=first(options.keys),
         value=options[value_label],
+        icons=[],
+        tooltips=[],
         typ=typeof(value),
         signal=Input(value)) =
-            Options{view, typ}(signal, label, value, value_label, options)
+            Options{view, typ}(signal, label, value, value_label, options, icons, tooltips)
 
 addoption(opts, v::NTuple{2}) = opts[string(v[1])] = v[2]
 addoption(opts, v) = opts[string(v)] = v
