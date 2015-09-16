@@ -22,14 +22,13 @@ try
              window.interactWarnJSRemoval = true
              window.interactLoadedFlag = true
             \$("#interact-js-shim").bind("destroyed", function () {
-                if (interactWarnJSRemoval && interactLoadedFlag == true) {
+                if (window.interactWarnJSRemoval && window.interactLoadedFlag) {
                     alert("Please note: removing or even re-running this cell will cause Interact's javascript shim to be removed." +
                       "This will cause Interact to not work properly if you reload the page," +
                       "unless you resatart the kernel and include Interact again.")
-                      prevLifeTime = interactLifeTime
                 }
             })
-            \$([IPython.events]).on("kernel_starting.Kernel", function () { window.interactLoadedFlag = false })
+            \$([IPython.events]).on("kernel_starting.Kernel kernel_restarting.Kernel", function () { window.interactLoadedFlag = false })
         </script>
      </div>""")
 catch
