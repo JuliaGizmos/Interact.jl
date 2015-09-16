@@ -83,7 +83,7 @@
 	    // try to initialize right away. otherwise, wait on the status_started event.
 	    initComm(undefined, IPython.notebook);
 	} catch (e) {
-	    $([IPython.events]).on('status_started.Kernel', initComm);
+	    $([IPython.events]).on('kernel_created.Kernel kernel_created.Session', initComm);
 	}
     });
 })(IPython, jQuery, _, MathJax, InputWidgets);
