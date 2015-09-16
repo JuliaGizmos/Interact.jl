@@ -105,8 +105,9 @@ textbox(val; kwargs...) =
 textbox(val::String; kwargs...) =
     Textbox(value=utf8(val); kwargs...)
 
-function parse{T<:Number}(w::Textbox{T}, val)
-    v = parse(T, val)
+parse_msg{T<:Number}(w::Textbox{T}, val::AbstractString) = parse_msg(w, parse(T, val))
+function parse_msg{T<:Number}(w::Textbox{T}, val::Number)
+    v = convert(T, val)
     if isa(w.range, Range)
         # force value to stay in range
         v = max(first(w.range),

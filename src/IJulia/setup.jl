@@ -126,7 +126,7 @@ end
 ## This is for our own widgets.
 function register_comm(comm::Comm{:InputWidget}, msg)
     w_id = msg.content["data"]["widget_id"]
-    comm.on_msg = (msg) -> recv(w, msg.content["data"]["value"])
+    comm.on_msg = (msg) -> recv_msg(w, msg.content["data"]["value"])
 end
 
 JSON.print(io::IO, s::Signal) = JSON.print(io, s.value)

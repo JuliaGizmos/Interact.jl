@@ -2,10 +2,10 @@ module Interact
 
 using Reactive, Compat
 
-import Base: mimewritable, writemime, parse, recv
+import Base: mimewritable, writemime
 import Reactive.signal
 export signal, statedict, Widget, InputWidget, register_widget,
-       get_widget, parse, recv, update_view
+       get_widget, parse_msg, recv_msg, update_view
 
 # A widget
 abstract Widget <: SignalSource
@@ -27,29 +27,19 @@ function statedict(w::Widget)
     msg
 end
 
-function parse{T}(::InputWidget{T}, msg)
-    # Should return a value of type T, by default
-    # msg itself is assumed to be the value.
-    return convert(T, msg)
-end
-
-# default cases
-
-parse{T <: Number}(::InputWidget{T}, v) = cnvt(T, v)
-
-cnvt(::Type{Bool}, v::AbstractString) = parse(Bool, v) # doesn't work, but needed for ambiguity resolution
-cnvt(::Type{Bool}, v) = v != 0
-cnvt{T}(::Type{T}, v::AbstractString) = parse(T, v)
-cnvt{T}(::Type{T}, v) = convert(T, v)
+# Convert e.g. JSON values into Julia values
+parse_msg{T <: Number}(::InputWidget{T}, v::AbstractString) = parse(T, v)
+parse_msg(::InputWidget{Bool}, v::Number) = v != 0
+parse_msg{T}(::InputWidget{T}, v) = convert(T, v)
 
 function update_view(w)
     # update the view of a widget.
     # child packages need to override.
 end
 
-function recv{T}(widget ::InputWidget{T}, value)
+function recv_msg{T}(widget ::InputWidget{T}, value)
     # Hand-off received value to the signal graph
-    parsed = parse(widget, value)
+    parsed = parse_msg(widget, value)
     println(STDERR, signal(widget))
     push!(signal(widget), parsed)
     widget.value = parsed
