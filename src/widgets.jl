@@ -1,9 +1,9 @@
 import Base: convert, haskey, setindex!, getindex
-export Slider, slider, ToggleButton, togglebutton, Button, button,
-       Options, Checkbox, checkbox, Textbox, textbox, Textarea, textarea,
-       RadioButtons, radiobuttons, Dropdown, dropdown, Select, select,
-       ToggleButtons, togglebuttons, HTML, html, Latex, latex,
-       Progress, progress, widget
+export slider, togglebutton, button,
+       checkbox, textbox, textarea,
+       radiobuttons, dropdown, select,
+       togglebuttons, html, latex,
+       progress, widget
 
 ### Input widgets
 
