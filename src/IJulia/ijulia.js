@@ -1,3 +1,4 @@
+
 (function (IPython, $, _, MathJax, Widgets) {
     $.event.special.destroyed = {
 	remove: function(o) {
