@@ -4,8 +4,7 @@ using Reactive, Compat
 
 import Base: mimewritable, writemime
 import Reactive.signal
-export signal, statedict, Widget, InputWidget, register_widget,
-       get_widget, parse_msg, recv_msg, update_view
+export signal, Widget, InputWidget
 
 # A widget
 abstract Widget <: SignalSource
