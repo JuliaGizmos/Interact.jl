@@ -7,25 +7,17 @@ using Compat
 import Interact.update_view
 export mimewritable, writemime
 
-if !isdefined(Main, :IJulia)
-    error("IJuliaWidgets must be imported from inside an IJulia notebook")
-end
-
 const ijulia_js  = readall(joinpath(dirname(Base.source_path()), "ijulia.js"))
 
-warn_js_removal(state) = display(MIME"text/html"(), "<script>window.interactWarnJSRemoval = $(string(state))</script>")
 try
     display("text/html", """
      <div id="interact-js-shim">
          <script charset="utf-8">$(ijulia_js)</script>
          <script>
-             window.interactWarnJSRemoval = true
              window.interactLoadedFlag = true
             \$("#interact-js-shim").bind("destroyed", function () {
-                if (window.interactWarnJSRemoval && window.interactLoadedFlag) {
-                    alert("Please note: removing or even re-running this cell will cause Interact's javascript shim to be removed." +
-                      "This will cause Interact to not work properly if you reload the page," +
-                      "unless you resatart the kernel and include Interact again.")
+                if (window.interactLoadedFlag) {
+                    console.warn("JavaScript required by Interact will be removed if you remove this cell or run using Interact more than once.")
                 }
             })
             \$([IPython.events]).on("kernel_starting.Kernel kernel_restarting.Kernel", function () { window.interactLoadedFlag = false })
