@@ -35,7 +35,7 @@ import Base: writemime, mimewritable
 const comms = Dict{Signal, Comm}()
 
 function get_data_dict(value, mimetypes)
-    dict = Dict{ASCIIString, ByteAbstractString}()
+    dict = Dict{ASCIIString, ByteString}()
     for m in mimetypes
         if mimewritable(m, value)
             dict[m] = stringmime(m, value)
