@@ -5,6 +5,8 @@ export slider, togglebutton, button,
        togglebuttons, html, latex,
        progress, widget
 
+const Empty = VERSION < v"0.4.0-dev" ? Nothing : Void
+
 ### Input widgets
 
 ########################## Slider ############################
@@ -75,7 +77,7 @@ button(label; kwargs...) =
 type Textbox{T} <: InputWidget{T}
     signal::Input{T}
     label::AbstractString
-    @compat range::Union{Void, Range}
+    @compat range::Union{Empty, Range}
     value::T
 end
 
@@ -91,7 +93,7 @@ function Textbox(; label="",
                  typ=typeof(value),
                  range=nothing,
                  signal=Input{typ}(value))
-    if isa(value, AbstractString) && !isa(range, Void)
+    if isa(value, AbstractString) && range != nothing
         throw(ArgumentError(
                "You cannot set a range on a string textbox"
              ))
