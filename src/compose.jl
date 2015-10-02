@@ -13,7 +13,7 @@ style(widget, style) = StyledWidget(widget, style)
 
 immutable Labeled{W <: Widget} <: WidgetMod
     widget::W
-    label::String
+    label::AbstractString
 end
 
 label(widget, label) = LabeledWidget(widget, label)

@@ -49,7 +49,7 @@ A type `Element` which represents anything displayable (can use type promotion h
 # stack elems in the specified direction (down, right, left, up)
 flow(direction :: Symbol, elems :: Element....) # returns an Element
 # Create a tab group with a tab for each element
-tabs(elems :: (String, Element)...)      # returns an Element
+tabs(elems :: (AbstractString, Element)...)      # returns an Element
 # accordion, etc in the same vein
 ```
 

@@ -35,7 +35,7 @@ import Base: writemime, mimewritable
 const comms = Dict{Signal, Comm}()
 
 function get_data_dict(value, mimetypes)
-    dict = Dict{ASCIIString, ByteString}()
+    dict = Dict{ASCIIAbstractString, ByteAbstractString}()
     for m in mimetypes
         if mimewritable(m, value)
             dict[m] = stringmime(m, value)
@@ -51,7 +51,7 @@ end
 
 function init_comm(x::Signal)
     if !haskey(comms, x)
-        subscriptions = Dict{ASCIIString, Int}()
+        subscriptions = Dict{ASCIIAbstractString, Int}()
         function handle_subscriptions(msg)
             if haskey(msg.content, "data")
                 action = get(msg.content["data"], "action", "")
@@ -207,7 +207,7 @@ function create_view(w::Widget)
     if haskey(widget_comms, w)
         comm = widget_comms[w]
     else
-        comm = Comm("ipython.widget", data=merge(Dict{String, Any}([
+        comm = Comm("ipython.widget", data=merge(Dict{AbstractString, Any}([
             ("model_name", "WidgetModel"),
             ("_model_name", "WidgetModel"), # Jupyter 4.0 missing (https://github.com/ipython/ipywidgets/pull/84)
         ]), view_state(w)))

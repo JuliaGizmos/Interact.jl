@@ -49,8 +49,8 @@ end
 
 uuid4() = string(Base.Random.uuid4())
 
-const id_to_widget = Dict{String, InputWidget}()
-const widget_to_id = Dict{InputWidget, String}()
+const id_to_widget = Dict{AbstractString, InputWidget}()
+const widget_to_id = Dict{InputWidget, AbstractString}()
 
 function register_widget(w::InputWidget)
     if haskey(widget_to_id, w)
@@ -63,7 +63,7 @@ function register_widget(w::InputWidget)
     end
 end
 
-function get_widget(id::String)
+function get_widget(id::AbstractString)
     if haskey(id_to_widget, id)
         return id_to_widget[id]
     else
