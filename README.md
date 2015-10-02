@@ -27,5 +27,5 @@ The best way to learn to use the interactive widgets is to try out the example n
 ipython notebook --profile julia
 ```
 Interact needs IJulia to be running on Jupyter/IPython 3.x or Jupyter 4.x
-For Jupyter 4.x, the Python packages `jupyter` and `ipywidgets` installed.
+For Jupyter 4.x, the Python packages `jupyter` and `ipywidgets` must be installed.
 ```
