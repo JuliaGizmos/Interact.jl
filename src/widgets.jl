@@ -11,7 +11,7 @@ export slider, togglebutton, button,
 
 type Slider{T<:Number} <: InputWidget{T}
     signal::Input{T}
-    label::String
+    label::AbstractString
     value::T
     range::Range{T}
 end
@@ -30,7 +30,7 @@ slider{T}(range::Range{T};
 
 type Checkbox <: InputWidget{Bool}
     signal::Input{Bool}
-    label::String
+    label::AbstractString
     value::Bool
 end
 
@@ -44,7 +44,7 @@ checkbox(; label="", value=false, signal=Input(value)) =
 
 type ToggleButton <: InputWidget{Bool}
     signal::Input{Bool}
-    label::String
+    label::AbstractString
     value::Bool
 end
 
@@ -60,7 +60,7 @@ togglebutton(label; kwargs...) =
 
 type Button{T} <: InputWidget{T}
     signal::Input{T}
-    label::String
+    label::AbstractString
     value::T
 end
 
@@ -74,14 +74,14 @@ button(label; kwargs...) =
 
 type Textbox{T} <: InputWidget{T}
     signal::Input{T}
-    label::String
-    range::Union(Nothing, Range)
+    label::AbstractString
+    @compat range::Union{Void, Range}
     value::T
 end
 
 function empty(t::Type)
     if is(t, Number) zero(t)
-    elseif is(t, String) ""
+    elseif is(t, AbstractString) ""
     end
 end
 
@@ -91,7 +91,7 @@ function Textbox(; label="",
                  typ=typeof(value),
                  range=nothing,
                  signal=Input{typ}(value))
-    if isa(value, String) && !isa(range, Nothing)
+    if isa(value, AbstractString) && !isa(range, Void)
         throw(ArgumentError(
                "You cannot set a range on a string textbox"
              ))
@@ -102,7 +102,7 @@ end
 textbox(;kwargs...) = Textbox(;kwargs...)
 textbox(val; kwargs...) =
     Textbox(value=val; kwargs...)
-textbox(val::String; kwargs...) =
+textbox(val::AbstractString; kwargs...) =
     Textbox(value=utf8(val); kwargs...)
 
 parse_msg{T<:Number}(w::Textbox{T}, val::AbstractString) = parse_msg(w, parse(T, val))
@@ -118,10 +118,10 @@ end
 
 ######################### Textarea ###########################
 
-type Textarea{String} <: InputWidget{String}
-    signal::Input{String}
-    label::String
-    value::String
+type Textarea{AbstractString} <: InputWidget{AbstractString}
+    signal::Input{AbstractString}
+    label::AbstractString
+    value::AbstractString
 end
 
 textarea(args...) = Textarea(args...)
@@ -154,9 +154,9 @@ function Base.setindex!(x::OptionDict, v, k)
 end
 type Options{view, T} <: InputWidget{T}
     signal::Signal
-    label::String
+    label::AbstractString
     value::T
-    value_label::String
+    value_label::AbstractString
     options::OptionDict
     icons::AbstractArray
     tooltips::AbstractArray
@@ -212,8 +212,8 @@ export HTML, Latex, Progress
 
 
 type HTML <: Widget
-    label::String
-    value::String
+    label::AbstractString
+    value::AbstractString
 end
 html(label, value) = HTML(label, value)
 html(value; label="") = HTML(label, value)
@@ -223,11 +223,11 @@ html(value; label="") = HTML(label, value)
 ##     write(io, h.value)
 
 type Latex <: Widget
-    label::String
-    value::String
+    label::AbstractString
+    value::AbstractString
 end
-latex(label, value::String) = Latex(label, value)
-latex(value::String; label="") = Latex(label, value)
+latex(label, value::AbstractString) = Latex(label, value)
+latex(value::AbstractString; label="") = Latex(label, value)
 latex(value; label="") = Latex(label, mimewritable("application/x-latex", value) ? stringmime("application/x-latex", value) : stringmime("text/latex", value))
 
 ## # assume we already have Latex
@@ -235,7 +235,7 @@ latex(value; label="") = Latex(label, mimewritable("application/x-latex", value)
 ##     write(io, l.value)
 
 type Progress <: Widget
-    label::String
+    label::AbstractString
     value::Int
     range::Range
 end
@@ -251,5 +251,5 @@ widget(x::Range, label="") = slider(x, label=label)
 widget(x::AbstractVector, label="") = togglebuttons(x, label=label)
 widget(x::Associative, label="") = togglebuttons(x, label=label)
 widget(x::Bool, label="") = checkbox(x, label=label)
-widget(x::String, label="") = textbox(x, label=label, typ=String)
+widget(x::AbstractString, label="") = textbox(x, label=label, typ=AbstractString)
 widget{T <: Number}(x::T, label="") = textbox(typ=T, value=x, label=label)
