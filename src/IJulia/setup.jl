@@ -150,11 +150,11 @@ view_name(::Progress) = "ProgressView"
 view_name{T<:Integer}(::Slider{T}) = "IntSliderView"
 view_name(::Button) = "ButtonView"
 view_name(::Textarea) = "TextareaView"
-view_name{T<:FloatingPoint}(::Slider{T}) = "FloatSliderView"
+view_name{T<:AbstractFloat}(::Slider{T}) = "FloatSliderView"
 view_name{T<:Integer}(::Textbox{T}) = "IntTextView"
 view_name(::Checkbox) = "CheckboxView"
 view_name(::ToggleButton) = "ToggleButtonView"
-view_name{T<:FloatingPoint}(::Textbox{T}) = "FloatTextView"
+view_name{T<:AbstractFloat}(::Textbox{T}) = "FloatTextView"
 view_name(::Textbox) = "TextView"
 view_name{view}(::Options{view}) = string(view, "View")
 

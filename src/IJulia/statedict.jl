@@ -1,4 +1,4 @@
-statedict(s::Union(Slider, Progress)) =
+@compat statedict(s::Union{Slider, Progress)} =
     @compat Dict(:value=>s.value,
          :min=>first(s.range),
          :step=>step(s.range),
