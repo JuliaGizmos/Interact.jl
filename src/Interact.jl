@@ -3,16 +3,16 @@ module Interact
 using Reactive, Compat
 
 import Base: mimewritable, writemime
-import Reactive.signal
 export signal, Widget, InputWidget
 
 # A widget
-abstract Widget <: SignalSource
+abstract Widget
 
 # A widget that gives out a signal of type T
 abstract InputWidget{T}  <: Widget
 
 signal(w::InputWidget) = w.signal
+signal(x::Signal) = x
 
 function statedict(w::Widget)
     msg = Dict()

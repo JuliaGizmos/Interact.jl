@@ -13,10 +13,10 @@ function display_widgets(widgetvars)
     map(v -> Expr(:call, esc(:display), esc(v)), widgetvars)
 end
 
-function lift_block(block, symbols)
+function map_block(block, symbols)
     lambda = Expr(:(->), Expr(:tuple, symbols...),
                   block)
-    Expr(:call, Reactive.lift, lambda, symbols...)
+    Expr(:call, map, lambda, map(x -> Expr(:call, signal, x), symbols)...)
 end
 
 function symbols(bindings)
@@ -37,6 +37,6 @@ macro manipulate(expr)
     syms = symbols(bindings)
     Expr(:let, Expr(:block,
                     display_widgets(syms)...,
-                    esc(lift_block(block, syms))),
+                    esc(map_block(block, syms))),
          map(make_widget, bindings)...)
 end

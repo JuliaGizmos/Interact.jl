@@ -77,7 +77,7 @@ function init_comm(x::Signal)
                                  get_data_dict(value, mimes)))
             end
         end
-        lift(notify, x)
+        preserve(map(notify, x))
     else
         comm = comms[x]
     end
@@ -226,7 +226,7 @@ end
 function create_widget_signal(s)
     create_view(s.value)
     local target = s.value
-    lift(x->update_view(target, src=x), s, init=nothing)
+    preserve(map(x->update_view(target, src=x), s, init=nothing))
 end
 
 include("statedict.jl")

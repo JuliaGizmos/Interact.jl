@@ -12,7 +12,7 @@ const Empty = VERSION < v"0.4.0-dev" ? Nothing : Void
 ########################## Slider ############################
 
 type Slider{T<:Number} <: InputWidget{T}
-    signal::Input{T}
+    signal::Signal{T}
     label::AbstractString
     value::T
     range::Range{T}
@@ -24,35 +24,35 @@ medianelement(r::Range) = r[(1+length(r))>>1]
 slider(args...) = Slider(args...)
 slider{T}(range::Range{T};
           value=medianelement(range),
-          signal::Signal{T}=Input(value),
+          signal::Signal{T}=Signal(value),
           label="") =
               Slider(signal, label, value, range)
 
 ######################### Checkbox ###########################
 
 type Checkbox <: InputWidget{Bool}
-    signal::Input{Bool}
+    signal::Signal{Bool}
     label::AbstractString
     value::Bool
 end
 
 checkbox(args...) = Checkbox(args...)
-checkbox(value::Bool; signal=Input(value), label="") =
+checkbox(value::Bool; signal=Signal(value), label="") =
     Checkbox(signal, label, value)
-checkbox(; label="", value=false, signal=Input(value)) =
+checkbox(; label="", value=false, signal=Signal(value)) =
     Checkbox(signal, label, value)
 
 ###################### ToggleButton ########################
 
 type ToggleButton <: InputWidget{Bool}
-    signal::Input{Bool}
+    signal::Signal{Bool}
     label::AbstractString
     value::Bool
 end
 
 togglebutton(args...) = ToggleButton(args...)
 
-togglebutton(; label="", value=false, signal=Input(value)) =
+togglebutton(; label="", value=false, signal=Signal(value)) =
     ToggleButton(signal, label, value)
 
 togglebutton(label; kwargs...) =
@@ -61,12 +61,12 @@ togglebutton(label; kwargs...) =
 ######################### Button ###########################
 
 type Button{T} <: InputWidget{T}
-    signal::Input{T}
+    signal::Signal{T}
     label::AbstractString
     value::T
 end
 
-button(; value=nothing, label="", signal=Input(value)) =
+button(; value=nothing, label="", signal=Signal(value)) =
     Button(signal, label, value)
 
 button(label; kwargs...) =
@@ -75,7 +75,7 @@ button(label; kwargs...) =
 ######################## Textbox ###########################
 
 type Textbox{T} <: InputWidget{T}
-    signal::Input{T}
+    signal::Signal{T}
     label::AbstractString
     @compat range::Union{Empty, Range}
     value::T
@@ -92,7 +92,7 @@ function Textbox(; label="",
                  # Allow unicode characters even if initiated with ASCII
                  typ=typeof(value),
                  range=nothing,
-                 signal=Input{typ}(value))
+                 signal=Signal(typ, value))
     if isa(value, AbstractString) && range != nothing
         throw(ArgumentError(
                "You cannot set a range on a string textbox"
@@ -121,7 +121,7 @@ end
 ######################### Textarea ###########################
 
 type Textarea{AbstractString} <: InputWidget{AbstractString}
-    signal::Input{AbstractString}
+    signal::Signal{AbstractString}
     label::AbstractString
     value::AbstractString
 end
@@ -130,7 +130,7 @@ textarea(args...) = Textarea(args...)
 
 textarea(; label="",
          value="",
-         signal=Input(value)) =
+         signal=Signal(value)) =
     Textarea(signal, label, value)
 
 textarea(val; kwargs...) =
@@ -171,7 +171,7 @@ Options(view::Symbol, options::OptionDict;
         icons=[],
         tooltips=[],
         typ=typeof(value),
-        signal=Input(value)) =
+        signal=Signal(value)) =
             Options{view, typ}(signal, label, value, value_label, options, icons, tooltips)
 
 addoption(opts, v::NTuple{2}) = opts[string(v[1])] = v[2]
