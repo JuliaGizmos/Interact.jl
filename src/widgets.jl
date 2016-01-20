@@ -16,6 +16,7 @@ type Slider{T<:Number} <: InputWidget{T}
     label::AbstractString
     value::T
     range::Range{T}
+    continuous_update::Bool
 end
 
 # differs from median(r) in that it always returns an element of the range
@@ -25,8 +26,9 @@ slider(args...) = Slider(args...)
 slider{T}(range::Range{T};
           value=medianelement(range),
           signal::Signal{T}=Signal(value),
-          label="") =
-              Slider(signal, label, value, range)
+          label="",
+          continuous_update=true) =
+              Slider(signal, label, value, range, continuous_update)
 
 ######################### Checkbox ###########################
 

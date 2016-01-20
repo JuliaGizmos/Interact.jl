@@ -2,7 +2,9 @@
     @compat Dict(:value=>s.value,
          :min=>first(s.range),
          :step=>step(s.range),
-         :max=>last(s.range))
+         :max=>last(s.range),
+         :continuous_update=>s.continuous_update,
+     )
 
 # when we say value to javascript, it really means value label
 statedict(d::Options) =
