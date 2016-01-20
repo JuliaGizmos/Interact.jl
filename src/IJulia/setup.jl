@@ -85,17 +85,21 @@ function init_comm(x::Signal)
     return comm
 end
 
-function metadata(x :: Signal)
+function metadata(x::Signal)
     comm = init_comm(x)
     return @compat Dict("reactive"=>true,
                         "comm_id"=>comm.id)
 end
 
 # Render the value of a signal.
-mimewritable(m :: MIME, s :: Signal) =
+mimewritable(m::MIME, s::Signal) =
     mimewritable(m, s.value)
 
-function writemime(io:: IO, m :: MIME, s :: Signal)
+function writemime(io:: IO, m::MIME"text/plain", s::Signal)
+    writemime(io, m, s.value)
+end
+
+function writemime(io:: IO, m::MIME, s::Signal)
     writemime(io, m, s.value)
 end
 
@@ -158,7 +162,7 @@ view_name{T<:AbstractFloat}(::Textbox{T}) = "FloatTextView"
 view_name(::Textbox) = "TextView"
 view_name{view}(::Options{view}) = string(view, "View")
 
-function metadata{T <: Widget}(x :: Signal{T})
+function metadata{T <: Widget}(x::Signal{T})
     Dict()
 end
 
