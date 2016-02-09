@@ -1,3 +1,4 @@
+import Interact.recv_msg
 
 function handle_msg(w::InputWidget, msg)
     if msg.content["data"]["method"] == "backbone"
