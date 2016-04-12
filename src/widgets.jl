@@ -214,17 +214,7 @@ togglebuttons(opts; kwargs...) =
 
 export Latex, Progress
 
-
-type HTML <: Widget
-    label::AbstractString
-    value::AbstractString
-end
-html(label, value) = HTML(label, value)
-html(value; label="") = HTML(label, value)
-
-# assume we already have HTML
-## writemime(io::IO, m::MIME{symbol("text/html")}, h::HTML) =
-##     write(io, h.value)
+Base.@deprecate html(value; label="")  HTML(value)
 
 type Latex <: Widget
     label::AbstractString
