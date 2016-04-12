@@ -212,7 +212,7 @@ togglebuttons(opts; kwargs...) =
 
 ### Output Widgets
 
-export HTML, Latex, Progress
+export Latex, Progress
 
 
 type HTML <: Widget
