@@ -1,15 +1,12 @@
-
 using JSON
 using Reactive
-using Interact
 using Compat
 
-import Interact.update_view
-export mimewritable, writemime
+import Interact: HTML, Widget, InputWidget, Slider, Button, Textarea, Textbox, ToggleButton, Options, Checkbox, Latex, Progress
 
-const ijulia_js  = readall(joinpath(dirname(Base.source_path()), "ijulia.js"))
+const ijulia_js = readall(joinpath(dirname(@__FILE__), "ijulia.js"))
 
-try
+if displayable("text/html")
     display("text/html", """
      <div id="interact-js-shim">
          <script charset="utf-8">$(ijulia_js)</script>
@@ -23,7 +20,6 @@ try
             \$([IPython.events]).on("kernel_starting.Kernel kernel_restarting.Kernel", function () { window.interactLoadedFlag = false })
         </script>
      </div>""")
-catch
 end
 
 import IJulia

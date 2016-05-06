@@ -4,9 +4,10 @@ using JSON
 
 const widgets_js = readall(joinpath(dirname(Base.source_path()), "widgets.js"))
 
-try
-    display("text/html", """<script charset="utf-8">$(widgets_js)</script>""")
-catch
+function init_widgets_js()
+    if displayable("text/html")
+        display("text/html", """<script charset="utf-8">$(widgets_js)</script>""")
+    end
 end
 
 function writemime(io, ::MIME{symbol("text/html")}, w::InputWidget)
@@ -27,4 +28,3 @@ function writemime(io, ::MIME{symbol("text/html")}, w::InputWidget)
           widgettype, "(\"", inputtype, "\",\"", id, "\",", JSON.json(statedict(w)), ")",
           ").elem);})(jQuery,InputWidgets)</script>")
 end
-

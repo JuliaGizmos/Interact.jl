@@ -31,10 +31,10 @@ parse_msg{T <: Number}(::InputWidget{T}, v::AbstractString) = parse(T, v)
 parse_msg(::InputWidget{Bool}, v::Number) = v != 0
 parse_msg{T}(::InputWidget{T}, v) = convert(T, v)
 
-function update_view(w)
-    # update the view of a widget.
-    # child packages need to override.
-end
+# function update_view(w)
+#     # update the view of a widget.
+#     # child packages need to override.
+# end
 
 function recv_msg{T}(widget ::InputWidget{T}, value)
     # Hand-off received value to the signal graph
@@ -76,8 +76,13 @@ include("compose.jl")
 include("manipulate.jl")
 include("html_setup.jl")
 
-if isdefined(Main, :IJulia) && Main.IJulia.inited
-    include("IJulia/setup.jl")
+const ijulia_setup_path = joinpath(dirname(Base.source_path()), "IJulia/setup.jl")
+
+function __init__()
+    init_widgets_js()
+    if isdefined(Main, :IJulia) && Main.IJulia.inited
+        include(ijulia_setup_path)
+    end
 end
 
 end # module
