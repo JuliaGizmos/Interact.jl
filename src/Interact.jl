@@ -85,4 +85,32 @@ function __init__()
     end
 end
 
+"""
+Interact.jl allows you to use interactive widgets such as sliders, dropdowns and checkboxes to play with your Julia code.
+
+Basic widgets:
+
+- `slider(1:10)` creates a slider widget with the specified range of values
+- `checkbox(false)` creates a check box
+- `togglebutton(false)` creates a toggle button
+- `button()` creates a button
+
+Option (selection) widgets:
+
+- `dropdown(["one", "two", "three"])` creates a drop-down widget
+- `togglebuttons(["one", "two", "three"])` creates a toggle button group
+- `radiobuttons(["one", "two", "three"])` creates a radio button group
+
+Text boxes:
+
+- `textbox(value)` creates a box accepting string or numeric text input
+- `textarea` creates a box for extended text input
+
+Output widgets:
+
+- `latex`
+- `progress`
+"""
+Interact
+
 end # module

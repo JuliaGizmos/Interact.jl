@@ -23,6 +23,14 @@ end
 medianelement(r::Range) = r[(1+length(r))>>1]
 
 slider(args...) = Slider(args...)
+"""
+    slider(range; value, signal, label="", continuous_update=true)
+
+Create a slider widget with the specified `range`. Optionally specify
+the starting `value` (defaults to the median of `range`), provide the
+(Reactive.jl) `signal` coupled to this slider, and/or specify a string
+`label` for the widget.
+"""
 slider{T}(range::Range{T};
           value=medianelement(range),
           signal::Signal{T}=Signal(value),
@@ -39,6 +47,14 @@ type Checkbox <: InputWidget{Bool}
 end
 
 checkbox(args...) = Checkbox(args...)
+
+"""
+    checkbox(value=false; label="", signal)
+
+Provide a checkbox with the specified starting (boolean)
+`value`. Optional provide a `label` for this widget and/or the
+(Reactive.jl) `signal` coupled to this widget.
+"""
 checkbox(value::Bool; signal=Signal(value), label="") =
     Checkbox(signal, label, value)
 checkbox(; label="", value=false, signal=Signal(value)) =
@@ -57,6 +73,13 @@ togglebutton(args...) = ToggleButton(args...)
 togglebutton(; label="", value=false, signal=Signal(value)) =
     ToggleButton(signal, label, value)
 
+"""
+    togglebutton(label=""; value=false, signal)
+
+Create a toggle button. Optionally specify the `label`, the initial
+state (`value=false` is off, `value=true` is on), and/or provide the
+(Reactive.jl) `signal` coupled to this button.
+"""
 togglebutton(label; kwargs...) =
     togglebutton(label=label; kwargs...)
 
@@ -71,6 +94,13 @@ end
 button(; value=nothing, label="", signal=Signal(value)) =
     Button(signal, label, value)
 
+"""
+    button(label; value=nothing, signal)
+
+Create a push button. Optionally specify the `label`, the `value`
+emitted when then button is clicked, and/or the (Reactive.jl) `signal`
+coupled to this button.
+"""
 button(label; kwargs...) =
     button(label=label; kwargs...)
 
@@ -104,6 +134,16 @@ function Textbox(; label="",
 end
 
 textbox(;kwargs...) = Textbox(;kwargs...)
+
+"""
+    textbox(value=""; label="", typ=typeof(value), range=nothing, signal)
+
+Create a box for entering text. `value` is the starting value; if you
+don't want to provide an initial value, you can constrain the type
+with `typ`. Optionally provide a `label`, specify the allowed range
+(e.g., `-10.0:10.0`) for numeric entries, and/or provide the
+(Reactive.jl) `signal` coupled to this text box.
+"""
 textbox(val; kwargs...) =
     Textbox(value=val; kwargs...)
 textbox(val::AbstractString; kwargs...) =
@@ -135,6 +175,13 @@ textarea(; label="",
          signal=Signal(value)) =
     Textarea(signal, label, value)
 
+"""
+    textarea(value=""; label="", signal)
+
+Creates an extended text-entry area. Optionally provide a `label`
+and/or the (Reactive.jl) `signal` associated with this widget. The
+`signal` updates when you type.
+"""
 textarea(val; kwargs...) =
     textarea(value=val; kwargs...)
 
@@ -198,15 +245,39 @@ function Options(view::Symbol,
     Options(view, opts; kwargs...)
 end
 
+"""
+    dropdown(choices; label="", value, typ, icons, tooltips, signal)
+
+Create a "dropdown" widget. `choices` can be a vector of
+options. Optionally specify the starting `value` (defaults to the
+first choice), the `typ` of elements in `choices`, supply custom
+`icons`, provide `tooltips`, and/or specify the (Reactive.jl) `signal`
+coupled to this widget.
+
+# Examples
+
+    a = dropdown(["one", "two", "three"])
+
+To link a callback to the dropdown, use
+
+    f = dropdown(["turn red"=>colorize_red, "turn green"=>colorize_green])
+    map(g->g(image), signal(f))
+"""
 dropdown(opts; kwargs...) =
     Options(:Dropdown, opts; kwargs...)
 
+"""
+radiobuttons: see the help for `dropdown`
+"""
 radiobuttons(opts; kwargs...) =
     Options(:RadioButtons, opts; kwargs...)
 
 select(opts; kwargs...) =
     Options(:Select, opts; kwargs...)
 
+"""
+togglebuttons: see the help for `dropdown`
+"""
 togglebuttons(opts; kwargs...) =
     Options(:ToggleButtons, opts; kwargs...)
 
