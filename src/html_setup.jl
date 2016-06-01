@@ -2,7 +2,7 @@ import Base: writemime
 
 using JSON
 
-const widgets_js = readall(joinpath(dirname(Base.source_path()), "widgets.js"))
+const widgets_js = readstring(joinpath(dirname(Base.source_path()), "widgets.js"))
 
 function init_widgets_js()
     if displayable("text/html")

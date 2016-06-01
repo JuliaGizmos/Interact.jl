@@ -31,15 +31,20 @@ parse_msg{T <: Number}(::InputWidget{T}, v::AbstractString) = parse(T, v)
 parse_msg(::InputWidget{Bool}, v::Number) = v != 0
 parse_msg{T}(::InputWidget{T}, v) = convert(T, v)
 
-# function update_view(w)
-#     # update the view of a widget.
-#     # child packages need to override.
-# end
+"""
+This should be overrided by communication providers
+"""
+function update_view end
+
+
+function error_handler(sig, value, err)
+    Reactive.print_error(sig, value, err, open("/tmp/Interact.log", "a"))
+end
 
 function recv_msg{T}(widget ::InputWidget{T}, value)
     # Hand-off received value to the signal graph
     parsed = parse_msg(widget, value)
-    println(STDERR, signal(widget))
+    #println(STDERR, signal(widget))
     push!(signal(widget), parsed)
     widget.value = parsed
     if value != parsed

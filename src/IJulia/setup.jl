@@ -4,7 +4,7 @@ using Compat
 
 import Interact: HTML, Widget, InputWidget, Slider, Button, Textarea, Textbox, ToggleButton, Options, Checkbox, Latex, Progress
 
-const ijulia_js = readall(joinpath(dirname(@__FILE__), "ijulia.js"))
+const ijulia_js = readstring(joinpath(dirname(@__FILE__), "ijulia.js"))
 
 if displayable("text/html")
     display("text/html", """
@@ -91,10 +91,18 @@ end
 mimewritable(m::MIME, s::Signal) =
     mimewritable(m, s.value)
 
+# fixes ambiguity warnings
 function writemime(io:: IO, m::MIME"text/plain", s::Signal)
     writemime(io, m, s.value)
 end
 
+function writemime(io:: IO, m::MIME"text/csv", s::Signal)
+    writemime(io, m, s.value)
+end
+
+function writemime(io:: IO, m::MIME"text/tab-separated-values", s::Signal)
+    writemime(io, m, s.value)
+end
 function writemime(io:: IO, m::MIME, s::Signal)
     writemime(io, m, s.value)
 end
@@ -168,6 +176,11 @@ function add_ipy3_state!(state)
     end
 end
 
+function add_ipy4_state!(state)
+    state["_view_module"] = "jupyter-js-widgets"
+    state["_model_module"] = "jupyter-js-widgets"
+end
+
 const widget_comms = Dict{Widget, Comm}()
 function update_view(w; src=w)
     send_comm(widget_comms[w], view_state(w, src=src))
@@ -184,6 +197,7 @@ function view_state(w::InputWidget; src::InputWidget=w)
     state["disabled"] = false
     state["readout"] = true
     add_ipy3_state!(state)
+    add_ipy4_state!(state)
     msg["state"] = merge(state, statedict(src))
     msg
 end
@@ -198,6 +212,7 @@ function view_state(w::Widget; src::Widget=w)
     state["visible"] = true
     state["disabled"] = false
     add_ipy3_state!(state)
+    add_ipy4_state!(state)
 
     msg["state"] = merge(state, statedict(src))
     msg
@@ -207,9 +222,11 @@ function create_view(w::Widget)
     if haskey(widget_comms, w)
         comm = widget_comms[w]
     else
-        comm = Comm("ipython.widget", data=merge(Dict{AbstractString, Any}([
+        comm = Comm("jupyter.widget", data=merge(Dict{AbstractString, Any}([
             ("model_name", "WidgetModel"),
             ("_model_name", "WidgetModel"), # Jupyter 4.0 missing (https://github.com/ipython/ipywidgets/pull/84)
+            ("_view_module", "jupyter-js-widgets"),
+            ("_model_module", "jupyter-js-widgets"),
         ]), view_state(w)))
         widget_comms[w] = comm
         # Send a full state update message.
