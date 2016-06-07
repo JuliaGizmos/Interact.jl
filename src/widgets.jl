@@ -16,6 +16,7 @@ type Slider{T<:Number} <: InputWidget{T}
     label::AbstractString
     value::T
     range::Range{T}
+    readout_format::AbstractString
     continuous_update::Bool
 end
 
@@ -27,8 +28,9 @@ slider{T}(range::Range{T};
           value=medianelement(range),
           signal::Signal{T}=Signal(value),
           label="",
+          readout_format=T <: Integer ? "d" : ".3f",
           continuous_update=true) =
-              Slider(signal, label, value, range, continuous_update)
+              Slider(signal, label, value, range, readout_format, continuous_update)
 
 ######################### Checkbox ###########################
 

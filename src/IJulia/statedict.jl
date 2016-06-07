@@ -3,6 +3,7 @@
          :min=>first(s.range),
          :step=>step(s.range),
          :max=>last(s.range),
+         :readout_format => s.readout_format,
          :continuous_update=>s.continuous_update,
      )
 
@@ -12,3 +13,6 @@ statedict(d::Options) =
          :icons=>d.icons,
          :tooltips=>d.tooltips,
          :_options_labels=>collect(keys(d.options)))
+
+statedict(w::Widget) =
+    @compat Dict([f => getfield(w, f) for f in fieldnames(w)])
