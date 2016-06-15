@@ -19,14 +19,10 @@ function handle_msg{T}(w::Button{T}, msg)
 end
 
 function handle_msg{view}(w::Options{view}, msg)
-    try
         if msg.content["data"]["method"] == "backbone"
-            key = string(msg.content["data"]["sync_data"]["selected_label"])
+            key = string(msg.content["data"]["sync_data"]["value"])
             if haskey(w.options, key)
                 recv_msg(w, w.options[key])
             end
         end
-    catch e
-        warn(string("Couldn't handle ", view, " message ", e))
-    end
 end

@@ -144,19 +144,22 @@ JSON.print(io::IO, s::Signal) = JSON.print(io, s.value)
 ## TabView W
 
 # Interact -> IJulia view names
-view_name(::HTML) = "HTMLView"
-view_name(::Latex) = "LatexView"
-view_name(::Progress) = "ProgressView"
-view_name{T<:Integer}(::Slider{T}) = "IntSliderView"
-view_name(::Button) = "ButtonView"
-view_name(::Textarea) = "TextareaView"
-view_name{T<:AbstractFloat}(::Slider{T}) = "FloatSliderView"
-view_name{T<:Integer}(::Textbox{T}) = "IntTextView"
-view_name(::Checkbox) = "CheckboxView"
-view_name(::ToggleButton) = "ToggleButtonView"
-view_name{T<:AbstractFloat}(::Textbox{T}) = "FloatTextView"
-view_name(::Textbox) = "TextView"
-view_name{view}(::Options{view}) = string(view, "View")
+widget_class(::HTML) = "HTML"
+widget_class(::Latex) = "LaTeX"
+widget_class(::Progress) = "Progress"
+widget_class{T<:Integer}(::Slider{T}) = "IntSlider"
+widget_class(::Button) = "Button"
+widget_class(::Textarea) = "Textarea"
+widget_class{T<:AbstractFloat}(::Slider{T}) = "FloatSlider"
+widget_class{T<:Integer}(::Textbox{T}) = "IntText"
+widget_class(::Checkbox) = "Checkbox"
+widget_class(::ToggleButton) = "ToggleButton"
+widget_class{T<:AbstractFloat}(::Textbox{T}) = "FloatText"
+widget_class(::Textbox) = "Text"
+widget_class{view}(::Options{view}) = string(view)
+widget_class(w, suffix) = widget_class(w) * suffix
+view_name(w) = widget_class(w, "View")
+model_name(w) = widget_class(w, "Model")
 
 function metadata{T <: Widget}(x::Signal{T})
     Dict()
@@ -166,6 +169,11 @@ function add_ipy3_state!(state)
     for attr in ["color" "background" "width" "height" "border_color" "border_width" "border_style" "font_style" "font_weight" "font_size" "font_family" "padding" "margin" "border_radius"]
         state[attr] = ""
     end
+end
+
+function add_ipy4_state!(state)
+    state["_view_module"] = "jupyter-js-widgets"
+    state["_model_module"] = "jupyter-js-widgets"
 end
 
 const widget_comms = Dict{Widget, Comm}()
@@ -179,11 +187,14 @@ function view_state(w::InputWidget; src::InputWidget=w)
     state = Dict()
     state["msg_throttle"] = 3
     state["_view_name"] = view_name(src)
+    state["_model_name"] = model_name(src)
+    state["model_name"] =  model_name(src)
     state["description"] = w.label
     state["visible"] = true
     state["disabled"] = false
     state["readout"] = true
     add_ipy3_state!(state)
+    add_ipy4_state!(state)
     msg["state"] = merge(state, statedict(src))
     msg
 end
@@ -194,10 +205,13 @@ function view_state(w::Widget; src::Widget=w)
     state = Dict()
     state["msg_throttle"] = 3
     state["_view_name"] = view_name(src)
+    state["_model_name"] = model_name(src)
+    state["model_name"] = model_name(src)
     state["description"] = w.label
     state["visible"] = true
     state["disabled"] = false
     add_ipy3_state!(state)
+    add_ipy4_state!(state)
 
     msg["state"] = merge(state, statedict(src))
     msg
@@ -207,9 +221,11 @@ function create_view(w::Widget)
     if haskey(widget_comms, w)
         comm = widget_comms[w]
     else
-        comm = Comm("ipython.widget", data=merge(Dict{AbstractString, Any}([
-            ("model_name", "WidgetModel"),
-            ("_model_name", "WidgetModel"), # Jupyter 4.0 missing (https://github.com/ipython/ipywidgets/pull/84)
+        comm = Comm("jupyter.widget", data=merge(Dict{AbstractString, Any}([
+            ("model_name", model_name(w)),
+            ("_model_name", model_name(w)), # Jupyter 4.0 missing (https://github.com/ipython/ipywidgets/pull/84)
+            ("_view_module", "jupyter-js-widgets"),
+            ("_model_module", "jupyter-js-widgets"),
         ]), view_state(w)))
         widget_comms[w] = comm
         # Send a full state update message.
