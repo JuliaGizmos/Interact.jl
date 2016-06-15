@@ -4,7 +4,7 @@ using Compat
 
 import Interact: HTML, Widget, InputWidget, Slider, Button, Textarea, Textbox, ToggleButton, Options, Checkbox, Latex, Progress
 
-const ijulia_js = readall(joinpath(dirname(@__FILE__), "ijulia.js"))
+const ijulia_js = readstring(joinpath(dirname(@__FILE__), "ijulia.js"))
 
 if displayable("text/html")
     display("text/html", """
@@ -91,10 +91,18 @@ end
 mimewritable(m::MIME, s::Signal) =
     mimewritable(m, s.value)
 
+# fixes ambiguity warnings
 function writemime(io:: IO, m::MIME"text/plain", s::Signal)
     writemime(io, m, s.value)
 end
 
+function writemime(io:: IO, m::MIME"text/csv", s::Signal)
+    writemime(io, m, s.value)
+end
+
+function writemime(io:: IO, m::MIME"text/tab-separated-values", s::Signal)
+    writemime(io, m, s.value)
+end
 function writemime(io:: IO, m::MIME, s::Signal)
     writemime(io, m, s.value)
 end
