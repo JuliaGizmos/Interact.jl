@@ -10,7 +10,7 @@ function init_widgets_js()
     end
 end
 
-function writemime(io, ::MIME{symbol("text/html")}, w::InputWidget)
+@compat function Base.show(io, ::MIME{Symbol("text/html")}, w::InputWidget)
     wtype = typeof(w)
     while super(wtype) <: InputWidget
         wtype = super(wtype)
