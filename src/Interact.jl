@@ -74,10 +74,11 @@ end
 include("widgets.jl")
 include("compose.jl")
 include("manipulate.jl")
-include("html_setup.jl")
 
-if isdefined(Main, :IJulia) && Main.IJulia.inited
-    include("IJulia/setup.jl")
+function __init__()
+    if isdefined(Main, :IJulia)
+        include(joinpath(dirname(@__FILE__), "IJulia", "setup.jl"))
+    end
 end
 
 end # module

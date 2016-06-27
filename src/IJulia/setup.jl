@@ -4,7 +4,10 @@ using Reactive
 using Interact
 using Compat
 
-import Interact.update_view
+import Base: writemime
+import Interact: update_view, Slider, InputWidget, Latex, HTML,
+                 Progress, Checkbox, Button, ToggleButton, Textarea, Textbox, Options
+
 export mimewritable, writemime
 
 const ijulia_js  = readall(joinpath(dirname(Base.source_path()), "ijulia.js"))
