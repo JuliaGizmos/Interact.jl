@@ -5,7 +5,7 @@ using Interact
 using Compat
 
 import Base: writemime
-import Interact: update_view, Slider, InputWidget, Latex, HTML,
+import Interact: update_view, Slider, InputWidget, Latex, HTML, recv_msg,
                  Progress, Checkbox, Button, ToggleButton, Textarea, Textbox, Options
 
 export mimewritable, writemime
