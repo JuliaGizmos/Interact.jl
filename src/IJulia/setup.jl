@@ -1,6 +1,7 @@
 using JSON
 using Reactive
 using Compat
+import Compat.String
 
 import Interact: HTML, Widget, InputWidget, Slider, Button, Textarea, Textbox, ToggleButton, Options, Checkbox, Latex, Progress
 
@@ -26,12 +27,12 @@ import IJulia
 import IJulia: metadata, display_dict
 using  IJulia.CommManager
 import IJulia.CommManager: register_comm
-import Base: writemime, mimewritable
+import Base: show, mimewritable
 
 const comms = Dict{Signal, Comm}()
 
 function get_data_dict(value, mimetypes)
-    dict = Dict{ASCIIString, ByteString}()
+    dict = Dict{Compat.String, Compat.String}()
     for m in mimetypes
         if mimewritable(m, value)
             dict[m] = stringmime(m, value)
@@ -47,7 +48,7 @@ end
 
 function init_comm(x::Signal)
     if !haskey(comms, x)
-        subscriptions = Dict{ASCIIString, Int}()
+        subscriptions = Dict{Compat.String, Int}()
         function handle_subscriptions(msg)
             if haskey(msg.content, "data")
                 action = get(msg.content["data"], "action", "")
@@ -92,35 +93,59 @@ mimewritable(m::MIME, s::Signal) =
     mimewritable(m, s.value)
 
 # fixes ambiguity warnings
-function writemime(io:: IO, m::MIME"text/plain", s::Signal)
-    writemime(io, m, s.value)
+function Base.show(io::IO, m::MIME"text/plain", s::Signal)
+    Base.show(io, m, s.value)
 end
 
-function writemime(io:: IO, m::MIME"text/csv", s::Signal)
-    writemime(io, m, s.value)
+function Base.show(io::IO, m::MIME"text/csv", s::Signal)
+    Base.show(io, m, s.value)
 end
 
-function writemime(io:: IO, m::MIME"text/tab-separated-values", s::Signal)
-    writemime(io, m, s.value)
-end
-function writemime(io:: IO, m::MIME, s::Signal)
-    writemime(io, m, s.value)
+function Base.show(io::IO, m::MIME"text/tab-separated-values", s::Signal)
+    Base.show(io, m, s.value)
 end
 
-function writemime(io::IO, ::MIME{symbol("text/html")},
-          w::InputWidget)
+function Base.show(io::IO, m::MIME, s::Signal)
+    Base.show(io, m, s.value)
+end
+
+function Base.show(io::IO, ::MIME"text/html", w::Widget)
     create_view(w)
 end
 
-function writemime(io::IO, ::MIME{symbol("text/html")},
-                   w::Widget)
-    create_view(w)
-end
-
-function writemime{T<:Widget}(io::IO, ::MIME{symbol("text/html")},
-                              x::Signal{T})
+function Base.show{T<:Widget}(io::IO, ::MIME"text/html", x::Signal{T})
     create_widget_signal(x)
 end
+
+# Julia #14052  commit ae62bf0b813afbf32402874451e55d16de909bd4
+if VERSION < v"0.5-dev+4341"
+    import Base.writemime
+
+    function writemime(io::IO, m::MIME"text/plain", s::Signal)
+        writemime(io, m, s.value)
+    end
+
+    function writemime(io::IO, m::MIME"text/csv", s::Signal)
+        writemime(io, m, s.value)
+    end
+
+    function writemime(io::IO, m::MIME"text/tab-separated-values", s::Signal)
+        writemime(io, m, s.value)
+    end
+
+    function writemime(io::IO, m::MIME, s::Signal)
+        writemime(io, m, s.value)
+    end
+
+    function writemime(io::IO, ::MIME"text/html", w::Widget)
+        create_view(w)
+    end
+
+    function writemime{T<:Widget}(io::IO, ::MIME"text/html", x::Signal{T})
+        create_widget_signal(x)
+    end
+end
+
 
 ## This is for our own widgets.
 function register_comm(comm::Comm{:InputWidget}, msg)

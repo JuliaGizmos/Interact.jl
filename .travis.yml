@@ -1,17 +1,16 @@
-language: cpp
-compiler:
-  - clang
+language: julia
+os:
+  - linux
+  - osx
+julia:
+  - 0.4
+  - nightly
 notifications:
   email: false
-env:
-  matrix: 
-    - JULIAVERSION="juliareleases" 
-    - JULIAVERSION="julianightlies" 
-before_install:
-  - sudo add-apt-repository ppa:staticfloat/julia-deps -y
-  - sudo add-apt-repository ppa:staticfloat/${JULIAVERSION} -y
-  - sudo apt-get update -qq -y
-  - sudo apt-get install libpcre3-dev julia -y
 script:
-  - julia -e 'Pkg.init(); run(`ln -s $(pwd()) $(Pkg.dir("Interact"))`); Pkg.pin("Interact"); Pkg.resolve()'
-  - julia -e 'using Interact; @assert isdefined(:Interact); @assert typeof(Interact) === Module'
+  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  - julia -e 'Pkg.clone(pwd())'
+  - julia -e 'Pkg.test("Interact"; coverage=true)'
+after_success:
+  - julia --color=yes -e 'cd(Pkg.dir("Interact")); Pkg.add("Coverage"); using Coverage;
+    Coveralls.submit(Coveralls.process_folder())'
