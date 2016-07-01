@@ -79,12 +79,10 @@ end
 include("widgets.jl")
 include("compose.jl")
 include("manipulate.jl")
-include("html_setup.jl")
 
 const ijulia_setup_path = joinpath(dirname(Base.source_path()), "IJulia/setup.jl")
 
 function __init__()
-    init_widgets_js()
     if isdefined(Main, :IJulia) && Main.IJulia.inited
         include(ijulia_setup_path)
     end

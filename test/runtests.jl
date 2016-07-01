@@ -8,3 +8,7 @@ end
 @testset "widgets.jl" begin
     include("widgets.jl")
 end
+
+@testset "ijulia.jl" begin
+    include("ijulia.jl")
+end

@@ -93,57 +93,32 @@ mimewritable(m::MIME, s::Signal) =
     mimewritable(m, s.value)
 
 # fixes ambiguity warnings
-function Base.show(io::IO, m::MIME"text/plain", s::Signal)
+@compat function Base.show(io::IO, m::MIME"text/plain", s::Signal)
     Base.show(io, m, s.value)
 end
 
-function Base.show(io::IO, m::MIME"text/csv", s::Signal)
+@compat function Base.show(io::IO, m::MIME"text/csv", s::Signal)
     Base.show(io, m, s.value)
 end
 
-function Base.show(io::IO, m::MIME"text/tab-separated-values", s::Signal)
+@compat function Base.show(io::IO, m::MIME"text/tab-separated-values", s::Signal)
     Base.show(io, m, s.value)
 end
 
-function Base.show(io::IO, m::MIME, s::Signal)
+@compat function Base.show(io::IO, m::MIME, s::Signal)
     Base.show(io, m, s.value)
 end
 
-function Base.show(io::IO, ::MIME"text/html", w::Widget)
+@compat function writemime(io::IO, ::MIME"text/html", w::InputWidget)
     create_view(w)
 end
 
-function Base.show{T<:Widget}(io::IO, ::MIME"text/html", x::Signal{T})
-    create_widget_signal(x)
+@compat function Base.show(io::IO, ::MIME"text/html", w::Widget)
+    create_view(w)
 end
 
-# Julia #14052  commit ae62bf0b813afbf32402874451e55d16de909bd4
-if VERSION < v"0.5-dev+4341"
-    import Base.writemime
-
-    function writemime(io::IO, m::MIME"text/plain", s::Signal)
-        writemime(io, m, s.value)
-    end
-
-    function writemime(io::IO, m::MIME"text/csv", s::Signal)
-        writemime(io, m, s.value)
-    end
-
-    function writemime(io::IO, m::MIME"text/tab-separated-values", s::Signal)
-        writemime(io, m, s.value)
-    end
-
-    function writemime(io::IO, m::MIME, s::Signal)
-        writemime(io, m, s.value)
-    end
-
-    function writemime(io::IO, ::MIME"text/html", w::Widget)
-        create_view(w)
-    end
-
-    function writemime{T<:Widget}(io::IO, ::MIME"text/html", x::Signal{T})
-        create_widget_signal(x)
-    end
+@compat function Base.show{T<:Widget}(io::IO, ::MIME"text/html", x::Signal{T})
+    create_widget_signal(x)
 end
 
 

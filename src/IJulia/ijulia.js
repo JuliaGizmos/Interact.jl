@@ -38,7 +38,6 @@
 
 
     $(document).ready(function() {
-	Widgets.debug = false; // log messages etc in console.
 	function initComm(evt, data) {
 	    var comm_manager = data.kernel.comm_manager;
         //_.extend(comm_manager.targets, require("widgets/js/widget"))
@@ -87,4 +86,4 @@
 	    $([IPython.events]).on('kernel_created.Kernel kernel_created.Session', initComm);
 	}
     });
-})(IPython, jQuery, _, MathJax, InputWidgets);
+})(IPython, jQuery, _, MathJax);
