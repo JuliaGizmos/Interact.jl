@@ -80,9 +80,11 @@ include("widgets.jl")
 include("compose.jl")
 include("manipulate.jl")
 
+const ijulia_setup_path = joinpath(dirname(@__FILE__), "IJulia", "setup.jl")
+
 function __init__()
     if isdefined(Main, :IJulia)
-        include(joinpath(dirname(@__FILE__), "IJulia", "setup.jl"))
+        include(ijulia_setup_path)
     end
 end
 

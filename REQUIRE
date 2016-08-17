@@ -1,5 +1,5 @@
 julia 0.4
 JSON
-Compat 0.7.14
+Compat 0.8.0
 Reactive 0.3
 DataStructures 0.2.10
