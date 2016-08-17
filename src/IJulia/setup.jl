@@ -2,7 +2,11 @@ using JSON
 using Reactive
 using Compat
 
-import Interact: HTML, Widget, InputWidget, Slider, Button, Textarea, Textbox, ToggleButton, Options, Checkbox, Latex, Progress
+import Base: writemime
+import Interact: update_view, Slider, InputWidget, Latex, HTML, recv_msg,
+                 Progress, Checkbox, Button, ToggleButton, Textarea, Textbox, Options
+
+export mimewritable, writemime
 
 const ijulia_js = readstring(joinpath(dirname(@__FILE__), "ijulia.js"))
 
