@@ -31,10 +31,11 @@ parse_msg{T <: Number}(::InputWidget{T}, v::AbstractString) = parse(T, v)
 parse_msg(::InputWidget{Bool}, v::Number) = v != 0
 parse_msg{T}(::InputWidget{T}, v) = convert(T, v)
 
-function update_view(w)
-    # update the view of a widget.
-    # child packages need to override.
-end
+"""
+update the view of a widget.
+child packages need to override this function
+"""
+function update_view end
 
 function recv_msg{T}(widget ::InputWidget{T}, value)
     # Hand-off received value to the signal graph
