@@ -4,7 +4,7 @@ using Compat
 import Compat.String
 
 import Base: writemime
-import Interact: update_view, Slider, Widget, InputWidget, Latex, HTML, recv_msg,
+import Interact: update_view, Slider, Widget, InputWidget, Latex, HTML, recv_msg, statedict,
                  Progress, Checkbox, Button, ToggleButton, Textarea, Textbox, Options
 
 export mimewritable, writemime

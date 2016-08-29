@@ -14,7 +14,7 @@ abstract InputWidget{T}  <: Widget
 signal(w::InputWidget) = w.signal
 signal(x::Signal) = x
 
-function statedict(w::Widget)
+function statedict(w)
     msg = Dict()
     attrs = @compat fieldnames(w)
     for n in attrs
