@@ -94,6 +94,10 @@ function metadata(x::Signal)
                         "comm_id"=>comm.id)
 end
 
+function IJulia.display_dict(x::Signal)
+    IJulia.display_dict(value(x))
+end
+
 # Render the value of a signal.
 mimewritable(m::MIME, s::Signal) =
     mimewritable(m, s.value)
