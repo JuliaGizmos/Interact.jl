@@ -117,7 +117,7 @@ end
     Base.show(io, m, s.value)
 end
 
-@compat function writemime(io::IO, ::MIME"text/html", w::InputWidget)
+@compat function Base.show(io::IO, ::MIME"text/html", w::InputWidget)
     create_view(w)
 end
 
