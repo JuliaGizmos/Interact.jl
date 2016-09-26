@@ -42,11 +42,11 @@ jupyter nbextension enable --py widgetsnbextension
 
 ### `ipywidgets` version
 
-Interact relies on the `ipywidgets` python package which is an add-on to Jupyter that provides the widgets. The 4.x version of `ipywidgets` is installed by default by IJulia as of now. It might be the case that you have version 5.x of `ipywidgets` in which case you will need to use the master branch of `Interact` due to backwards-incompatible changes. To do this, simply run `Pkg.checkout("Interact")`. You can run
+Interact relies on the `ipywidgets` python package which is an add-on to Jupyter that provides the widgets. The 5.x version of `ipywidgets` is installed by default by IJulia as of now. It might be the case that you have version 4.x of `ipywidgets` in which case you will need to use the `ipywidgets-4` branch of `Interact` due to backwards-incompatible changes. To do this, simply run `Pkg.checkout("Interact", "ipywidgets-4")`. You can run
 
 ```python
 import ipywidgets
 ipywidgets.__version__
 ```
 
-in the python shell used by Jupyter to find out which version of ipywidgets you have.
+in the python shell used by Jupyter to find out which version of ipywidgets you have. (Pkg.build("Interact") should also tell you which version of ipywidgets you have)
