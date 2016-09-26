@@ -221,9 +221,10 @@ Options(view::Symbol, options::OptionDict;
         value=options[value_label],
         icons=[],
         tooltips=[],
-        typ=typeof(value),
-        signal=Signal(value)) =
-            Options{view, typ}(signal, label, value, value_label, options, icons, tooltips)
+        typ=valtype(options.dict),
+        signal=Signal(valtype(options.dict), value)) =
+    Options{view, typ}(signal, label, value, value_label,
+                       options, icons, tooltips)
 
 addoption(opts, v::NTuple{2}) = opts[string(v[1])] = v[2]
 addoption(opts, v) = opts[string(v)] = v
