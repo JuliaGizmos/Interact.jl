@@ -16,7 +16,7 @@ end
 function map_block(block, symbols)
     lambda = Expr(:(->), Expr(:tuple, symbols...),
                   block)
-    Expr(:call, map, lambda, map(x -> Expr(:call, signal, x), symbols)...)
+    :(map($lambda, $(map(s->:(signal($s)), symbols)...), typ=Any))
 end
 
 function symbols(bindings)
