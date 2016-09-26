@@ -32,7 +32,8 @@ parse_msg(::InputWidget{Bool}, v::Number) = v != 0
 parse_msg{T}(::InputWidget{T}, v) = convert(T, v)
 
 """
-This should be overrided by communication providers
+update the view of a widget.
+child packages need to override this function
 """
 function update_view end
 
