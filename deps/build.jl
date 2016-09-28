@@ -15,14 +15,18 @@ function main()
         return
     end
 
-    ipywver = readstring(`$python -c 'import ipywidgets; print ipywidgets.__version__'`) |> strip |> VersionNumber
+    try
+        ipywver = readstring(`$python -c 'import ipywidgets; print(ipywidgets.__version__)'`) |> strip |> VersionNumber
 
-    info("ipywidgets version found: $ipywver")
-    if ipywver < v"5.0.0"
-        warn("""This version of Interact requires ipywidgets > 5.0 to work correctly.
-                If you have ipywidgets version 4.x, run Pkg.checkout("Interact", "ipywidgets-4").""")
-    else
-        info("A compatible version of ipywidgets was found. All good.")
+        info("ipywidgets version found: $ipywver")
+        if ipywver < v"5.0.0"
+            warn("""This version of Interact requires ipywidgets > 5.0 to work correctly.
+                    If you have ipywidgets version 4.x, run Pkg.checkout("Interact", "ipywidgets-4").""")
+        else
+            info("A compatible version of ipywidgets was found. All good.")
+        end
+    catch err
+        warn("Could not determine ipywidgets version.")
     end
 end
 
