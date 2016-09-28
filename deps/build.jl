@@ -3,7 +3,7 @@ using Compat
 if isa(Pkg.installed("IJulia"), VersionNumber)
     using IJulia
     python = strip(readline(IJulia.jupyter), ['\n',' ', '#','!'])
-    ipywver = readstring(`$python -c 'import ipywidgets; print ipywidgets.__version__'`) |> strip |> VersionNumber
+    ipywver = readstring(`$python -c 'import ipywidgets; print(ipywidgets.__version__')`) |> strip |> VersionNumber
     info("ipywidgets version found: $ipywver")
     if ipywver < v"5.0.0"
         warn("""This version of Interact requires ipywidgets > 5.0 to work correctly.
