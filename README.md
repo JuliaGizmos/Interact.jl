@@ -35,11 +35,6 @@ notebook()
 Interact needs IJulia to be running on Jupyter/IPython 3.x or Jupyter 4.x.
 For Jupyter 4.x, the Python packages `jupyter` and `ipywidgets` must be installed.
 
-If you installed `ipywidgets` with a non-conda installer, you will need to enable the extension using the following command:
-```
-jupyter nbextension enable --py widgetsnbextension
-```
-
 ### `ipywidgets` version
 
 Interact relies on the `ipywidgets` python package which is an add-on to Jupyter that provides the widgets. The 5.x version of `ipywidgets` is installed by default by IJulia as of now. It might be the case that you have version 4.x of `ipywidgets` in which case you will need to use the `ipywidgets-4` branch of `Interact` due to backwards-incompatible changes. To do this, simply run `Pkg.checkout("Interact", "ipywidgets-4")`. You can run

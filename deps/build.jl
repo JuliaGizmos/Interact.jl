@@ -1,13 +1,20 @@
 using Compat
 
 function main()
+    info("Enabling widgetsnbextension")
+    try
+        run(`$(IJulia.jupyter) nbextension enable --py widgetsnbextension`)
+    catch err
+        warn("Could not enable widgetsnbextension")
+    end
 
-    @static if is_linux() || is_apple()
+    if is_linux() || is_apple()
         python = strip(readline(readstring(`which $(IJulia.jupyter)`)|>strip), ['\n',' ', '#','!'])
     elseif is_windows()
         warn("cannot determine jupyter's python path in Windows, bailing.")
         return
     end
+
     ipywver = readstring(`$python -c 'import ipywidgets; print ipywidgets.__version__'`) |> strip |> VersionNumber
 
     info("ipywidgets version found: $ipywver")
