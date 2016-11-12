@@ -43,11 +43,10 @@
         //_.extend(comm_manager.targets, require("widgets/js/widget"))
 	    comm_manager.register_target("Signal", function (comm) {
             comm.on_msg(function (msg) {
-                //Widgets.log("message received", msg);
                 var val = msg.content.data.value;
                 $(".signal-" + comm.comm_id).each(function() {
                 var type = $(this).data("type");
-                if (val[type]) {
+                if (typeof(val[type]) !== "underfined" && val[type] !== null) {
                     redrawValue(this, type, val[type], type);
                 }
                 });
