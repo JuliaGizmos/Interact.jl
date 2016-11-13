@@ -46,7 +46,7 @@
                 var val = msg.content.data.value;
                 $(".signal-" + comm.comm_id).each(function() {
                 var type = $(this).data("type");
-                if (typeof(val[type]) !== "underfined" && val[type] !== null) {
+                if (typeof(val[type]) !== "undefined" && val[type] !== null) {
                     redrawValue(this, type, val[type], type);
                 }
                 });
