@@ -1,3 +1,7 @@
+function viewdict(w::Widget)
+    Dict()
+end
+
 @compat Interact.statedict(s::Union{Slider, Progress}) =
     @compat Dict(:value=>s.value,
          :min=>first(s.range),

@@ -26,6 +26,10 @@ function statedict(w)
     msg
 end
 
+function viewdict(w)
+    Dict()
+end
+
 # Convert e.g. JSON values into Julia values
 parse_msg{T <: Number}(::InputWidget{T}, v::AbstractString) = parse(T, v)
 parse_msg(::InputWidget{Bool}, v::Number) = v != 0
@@ -37,7 +41,6 @@ child packages need to override this function
 """
 function update_view end
 
-
 function error_handler(sig, value, err)
     Reactive.print_error(sig, value, err, open("/tmp/Interact.log", "a"))
 end
@@ -45,10 +48,11 @@ end
 function recv_msg{T}(widget ::InputWidget{T}, value)
     # Hand-off received value to the signal graph
     parsed = parse_msg(widget, value)
-    #println(STDERR, signal(widget))
+    # println(STDERR, "sig = $(signal(widget))", ", value = $value", ", parsed = $parsed")
     push!(signal(widget), parsed)
     widget.value = parsed
     if value != parsed
+        #XXX when would this happen?
         update_view(widget)
     end
 end
