@@ -33,7 +33,7 @@ function init_wsigval(signal, value; default=value, typ=typeof(default))
         if value == nothing
             value = default
         end
-        _typ = typ === nothing ? typeof(value) : typ
+        _typ = typ === Void ? typeof(value) : typ
         signal = Signal(_typ, value)
     else
         #signal set
@@ -187,7 +187,7 @@ end
 function Textbox(; label="",
                  value=nothing,
                  # Allow unicode characters even if initiated with ASCII
-                 typ=nothing,
+                 typ=Void,
                  range=nothing,
                  signal=nothing,
                  syncsig=true)
@@ -199,7 +199,7 @@ function Textbox(; label="",
     signal, value = init_wsigval(signal, value; typ=typ, default="")
     t = Textbox(signal, label, range, value)
     if syncsig
-        #keep the slider updated if the signal changes
+        #keep the Textbox updated if the signal changes
         keep_updated(val) = begin
             if val != t.value
                 t.value = val
@@ -273,17 +273,17 @@ immutable OptionDict
     dict::OrderedDict
     invdict::Dict
 end
+OptionDict(d::OrderedDict) = begin
+    T1 = eltype([keys(d)...])
+    T2 = eltype([values(d)...])
+    OptionDict(OrderedDict{T1,T2}(d), Dict{T2,T1}(zip(values(d), keys(d))))
+end
 
 Base.getindex(x::OptionDict, y) = getindex(x.dict, y)
 Base.haskey(x::OptionDict, y) = haskey(x.dict, y)
 Base.keys(x::OptionDict) = keys(x.dict)
 Base.values(x::OptionDict) = values(x.dict)
 Base.length(x::OptionDict) = length(keys(x))
-function Base.setindex!(x::OptionDict, v, k)
-    x.dict[k] = v
-    x.invdict[v] = k
-    v
-end
 
 type Options{view, T} <: InputWidget{T}
     signal::Signal
@@ -313,7 +313,7 @@ Options(view::Symbol, options::OptionDict;
     #sel_mid_idx set in selection_slider(...) so default value_label is middle of range
     sel_mid_idx != 0 && (value_label = collect(keys(options.dict))[sel_mid_idx])
     signal, value = init_wsigval(signal, value; typ=typ, default=options[value_label])
-    typ = typeof(value)
+    typ = eltype(signal)
     ow = Options{view, typ}(signal, label, value, value_label,
                     options, icons, tooltips, readout, orientation)
     if syncsig
@@ -339,26 +339,28 @@ Options(view::Symbol, options::OptionDict;
     ow
 end
 
-addoption(opts, v::NTuple{2}) = opts[string(v[1])] = v[2]
-addoption(opts, v) = opts[string(v)] = v
+addoption!(opts, v::NTuple{2}) = opts[string(v[1])] = v[2]
+addoption!(opts, v) = opts[string(v)] = v
 function Options(view::Symbol,
                     options::AbstractArray;
                     kwargs...)
-    opts = OptionDict(OrderedDict(), Dict())
+    opts = OrderedDict()
     for v in options
-        addoption(opts, v)
+        addoption!(opts, v)
     end
-    Options(view, opts; kwargs...)
+    optdict = OptionDict(opts)
+    Options(view, optdict; kwargs...)
 end
 
 function Options(view::Symbol,
                     options::Associative;
                     kwargs...)
-    opts = OptionDict(OrderedDict(), Dict())
+    opts = OrderedDict()
     for (k, v) in options
         opts[string(k)] = v
     end
-    Options(view, opts; kwargs...)
+    optdict = OptionDict(opts)
+    Options(view, optdict; kwargs...)
 end
 
 """
