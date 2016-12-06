@@ -122,7 +122,7 @@ end
 
 widget_comms = Dict{Widget, Comm}()
 @compat function Base.show(io::IO, ::MIME"text/html", w::Widget)
-    widget_comms[w] = create_view(w)
+    create_view(w)
 end
 
 #Signals of widgets need to be handled specially
@@ -220,6 +220,7 @@ function create_view(w::Widget)
     else
         #new Widgets
         comm = Comm("jupyter.widget", data=new_widget_dict(w))
+        widget_comms[w] = comm
     end
     # dispatch messages to widget's handler
     comm.on_msg = msg -> handle_msg(w, msg)
@@ -228,28 +229,33 @@ function create_view(w::Widget)
     comm
 end
 
-function update_view(w, comm::Comm=widget_comms[w]; prevw=w)
-    if typeof(w) != typeof(prevw)
-        #If the widget has changed type a new widget must be set up and the old
+function update_view(w::Widget; prevw=w)
+    if w != prevw
+        #If the widget has changed a new widget must be set up and the old
         #one removed.
-        remove_view(comm, prevw)
-        comm = create_view(w)
+        remove_view(prevw)
+        create_view(w)
     else
-        send_comm(comm, view_state(w))
+        #update the view
+        send_comm(widget_comms[w], view_state(w))
     end
-    comm
 end
 
-function remove_view(comm::Comm, prevw::Widget)
-    #closing the comm removes the widget(s) associated with that comm
-    close_comm(comm)
+function remove_view(prevw::Widget)
+    #closing the comm removes ALL widget(s) associated with that comm
+    if haskey(widget_comms, prevw)
+        close_comm(widget_comms[prevw])
+        delete!(widget_comms, prevw)
+    else
+        println("hmmm ", typeof(prevw))
+    end
 end
 
 function create_widget_signal(s::Signal{Widget})
     local prev_widg = s.value
-    local comm = create_view(s.value)
+    create_view(s.value)
     map(s, init=nothing) do x
-        comm = update_view(x, comm; prevw=prev_widg)
+        update_view(x; prevw=prev_widg)
         prev_widg = x
         nothing
     end |> preserve
