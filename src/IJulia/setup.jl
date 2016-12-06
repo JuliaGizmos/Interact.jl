@@ -246,19 +246,23 @@ function remove_view(prevw::Widget)
     if haskey(widget_comms, prevw)
         close_comm(widget_comms[prevw])
         delete!(widget_comms, prevw)
-    else
-        println("hmmm ", typeof(prevw))
     end
 end
 
-function create_widget_signal(s::Signal{Widget})
-    local prev_widg = s.value
-    create_view(s.value)
-    map(s, init=nothing) do x
-        update_view(x; prevw=prev_widg)
-        prev_widg = x
-        nothing
-    end |> preserve
+#used to avoid double/triple creation of updaters, without this multiple widgets
+#can appear on update if a Signal{Widget} is `display`ed more than once
+sigwidg_has_updater = WeakKeyDict{Signal, Bool}()
+function create_widget_signal{T<:Widget}(s::Signal{T})
+    local prev_widg = value(s)
+    create_view(value(s))
+    if !haskey(sigwidg_has_updater, s)
+        map(s, init=nothing) do x
+            update_view(x; prevw=prev_widg)
+            prev_widg = x
+            nothing
+        end |> preserve
+        sigwidg_has_updater[s] = true
+    end
 end
 
 include("statedict.jl")
