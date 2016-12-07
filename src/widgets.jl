@@ -1,7 +1,7 @@
 import Base: convert, haskey, setindex!, getindex
 export slider, togglebutton, button,
        checkbox, textbox, textarea,
-       radiobuttons, dropdown, select,
+       radiobuttons, dropdown, selectone, selectmulti,
        togglebuttons, html, latex,
        progress, widget, selection_slider
 
@@ -275,8 +275,18 @@ radiobuttons: see the help for `dropdown`
 radiobuttons(opts; kwargs...) =
     Options(:RadioButtons, opts; kwargs...)
 
-select(opts; kwargs...) =
+"""
+selectone: see the help for `dropdown`
+"""
+selectone(opts; kwargs...) =
     Options(:Select, opts; kwargs...)
+
+"""
+selectmulti: see the help for `dropdown`
+"""
+selectmulti(opts; signal=Signal(collect(opts)[1:1]), kwargs...) = begin
+    Options(:SelectMultiple, opts; signal=signal, kwargs...)
+end
 
 """
 togglebuttons: see the help for `dropdown`
