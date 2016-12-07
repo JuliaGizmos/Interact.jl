@@ -26,6 +26,10 @@ function statedict(w)
     msg
 end
 
+function viewdict(w::Widget)
+    Dict()
+end
+
 # Convert e.g. JSON values into Julia values
 parse_msg{T <: Number}(::InputWidget{T}, v::AbstractString) = parse(T, v)
 parse_msg(::InputWidget{Bool}, v::Number) = v != 0

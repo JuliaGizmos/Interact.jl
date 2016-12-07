@@ -16,6 +16,8 @@ type Slider{T<:Number} <: InputWidget{T}
     label::AbstractString
     value::T
     range::Range{T}
+    orientation::String
+    readout::Bool
     readout_format::AbstractString
     continuous_update::Bool
 end
@@ -25,7 +27,7 @@ medianelement(r::Range) = r[(1+length(r))>>1]
 
 slider(args...) = Slider(args...)
 """
-    slider(range; value, signal, label="", continuous_update=true)
+    slider(range; value, signal, label="", readout=true, continuous_update=true)
 
 Create a slider widget with the specified `range`. Optionally specify
 the starting `value` (defaults to the median of `range`), provide the
@@ -36,9 +38,11 @@ slider{T}(range::Range{T};
           value=medianelement(range),
           signal::Signal{T}=Signal(value),
           label="",
+          orientation="horizontal",
+          readout=true,
           readout_format=T <: Integer ? "d" : ".3f",
           continuous_update=true) =
-              Slider(signal, label, value, range, readout_format, continuous_update)
+              Slider(signal, label, value, range, orientation, readout, readout_format, continuous_update)
 
 ######################### Checkbox ###########################
 
@@ -213,6 +217,8 @@ type Options{view, T} <: InputWidget{T}
     options::OptionDict
     icons::AbstractArray
     tooltips::AbstractArray
+    readout::Bool
+    orientation::AbstractString
 end
 
 Options(view::Symbol, options::OptionDict;
@@ -222,9 +228,11 @@ Options(view::Symbol, options::OptionDict;
         icons=[],
         tooltips=[],
         typ=valtype(options.dict),
-        signal=Signal(valtype(options.dict), value)) =
+        signal=Signal(valtype(options.dict), value),
+        readout=true,
+        orientation="horizontal") =
     Options{view, typ}(signal, label, value, value_label,
-                       options, icons, tooltips)
+                       options, icons, tooltips, readout, orientation)
 
 addoption(opts, v::NTuple{2}) = opts[string(v[1])] = v[2]
 addoption(opts, v) = opts[string(v)] = v
@@ -322,11 +330,16 @@ type Progress <: Widget
     label::AbstractString
     value::Int
     range::Range
+    orientation::String
+    readout::Bool
+    readout_format::String
+    continuous_update::Bool
 end
 
 progress(args...) = Progress(args...)
-progress(;label="", value=0, range=0:100) =
-    Progress(label, value, range)
+progress(;label="", value=0, range=0:100, orientation="horizontal",
+            readout=true, readout_format="d", continuous_update=true) =
+    Progress(label, value, range, orientation, readout, readout_format, continuous_update)
 
 # Make a widget out of a domain
 widget(x::Signal, label="") = x
