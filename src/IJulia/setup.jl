@@ -215,27 +215,36 @@ end
 function create_view(w::Widget)
     #create the widget on the front-end by opening the comm
     if haskey(widget_comms, w)
-        #existing (non Signal{Widget}.value) widgets
+        #existing widgets
         comm = widget_comms[w]
     else
         #new Widgets
         comm = Comm("jupyter.widget", data=new_widget_dict(w))
-        widget_comms[w] = comm
+        wire_comms(w, comm)
     end
-    # dispatch messages to widget's handler
-    comm.on_msg = msg -> handle_msg(w, msg)
     send_comm(comm, view_state(w)) #set the state of newly created widget
-    send_comm(comm, Dict(:method=>"display"))
+    send_comm(comm, Dict(:method=>"display")) #display the widget
     comm
 end
 
+function wire_comms(w, comm)
+    # dispatch messages to widget's handler
+    widget_comms[w] = comm
+    comm.on_msg = msg -> handle_msg(w, msg)
+end
+
 function update_view(w::Widget; prevw=w)
-    if w != prevw
+    if typeof(w) != typeof(prevw)
         #If the widget has changed a new widget must be set up and the old
         #one removed.
         remove_view(prevw)
         create_view(w)
     else
+        if w !== prevw
+            #new widget instance takes over the comm of the old instnace
+            wire_comms(w, widget_comms[prevw])
+            delete!(widget_comms, prevw)
+        end
         #update the view
         send_comm(widget_comms[w], view_state(w))
     end
