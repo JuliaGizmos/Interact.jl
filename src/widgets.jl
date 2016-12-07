@@ -3,7 +3,7 @@ export slider, togglebutton, button,
        checkbox, textbox, textarea,
        radiobuttons, dropdown, select,
        togglebuttons, html, latex,
-       progress, widget
+       progress, widget, selection_slider
 
 const Empty = VERSION < v"0.4.0-dev" ? Nothing : Void
 
@@ -283,6 +283,12 @@ togglebuttons: see the help for `dropdown`
 """
 togglebuttons(opts; kwargs...) =
     Options(:ToggleButtons, opts; kwargs...)
+
+"""
+selection_slider: see the help for `dropdown`
+"""
+selection_slider(opts; kwargs...) =
+    Options(:SelectionSlider, opts; kwargs...)
 
 ### Output Widgets
 
