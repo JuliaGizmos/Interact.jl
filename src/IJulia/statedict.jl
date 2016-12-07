@@ -1,3 +1,10 @@
+Interact.viewdict(s::Union{Slider, Progress}) =
+    Dict{Symbol, Any}(:orientation => s.orientation)
+
+Interact.viewdict(d::Options) =
+    Dict{Symbol, Any}(:tooltips => d.tooltips,
+                    :orientation => d.orientation)
+
 @compat Interact.statedict(s::Union{Slider, Progress}) =
     @compat Dict(:value=>s.value,
          :min=>first(s.range),
@@ -5,6 +12,7 @@
          :max=>last(s.range),
          :model_name => "FloatSliderModel",
          :_model_name => "FloatSliderModel",
+         :readout => s.readout,
          :readout_format => s.readout_format,
          :continuous_update=>s.continuous_update,
      )
@@ -15,6 +23,7 @@ Interact.statedict(d::Options) =
          :value => d.value_label,
          :icons=>d.icons,
          :tooltips=>d.tooltips,
+         :readout => d.readout,
          :_options_labels=>collect(keys(d.options)))
 
 function statedict(w::Widget)

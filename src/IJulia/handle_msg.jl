@@ -23,9 +23,16 @@ end
 function handle_msg{view}(w::Options{view}, msg)
         if msg.content["data"]["method"] == "backbone"
             IJulia.set_cur_msg(msg)
-            key = string(msg.content["data"]["sync_data"]["value"])
-            if haskey(w.options, key)
-                recv_msg(w, w.options[key])
+            if view == :SelectMultiple
+                keys = msg.content["data"]["sync_data"]["value"]
+                if map(key->haskey(w.options, key), keys) |> all
+                    recv_msg(w, map(key->w.options[key], keys))
+                end
+            else
+                key = string(msg.content["data"]["sync_data"]["value"])
+                if haskey(w.options, key)
+                    recv_msg(w, w.options[key])
+                end
             end
         end
 end
