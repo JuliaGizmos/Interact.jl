@@ -21,11 +21,12 @@ function handle_msg{T}(w::Button{T}, msg)
 end
 
 function handle_msg{view}(w::Options{view}, msg)
-        if msg.content["data"]["method"] == "backbone"
+        if msg.content["data"]["method"] == "backbone" &&
+                haskey(msg.content["data"]["sync_data"], "value") #sometimes it sends just selected_label, not value...
             IJulia.set_cur_msg(msg)
             if view == :SelectMultiple
                 keys = msg.content["data"]["sync_data"]["value"]
-                if map(key->haskey(w.options, key), keys) |> all
+                if all(map(key->haskey(w.options, key), keys))
                     recv_msg(w, map(key->w.options[key], keys))
                 end
             else

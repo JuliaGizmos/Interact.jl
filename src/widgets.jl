@@ -7,6 +7,24 @@ export slider, togglebutton, button,
 
 const Empty = VERSION < v"0.4.0-dev" ? Nothing : Void
 
+"""Helps init widget's value and signal depending on which ones were set"""
+function init_wsigval(signal, value; default=value, typ=typeof(default))
+    if signal == nothing
+        if value == nothing
+            value = default
+        end
+        signal = Signal(typ, value)
+    else
+        #signal set
+        if value == nothing
+            value = signal.value
+        else
+            #signal set and value set
+            push!(signal, value)
+        end
+    end
+    signal, value
+end
 ### Input widgets
 
 ########################## Slider ############################
@@ -35,14 +53,30 @@ the starting `value` (defaults to the median of `range`), provide the
 `label` for the widget.
 """
 slider{T}(range::Range{T};
-          value=medianelement(range),
-          signal::Signal{T}=Signal(value),
+          value=nothing,
+          signal=nothing,
           label="",
           orientation="horizontal",
           readout=true,
           readout_format=T <: Integer ? "d" : ".3f",
-          continuous_update=true) =
-              Slider(signal, label, value, range, orientation, readout, readout_format, continuous_update)
+          continuous_update=true,
+          syncsig=true) = begin
+    signal, value = init_wsigval(signal, value; typ=T, default=medianelement(range))
+    s = Slider(signal, label, value, range, orientation,
+                readout, readout_format, continuous_update)
+    if syncsig
+        #keep the slider updated if the signal changes
+        keep_updated(new_value) = begin
+            if new_value != s.value
+                s.value = new_value
+                update_view(s)
+            end
+            nothing
+        end
+        preserve(map(keep_updated, signal; typ=Void))
+    end
+    s
+end
 
 ######################### Checkbox ###########################
 
@@ -61,11 +95,14 @@ Provide a checkbox with the specified starting (boolean)
 `value`. Optional provide a `label` for this widget and/or the
 (Reactive.jl) `signal` coupled to this widget.
 """
-checkbox(value::Bool; signal=Signal(value), label="") =
+checkbox(value::Bool; signal=nothing, label="") = begin
+    signal, value = init_wsigval(signal, value)
     Checkbox(signal, label, value)
-checkbox(; label="", value=false, signal=Signal(value)) =
+end
+checkbox(; label="", value=nothing, signal=nothing) = begin
+    signal, value = init_wsigval(signal, value; default=false)
     Checkbox(signal, label, value)
-
+end
 ###################### ToggleButton ########################
 
 type ToggleButton <: InputWidget{Bool}
@@ -76,8 +113,10 @@ end
 
 togglebutton(args...) = ToggleButton(args...)
 
-togglebutton(; label="", value=false, signal=Signal(value)) =
+togglebutton(; label="", value=nothing, signal=nothing) = begin
+    signal, value = init_wsigval(signal, value; default=false)
     ToggleButton(signal, label, value)
+end
 
 """
     togglebutton(label=""; value=false, signal)
@@ -114,7 +153,7 @@ button(label; kwargs...) =
 
 type Textbox{T} <: InputWidget{T}
     signal::Signal{T}
-    label::AbstractString
+    label::String
     @compat range::Union{Empty, Range}
     value::T
 end
@@ -126,16 +165,17 @@ function empty(t::Type)
 end
 
 function Textbox(; label="",
-                 value=utf8(""),
+                 value=nothing,
                  # Allow unicode characters even if initiated with ASCII
-                 typ=typeof(value),
+                 typ=String,
                  range=nothing,
-                 signal=Signal(typ, value))
+                 signal=nothing)
     if isa(value, AbstractString) && range != nothing
         throw(ArgumentError(
                "You cannot set a range on a string textbox"
              ))
     end
+    signal, value = init_wsigval(signal, value; typ=typ, default="")
     Textbox{typ}(signal, label, range, value)
 end
 
@@ -152,8 +192,8 @@ with `typ`. Optionally provide a `label`, specify the allowed range
 """
 textbox(val; kwargs...) =
     Textbox(value=val; kwargs...)
-textbox(val::AbstractString; kwargs...) =
-    Textbox(value=utf8(val); kwargs...)
+textbox(val::String; kwargs...) =
+    Textbox(value=val; kwargs...)
 
 parse_msg{T<:Number}(w::Textbox{T}, val::AbstractString) = parse_msg(w, parse(T, val))
 function parse_msg{T<:Number}(w::Textbox{T}, val::Number)
@@ -177,9 +217,11 @@ end
 textarea(args...) = Textarea(args...)
 
 textarea(; label="",
-         value="",
-         signal=Signal(value)) =
+         value=nothing,
+         signal=nothing) = begin
+    signal, value = init_wsigval(signal, value; default="")
     Textarea(signal, label, value)
+end
 
 """
     textarea(value=""; label="", signal)
@@ -194,21 +236,20 @@ textarea(val; kwargs...) =
 ##################### SelectionWidgets ######################
 
 immutable OptionDict
-    keys::Vector
-    dict::Dict
+    dict::OrderedDict
+    invdict::Dict
 end
 
 Base.getindex(x::OptionDict, y) = getindex(x.dict, y)
 Base.haskey(x::OptionDict, y) = haskey(x.dict, y)
-Base.keys(x::OptionDict) = x.keys
-Base.values(x::OptionDict) = [x.dict[k] for k in keys(x)]
+Base.keys(x::OptionDict) = keys(x.dict)
+Base.values(x::OptionDict) = values(x.dict)
 function Base.setindex!(x::OptionDict, v, k)
-    if !haskey(x.dict, k)
-        push!(x.keys, k)
-    end
     x.dict[k] = v
+    x.invdict[v] = k
     v
 end
+
 type Options{view, T} <: InputWidget{T}
     signal::Signal
     label::AbstractString
@@ -223,23 +264,43 @@ end
 
 Options(view::Symbol, options::OptionDict;
         label = "",
-        value_label=first(options.keys),
-        value=options[value_label],
+        value_label=first(keys(options)),
+        value=nothing,
         icons=[],
         tooltips=[],
         typ=valtype(options.dict),
-        signal=Signal(valtype(options.dict), value),
+        signal=nothing,
         readout=true,
-        orientation="horizontal") =
-    Options{view, typ}(signal, label, value, value_label,
-                       options, icons, tooltips, readout, orientation)
+        orientation="horizontal",
+        syncsig=true) = begin
+    signal, value = init_wsigval(signal, value; typ=typ, default=options[value_label])
+    ow = Options{view, typ}(signal, label, value, value_label,
+                    options, icons, tooltips, readout, orientation)
+    if syncsig
+        if view != :SelectMultiple
+            #set up map that keeps the value_label in sync with the value
+            #TODO handle SelectMultiple. Need something similar to handle_msg
+            keep_label_updated(new_value) = begin
+                if haskey(ow.options.invdict, new_value) &&
+                  ow.value_label != ow.options.invdict[new_value]
+                    ow.value_label = ow.options.invdict[new_value]
+                    update_view(ow)
+                end
+                nothing
+            end
+            preserve(map(keep_label_updated, signal; typ=Void))
+        end
+        push!(signal, value)
+    end
+    ow
+end
 
 addoption(opts, v::NTuple{2}) = opts[string(v[1])] = v[2]
 addoption(opts, v) = opts[string(v)] = v
 function Options(view::Symbol,
                     options::AbstractArray;
                     kwargs...)
-    opts = OptionDict(Any[], Dict())
+    opts = OptionDict(OrderedDict(), Dict())
     for v in options
         addoption(opts, v)
     end
@@ -249,7 +310,7 @@ end
 function Options(view::Symbol,
                     options::Associative;
                     kwargs...)
-    opts = OptionDict(Any[], Dict())
+    opts = OptionDict(OrderedDict(), Dict())
     for (k, v) in options
         opts[string(k)] = v
     end

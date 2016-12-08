@@ -201,14 +201,22 @@ function update_view(w::Widget; prevw=w)
         remove_view(prevw)
         create_view(w)
     else
+        #w is same type as prevw
         if w !== prevw
             #new widget instance takes over the comm of the old instnace
             wire_comms(w, widget_comms[prevw])
             delete!(widget_comms, prevw)
         end
-        #update the view
-        send_comm(widget_comms[w], view_state(w))
+        #update all existing views of the widget
+        haskey(widget_comms, w) && send_comm(widget_comms[w], view_state(w))
     end
+end
+
+function remove_view(prevw::Widget)
+    #closing the comm removes ALL widget(s) associated with that comm
+    close_comm(widget_comms[prevw])
+    delete!(widget_comms, prevw)
+    nothing
 end
 
 function view_state(w::Widget; src::Widget=w)
@@ -229,21 +237,22 @@ function view_state(w::Widget; src::Widget=w)
 end
 
 function init_widget_dict(w::Widget)
-    Dict{Symbol, Any}(
-        :model_name => model_name(w),
-        :_model_name => model_name(w), # Jupyter 4.0 missing (https://github.com/ipython/ipywidgets/pull/84)
-        :_view_module => "jupyter-js-widgets",
-        :_model_module => "jupyter-js-widgets"
-    )
+    merge!(viewdict(w),
+        Dict{Symbol, Any}(
+            :model_name => model_name(w),
+            :_model_name => model_name(w), # Jupyter 4.0 missing (https://github.com/ipython/ipywidgets/pull/84)
+            :_view_module => "jupyter-js-widgets",
+            :_model_module => "jupyter-js-widgets"
+        ))
 end
 
-function remove_view(prevw::Widget)
-    #closing the comm removes ALL widget(s) associated with that comm
-    close_comm(widget_comms[prevw])
-    delete!(widget_comms, prevw)
-end
-
-function create_view(w::Widget)
+"""
+`create_view(w::Widget; displayw=true)`
+Creates the widget on the front-end and displays it if `displayw=true`
+Sets `widget_comms[w]` to the widget's comm
+returns the widget's Comm object
+"""
+function create_view(w::Widget; displayw=true)
     if haskey(widget_comms, w)
         comm = widget_comms[w]
     else
@@ -251,8 +260,9 @@ function create_view(w::Widget)
         comm = Comm("jupyter.widget", data=init_widget_dict(w))
         wire_comms(w, comm)
     end
-    send_comm(comm, view_state(w)) #set the state of newly created widget
-    send_comm(comm, @compat Dict(:method=>"display")) #tell front-end to display the widget
+    send_comm(comm, view_state(w)) #set/update the widget's state
+    displayw && send_comm(comm, @compat Dict(:method=>"display"))
+    comm
 end
 
 function wire_comms(w, comm)
