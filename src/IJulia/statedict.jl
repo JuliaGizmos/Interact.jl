@@ -5,6 +5,10 @@ Interact.viewdict(d::Options) =
     Dict{Symbol, Any}(:tooltips => d.tooltips,
                     :orientation => d.orientation)
 
+Interact.viewdict(b::Box) = begin
+   Dict{Symbol, Any}(:layout => "IPY_MODEL_"*widget_comms[b.layout].id)
+end
+
 @compat Interact.statedict(s::Union{Slider, Progress}) =
     @compat Dict(:value=>s.value,
          :min=>first(s.range),
@@ -16,6 +20,24 @@ Interact.viewdict(d::Options) =
          :readout_format => s.readout_format,
          :continuous_update=>s.continuous_update,
      )
+
+#each layout has a child box which has child widgets
+Interact.statedict(l::Layout) = begin
+   state = Dict{Symbol, Any}(:display => "flex", :align_items => "stretch")
+   l.box.vert && (state[:flex_flow] = "column")
+   state
+end
+
+Interact.statedict(b::Box) = begin
+   child_comm_ids = map(b.children) do childw
+      haskey(widget_comms, childw) ?
+         widget_comms[childw] :
+         create_view(childw)
+   end
+   state = Dict{Symbol, Any}(:children =>
+      map(comm_id -> "IPY_MODEL_"*comm_id.id, child_comm_ids))
+   state
+end
 
 # when we say value to javascript, it really means value label
 Interact.statedict(d::Options) =

@@ -5,7 +5,7 @@ import Compat.String
 
 import Base: writemime
 import Interact: update_view, Slider, Widget, InputWidget, Latex, HTML, recv_msg,
-                 statedict, viewdict,
+                 statedict, viewdict, Layout, Box,
                  Progress, Checkbox, Button, ToggleButton, Textarea, Textbox, Options
 
 export mimewritable, writemime
@@ -154,6 +154,8 @@ JSON.lower(s::Signal) = s.value
 
 # Interact -> IJulia view names
 widget_class(::HTML) = "HTML"
+widget_class(::Layout) = "Layout"
+widget_class(::Box) = "Box"
 widget_class(::Latex) = "LaTeX"
 widget_class(::Progress) = "Progress"
 widget_class{T<:Integer}(::Slider{T}) = "IntSlider"
@@ -179,7 +181,7 @@ update!(p::Progress, val) = begin
 end
 
 function metadata(x::Widget)
-    create_view(x)
+    display_widget(x)
     Dict()
 end
 
@@ -199,7 +201,7 @@ function update_view(w::Widget; prevw=w)
         #If the widget type has changed, a new widget must be set up and the old
         #one removed.
         remove_view(prevw)
-        create_view(w)
+        display_widget(w)
     else
         #w is same type as prevw
         if w !== prevw
@@ -227,12 +229,12 @@ function view_state(w::Widget; src::Widget=w)
     state[:_view_name] = view_name(src)
     state[:_model_name] = model_name(src)
     state[:model_name] =  model_name(src)
-    state[:description] = w.label
+    :label in fieldnames(w) && (state[:description] = w.label)
     state[:visible] = true
     state[:disabled] = false
     state[:readout] = true
     add_ipy4_state!(state)
-    msg[:state] = merge(state, statedict(src))
+    msg[:state] = merge!(state, statedict(src))
     msg
 end
 
@@ -240,19 +242,25 @@ function init_widget_dict(w::Widget)
     merge!(viewdict(w),
         Dict{Symbol, Any}(
             :model_name => model_name(w),
+            :_model_module => "jupyter-js-widgets",
             :_model_name => model_name(w), # Jupyter 4.0 missing (https://github.com/ipython/ipywidgets/pull/84)
             :_view_module => "jupyter-js-widgets",
-            :_model_module => "jupyter-js-widgets"
+            :_view_name => view_name(w),
         ))
 end
 
 """
-`create_view(w::Widget; displayw=true)`
-Creates the widget on the front-end and displays it if `displayw=true`
+`display_widget(w::Widget)`
+Creates the widget on the front-end and displays it
 Sets `widget_comms[w]` to the widget's comm
 returns the widget's Comm object
 """
-function create_view(w::Widget; displayw=true)
+function display_widget(w::Widget)
+    comm = create_view(w::Widget)
+    send_comm(comm, Dict(:method=>"display"))
+end
+
+function create_view(w::Widget)
     if haskey(widget_comms, w)
         comm = widget_comms[w]
     else
@@ -261,8 +269,15 @@ function create_view(w::Widget; displayw=true)
         wire_comms(w, comm)
     end
     send_comm(comm, view_state(w)) #set/update the widget's state
-    displayw && send_comm(comm, @compat Dict(:method=>"display"))
     comm
+end
+
+function create_view(b::Box)
+    layout_comm = create_view(b.layout)
+    foreach(b.children) do childw
+        create_view(childw)
+    end
+    invoke(create_view, (Widget,), b)
 end
 
 function wire_comms(w, comm)
@@ -279,7 +294,7 @@ Display the current value of a Signal{Widget} and ensure it stays up-to-date
 """
 function create_widget_signal{T<:Widget}(s::Signal{T})
     local prev_widg = value(s)
-    create_view(value(s))
+    display_widget(value(s))
     if !haskey(sigwidg_has_updater, s)
         map(s, init=nothing) do x
             update_view(x; prevw=prev_widg)
