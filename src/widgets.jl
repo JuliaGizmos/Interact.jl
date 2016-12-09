@@ -288,6 +288,7 @@ Options(view::Symbol, options::OptionDict;
         orientation="horizontal",
         syncsig=true) = begin
     signal, value = init_wsigval(signal, value; typ=typ, default=options[value_label])
+    typ = typeof(value)
     ow = Options{view, typ}(signal, label, value, value_label,
                     options, icons, tooltips, readout, orientation)
     if syncsig

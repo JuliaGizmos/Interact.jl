@@ -1,7 +1,8 @@
 import Interact.recv_msg
 
 function handle_msg(w::InputWidget, msg)
-    if msg.content["data"]["method"] == "backbone"
+    if msg.content["data"]["method"] == "backbone" &&
+            haskey(msg.content["data"]["sync_data"], "value") #sometimes it sends just selected_label, not value...
         IJulia.set_cur_msg(msg)
         recv_msg(w, msg.content["data"]["sync_data"]["value"])
     end
