@@ -169,14 +169,28 @@ function Textbox(; label="",
                  # Allow unicode characters even if initiated with ASCII
                  typ=String,
                  range=nothing,
-                 signal=nothing)
+                 signal=nothing,
+                 syncsig=true)
     if isa(value, AbstractString) && range != nothing
         throw(ArgumentError(
                "You cannot set a range on a string textbox"
              ))
     end
     signal, value = init_wsigval(signal, value; typ=typ, default="")
-    Textbox{typ}(signal, label, range, value)
+    t = Textbox{typ}(signal, label, range, value)
+    if syncsig
+        #keep the slider updated if the signal changes
+        keep_updated(new_value) = begin
+            if string(new_value) != t.value
+                t.value = string(new_value)
+                update_view(t)
+            end
+            nothing
+        end
+        preserve(map(keep_updated, signal; typ=Void))
+    end
+    t
+
 end
 
 textbox(;kwargs...) = Textbox(;kwargs...)
