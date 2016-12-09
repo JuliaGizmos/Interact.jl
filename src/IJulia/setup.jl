@@ -5,7 +5,7 @@ import Compat.String
 
 import Base: writemime
 import Interact: update_view, Slider, Widget, InputWidget, Latex, HTML, recv_msg,
-                 statedict, viewdict,
+                 statedict, viewdict, FileUploadWidget,
                  Progress, Checkbox, Button, ToggleButton, Textarea, Textbox, Options
 
 export mimewritable, writemime
@@ -169,6 +169,8 @@ widget_class{view}(::Options{view}) = string(view)
 widget_class(w, suffix) = widget_class(w) * suffix
 view_name(w) = widget_class(w, "View")
 model_name(w) = widget_class(w, "Model")
+widget_class(::FileUploadWidget) = "FileUpload"
+model_name(::FileUploadWidget) = "DOMWidgetModel"
 
 """
 Update output widgets
@@ -188,9 +190,9 @@ function metadata{T <: Widget}(x::Signal{T})
     Dict()
 end
 
-function add_ipy4_state!(state)
-    state[:_view_module] = "jupyter-js-widgets"
-    state[:_model_module] = "jupyter-js-widgets"
+function add_ipy4_state!(w, state)
+    state[:_view_module] = view_module(w)
+    state[:_model_module] = model_module(w)
 end
 
 const widget_comms = Dict{Widget, Comm}()
@@ -231,17 +233,21 @@ function view_state(w::Widget; src::Widget=w)
     state[:visible] = true
     state[:disabled] = false
     state[:readout] = true
-    add_ipy4_state!(state)
+    add_ipy4_state!(w, state)
     msg[:state] = merge(state, statedict(src))
     msg
 end
+
+view_module(::FileUploadWidget) = "fileupload"
+view_module(::Widget) = "jupyter-js-widgets"
+model_module(::Widget) = "jupyter-js-widgets"
 
 function init_widget_dict(w::Widget)
     merge!(viewdict(w),
         Dict{Symbol, Any}(
             :model_name => model_name(w),
             :_model_name => model_name(w), # Jupyter 4.0 missing (https://github.com/ipython/ipywidgets/pull/84)
-            :_view_module => "jupyter-js-widgets",
+            :_view_module => view_module(w),
             :_model_module => "jupyter-js-widgets"
         ))
 end

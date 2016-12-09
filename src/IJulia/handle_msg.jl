@@ -21,6 +21,19 @@ function handle_msg{T}(w::Button{T}, msg)
     end
 end
 
+function handle_msg(w::FileUploadWidget, msg)
+    try
+        if msg.content["data"]["method"] == "backbone" &&
+            haskey(msg.content["data"]["sync_data"], "data_base64")
+            IJulia.set_cur_msg(msg)
+            filedata = msg.content["data"]["sync_data"]["data_base64"]
+            println(length(filedata), " b64 chars uploaded")
+        end
+    catch e
+        warn(string("Couldn't handle Button message ", e))
+    end
+end
+
 function handle_msg{view}(w::Options{view}, msg)
         if msg.content["data"]["method"] == "backbone" &&
                 haskey(msg.content["data"]["sync_data"], "value") #sometimes it sends just selected_label, not value...

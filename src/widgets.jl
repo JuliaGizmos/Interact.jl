@@ -3,7 +3,7 @@ export slider, togglebutton, button,
        checkbox, textbox, textarea,
        radiobuttons, dropdown, selectone, selectmulti,
        togglebuttons, html, latex,
-       progress, widget, selection_slider
+       progress, widget, selection_slider, fileuploader
 
 const Empty = VERSION < v"0.4.0-dev" ? Nothing : Void
 
@@ -383,6 +383,13 @@ selection_slider: see the help for `dropdown`
 """
 selection_slider(opts; kwargs...) =
     Options(:SelectionSlider, opts; kwargs...)
+
+
+type FileUploadWidget <: InputWidget
+    label::String
+end
+fileuploader(label::String) = FileUploadWidget(label)
+
 
 ### Output Widgets
 
