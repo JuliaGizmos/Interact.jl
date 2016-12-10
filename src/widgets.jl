@@ -421,7 +421,7 @@ progress(;label="", value=0, range=0:100, orientation="horizontal",
 # Make a widget out of a domain
 widget(x::Signal, label="") = x
 widget(x::Widget, label="") = x
-widget(x::Range, label="") = slider(x, label=label)
+widget(x::Range, label="") = selection_slider(x, label=label)
 widget(x::AbstractVector, label="") = togglebuttons(x, label=label)
 widget(x::Associative, label="") = togglebuttons(x, label=label)
 widget(x::Bool, label="") = checkbox(x, label=label)
