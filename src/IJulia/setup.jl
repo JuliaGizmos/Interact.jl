@@ -117,18 +117,10 @@ end
     Base.show(io, m, s.value)
 end
 
-@compat function Base.show(io::IO, ::MIME"text/html", w::InputWidget)
-    create_view(w)
+@compat function Base.show{T<:Widget}(io::IO, ::MIME"text/html", w::T)
+    #widget display is handled in metadata
+    nothing
 end
-
-@compat function Base.show(io::IO, ::MIME"text/html", w::Widget)
-    create_view(w)
-end
-
-@compat function Base.show{T<:Widget}(io::IO, ::MIME"text/html", x::Signal{T})
-    create_widget_signal(x)
-end
-
 
 ## This is for our own widgets.
 function register_comm(comm::Comm{:InputWidget}, msg)
@@ -136,7 +128,7 @@ function register_comm(comm::Comm{:InputWidget}, msg)
     comm.on_msg = (msg) -> recv_msg(w, msg.content["data"]["value"])
 end
 
-JSON.print(io::IO, s::Signal) = JSON.print(io, s.value)
+JSON.lower(s::Signal) = s.value
 
 ##################### IPython IPEP 23: Backbone.js Widgets #################
 
@@ -177,7 +169,13 @@ widget_class(w, suffix) = widget_class(w) * suffix
 view_name(w) = widget_class(w, "View")
 model_name(w) = widget_class(w, "Model")
 
+function metadata{T <: Widget}(x::T)
+    create_view(x)
+    Dict()
+end
+
 function metadata{T <: Widget}(x::Signal{T})
+    create_widget_signal(x)
     Dict()
 end
 
@@ -193,8 +191,21 @@ function add_ipy4_state!(state)
 end
 
 const widget_comms = Dict{Widget, Comm}()
-function update_view(w; src=w)
-    send_comm(widget_comms[w], view_state(w, src=src))
+function update_view(w::Widget; prevw=w)
+    if typeof(w) != typeof(prevw)
+        #If the widget type has changed, a new widget must be set up and the old
+        #one removed.
+        remove_view(prevw)
+        create_view(w)
+    else
+        if w !== prevw
+            #new widget instance takes over the comm of the old instnace
+            wire_comms(w, widget_comms[prevw])
+            delete!(widget_comms, prevw)
+        end
+        #update the view
+        send_comm(widget_comms[w], view_state(w))
+    end
 end
 
 function view_state(w::InputWidget; src::InputWidget=w)
@@ -233,32 +244,52 @@ function view_state(w::Widget; src::Widget=w)
     msg
 end
 
+function remove_view(prevw::Widget)
+    #closing the comm removes ALL widget(s) associated with that comm
+    close_comm(widget_comms[prevw])
+    delete!(widget_comms, prevw)
+end
+
 function create_view(w::Widget)
     if haskey(widget_comms, w)
         comm = widget_comms[w]
     else
+        #create the widget on the front-end by opening its comm
         comm = Comm("jupyter.widget", data=merge(Dict{AbstractString, Any}([
             ("model_name", model_name(w)),
             ("_model_name", model_name(w)), # Jupyter 4.0 missing (https://github.com/ipython/ipywidgets/pull/84)
             ("_view_module", "jupyter-js-widgets"),
             ("_model_module", "jupyter-js-widgets"),
         ]), view_state(w)))
-        widget_comms[w] = comm
-        # Send a full state update message.
-        update_view(w) # This is redundant on 4.0 but keeps it working on Jupyter 3.0
-
-        # dispatch messages to widget's handler
-        comm.on_msg = msg -> handle_msg(w, msg)
-        nothing # display() nothing
+        wire_comms(w, comm)
     end
-
-    send_comm(comm, @compat Dict("method"=>"display"))
+    send_comm(comm, view_state(w)) #set the state of newly created widget
+    send_comm(comm, @compat Dict("method"=>"display")) #tell front-end to display the widget
 end
 
-function create_widget_signal(s)
-    create_view(s.value)
-    local target = s.value
-    preserve(map(x->update_view(target, src=x), s, init=nothing))
+function wire_comms(w, comm)
+    # dispatch messages to widget's handler
+    widget_comms[w] = comm
+    comm.on_msg = msg -> handle_msg(w, msg)
+end
+
+#used to avoid double/triple creation of updaters, without this multiple widgets
+#can appear on update if a Signal{Widget} is `display`ed more than once
+const sigwidg_has_updater = WeakKeyDict{Signal, Bool}()
+"""
+Display the current value of a Signal{Widget} and ensure it stays up-to-date
+"""
+function create_widget_signal{T<:Widget}(s::Signal{T})
+    local prev_widg = value(s)
+    create_view(value(s))
+    if !haskey(sigwidg_has_updater, s)
+        map(s, init=nothing) do x
+            update_view(x; prevw=prev_widg)
+            prev_widg = x
+            nothing
+        end |> preserve
+        sigwidg_has_updater[s] = true
+    end
 end
 
 include("statedict.jl")
