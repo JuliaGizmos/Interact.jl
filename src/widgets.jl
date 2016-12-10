@@ -13,7 +13,8 @@ function init_wsigval(signal, value; default=value, typ=typeof(default))
         if value == nothing
             value = default
         end
-        signal = Signal(typ, value)
+        _typ = typ === nothing ? typeof(value) : typ
+        signal = Signal(_typ, value)
     else
         #signal set
         if value == nothing
@@ -167,7 +168,7 @@ end
 function Textbox(; label="",
                  value=nothing,
                  # Allow unicode characters even if initiated with ASCII
-                 typ=String,
+                 typ=nothing,
                  range=nothing,
                  signal=nothing,
                  syncsig=true)
@@ -177,12 +178,12 @@ function Textbox(; label="",
              ))
     end
     signal, value = init_wsigval(signal, value; typ=typ, default="")
-    t = Textbox{typ}(signal, label, range, value)
+    t = Textbox(signal, label, range, value)
     if syncsig
         #keep the slider updated if the signal changes
         keep_updated(new_value) = begin
-            if string(new_value) != t.value
-                t.value = string(new_value)
+            if new_value != t.value
+                t.value = new_value
                 update_view(t)
             end
             nothing
