@@ -1,12 +1,31 @@
 import Base: convert, haskey, setindex!, getindex
 export slider, togglebutton, button,
        checkbox, textbox, textarea,
-       radiobuttons, dropdown, select,
+       radiobuttons, dropdown, selection,
        togglebuttons, html, latex,
-       progress, widget
+       progress, widget, selection_slider
 
 const Empty = VERSION < v"0.4.0-dev" ? Nothing : Void
 
+"""Helps init widget's value and signal depending on which ones were set"""
+function init_wsigval(signal, value; default=value, typ=typeof(default))
+    if signal == nothing
+        if value == nothing
+            value = default
+        end
+        _typ = typ === nothing ? typeof(value) : typ
+        signal = Signal(_typ, value)
+    else
+        #signal set
+        if value == nothing
+            value = signal.value
+        else
+            #signal set and value set
+            push!(signal, value)
+        end
+    end
+    signal, value
+end
 ### Input widgets
 
 ########################## Slider ############################
@@ -16,6 +35,8 @@ type Slider{T<:Number} <: InputWidget{T}
     label::AbstractString
     value::T
     range::Range{T}
+    orientation::String
+    readout::Bool
     readout_format::AbstractString
     continuous_update::Bool
 end
@@ -25,7 +46,7 @@ medianelement(r::Range) = r[(1+length(r))>>1]
 
 slider(args...) = Slider(args...)
 """
-    slider(range; value, signal, label="", continuous_update=true)
+    slider(range; value, signal, label="", readout=true, continuous_update=true)
 
 Create a slider widget with the specified `range`. Optionally specify
 the starting `value` (defaults to the median of `range`), provide the
@@ -33,12 +54,30 @@ the starting `value` (defaults to the median of `range`), provide the
 `label` for the widget.
 """
 slider{T}(range::Range{T};
-          value=medianelement(range),
-          signal::Signal{T}=Signal(value),
+          value=nothing,
+          signal=nothing,
           label="",
+          orientation="horizontal",
+          readout=true,
           readout_format=T <: Integer ? "d" : ".3f",
-          continuous_update=true) =
-              Slider(signal, label, value, range, readout_format, continuous_update)
+          continuous_update=true,
+          syncsig=true) = begin
+    signal, value = init_wsigval(signal, value; typ=T, default=medianelement(range))
+    s = Slider(signal, label, value, range, orientation,
+                readout, readout_format, continuous_update)
+    if syncsig
+        #keep the slider updated if the signal changes
+        keep_updated(new_value) = begin
+            if new_value != s.value
+                s.value = new_value
+                update_view(s)
+            end
+            nothing
+        end
+        preserve(map(keep_updated, signal; typ=Void))
+    end
+    s
+end
 
 ######################### Checkbox ###########################
 
@@ -57,11 +96,14 @@ Provide a checkbox with the specified starting (boolean)
 `value`. Optional provide a `label` for this widget and/or the
 (Reactive.jl) `signal` coupled to this widget.
 """
-checkbox(value::Bool; signal=Signal(value), label="") =
+checkbox(value::Bool; signal=nothing, label="") = begin
+    signal, value = init_wsigval(signal, value)
     Checkbox(signal, label, value)
-checkbox(; label="", value=false, signal=Signal(value)) =
+end
+checkbox(; label="", value=nothing, signal=nothing) = begin
+    signal, value = init_wsigval(signal, value; default=false)
     Checkbox(signal, label, value)
-
+end
 ###################### ToggleButton ########################
 
 type ToggleButton <: InputWidget{Bool}
@@ -72,8 +114,10 @@ end
 
 togglebutton(args...) = ToggleButton(args...)
 
-togglebutton(; label="", value=false, signal=Signal(value)) =
+togglebutton(; label="", value=nothing, signal=nothing) = begin
+    signal, value = init_wsigval(signal, value; default=false)
     ToggleButton(signal, label, value)
+end
 
 """
     togglebutton(label=""; value=false, signal)
@@ -110,7 +154,7 @@ button(label; kwargs...) =
 
 type Textbox{T} <: InputWidget{T}
     signal::Signal{T}
-    label::AbstractString
+    label::String
     @compat range::Union{Empty, Range}
     value::T
 end
@@ -122,17 +166,32 @@ function empty(t::Type)
 end
 
 function Textbox(; label="",
-                 value=utf8(""),
+                 value=nothing,
                  # Allow unicode characters even if initiated with ASCII
-                 typ=typeof(value),
+                 typ=nothing,
                  range=nothing,
-                 signal=Signal(typ, value))
+                 signal=nothing,
+                 syncsig=true)
     if isa(value, AbstractString) && range != nothing
         throw(ArgumentError(
                "You cannot set a range on a string textbox"
              ))
     end
-    Textbox{typ}(signal, label, range, value)
+    signal, value = init_wsigval(signal, value; typ=typ, default="")
+    t = Textbox(signal, label, range, value)
+    if syncsig
+        #keep the slider updated if the signal changes
+        keep_updated(new_value) = begin
+            if new_value != t.value
+                t.value = new_value
+                update_view(t)
+            end
+            nothing
+        end
+        preserve(map(keep_updated, signal; typ=Void))
+    end
+    t
+
 end
 
 textbox(;kwargs...) = Textbox(;kwargs...)
@@ -148,8 +207,8 @@ with `typ`. Optionally provide a `label`, specify the allowed range
 """
 textbox(val; kwargs...) =
     Textbox(value=val; kwargs...)
-textbox(val::AbstractString; kwargs...) =
-    Textbox(value=utf8(val); kwargs...)
+textbox(val::String; kwargs...) =
+    Textbox(value=val; kwargs...)
 
 parse_msg{T<:Number}(w::Textbox{T}, val::AbstractString) = parse_msg(w, parse(T, val))
 function parse_msg{T<:Number}(w::Textbox{T}, val::Number)
@@ -173,9 +232,11 @@ end
 textarea(args...) = Textarea(args...)
 
 textarea(; label="",
-         value="",
-         signal=Signal(value)) =
+         value=nothing,
+         signal=nothing) = begin
+    signal, value = init_wsigval(signal, value; default="")
     Textarea(signal, label, value)
+end
 
 """
     textarea(value=""; label="", signal)
@@ -190,21 +251,20 @@ textarea(val; kwargs...) =
 ##################### SelectionWidgets ######################
 
 immutable OptionDict
-    keys::Vector
-    dict::Dict
+    dict::OrderedDict
+    invdict::Dict
 end
 
 Base.getindex(x::OptionDict, y) = getindex(x.dict, y)
 Base.haskey(x::OptionDict, y) = haskey(x.dict, y)
-Base.keys(x::OptionDict) = x.keys
-Base.values(x::OptionDict) = [x.dict[k] for k in keys(x)]
+Base.keys(x::OptionDict) = keys(x.dict)
+Base.values(x::OptionDict) = values(x.dict)
 function Base.setindex!(x::OptionDict, v, k)
-    if !haskey(x.dict, k)
-        push!(x.keys, k)
-    end
     x.dict[k] = v
+    x.invdict[v] = k
     v
 end
+
 type Options{view, T} <: InputWidget{T}
     signal::Signal
     label::AbstractString
@@ -213,25 +273,50 @@ type Options{view, T} <: InputWidget{T}
     options::OptionDict
     icons::AbstractArray
     tooltips::AbstractArray
+    readout::Bool
+    orientation::AbstractString
 end
 
 Options(view::Symbol, options::OptionDict;
         label = "",
-        value_label=first(options.keys),
-        value=options[value_label],
+        value_label=first(keys(options)),
+        value=nothing,
         icons=[],
         tooltips=[],
         typ=valtype(options.dict),
-        signal=Signal(valtype(options.dict), value)) =
-    Options{view, typ}(signal, label, value, value_label,
-                       options, icons, tooltips)
+        signal=nothing,
+        readout=true,
+        orientation="horizontal",
+        syncsig=true) = begin
+    signal, value = init_wsigval(signal, value; typ=typ, default=options[value_label])
+    typ = typeof(value)
+    ow = Options{view, typ}(signal, label, value, value_label,
+                    options, icons, tooltips, readout, orientation)
+    if syncsig
+        if view != :SelectMultiple
+            #set up map that keeps the value_label in sync with the value
+            #TODO handle SelectMultiple. Need something similar to handle_msg
+            keep_label_updated(new_value) = begin
+                if haskey(ow.options.invdict, new_value) &&
+                  ow.value_label != ow.options.invdict[new_value]
+                    ow.value_label = ow.options.invdict[new_value]
+                    update_view(ow)
+                end
+                nothing
+            end
+            preserve(map(keep_label_updated, signal; typ=Void))
+        end
+        push!(signal, value)
+    end
+    ow
+end
 
 addoption(opts, v::NTuple{2}) = opts[string(v[1])] = v[2]
 addoption(opts, v) = opts[string(v)] = v
 function Options(view::Symbol,
                     options::AbstractArray;
                     kwargs...)
-    opts = OptionDict(Any[], Dict())
+    opts = OptionDict(OrderedDict(), Dict())
     for v in options
         addoption(opts, v)
     end
@@ -241,7 +326,7 @@ end
 function Options(view::Symbol,
                     options::Associative;
                     kwargs...)
-    opts = OptionDict(Any[], Dict())
+    opts = OptionDict(OrderedDict(), Dict())
     for (k, v) in options
         opts[string(k)] = v
     end
@@ -275,14 +360,31 @@ radiobuttons: see the help for `dropdown`
 radiobuttons(opts; kwargs...) =
     Options(:RadioButtons, opts; kwargs...)
 
-select(opts; kwargs...) =
-    Options(:Select, opts; kwargs...)
+"""
+selection: see the help for `dropdown`
+"""
+function selection(opts; multi=false, kwargs...)
+    if multi
+        signal = Signal(collect(opts)[1:1])
+        Options(:SelectMultiple, opts; signal=signal, kwargs...)
+    else
+        Options(:Select, opts; kwargs...)
+    end
+end
+
+Base.@deprecate select(opts; kwargs...) selection(opts, kwargs...)
 
 """
 togglebuttons: see the help for `dropdown`
 """
 togglebuttons(opts; kwargs...) =
     Options(:ToggleButtons, opts; kwargs...)
+
+"""
+selection_slider: see the help for `dropdown`
+"""
+selection_slider(opts; kwargs...) =
+    Options(:SelectionSlider, opts; kwargs...)
 
 ### Output Widgets
 
@@ -306,16 +408,21 @@ type Progress <: Widget
     label::AbstractString
     value::Int
     range::Range
+    orientation::String
+    readout::Bool
+    readout_format::String
+    continuous_update::Bool
 end
 
 progress(args...) = Progress(args...)
-progress(;label="", value=0, range=0:100) =
-    Progress(label, value, range)
+progress(;label="", value=0, range=0:100, orientation="horizontal",
+            readout=true, readout_format="d", continuous_update=true) =
+    Progress(label, value, range, orientation, readout, readout_format, continuous_update)
 
 # Make a widget out of a domain
 widget(x::Signal, label="") = x
 widget(x::Widget, label="") = x
-widget(x::Range, label="") = slider(x, label=label)
+widget(x::Range, label="") = selection_slider(x, label=label)
 widget(x::AbstractVector, label="") = togglebuttons(x, label=label)
 widget(x::Associative, label="") = togglebuttons(x, label=label)
 widget(x::Bool, label="") = checkbox(x, label=label)

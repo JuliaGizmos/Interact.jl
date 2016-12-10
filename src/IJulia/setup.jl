@@ -4,7 +4,8 @@ using Compat
 import Compat.String
 
 import Base: writemime
-import Interact: update_view, Slider, Widget, InputWidget, Latex, HTML, recv_msg, statedict,
+import Interact: update_view, Slider, Widget, InputWidget, Latex, HTML, recv_msg,
+                 statedict, viewdict,
                  Progress, Checkbox, Button, ToggleButton, Textarea, Textbox, Options
 
 export mimewritable, writemime
@@ -117,7 +118,7 @@ end
     Base.show(io, m, s.value)
 end
 
-@compat function Base.show{T<:Widget}(io::IO, ::MIME"text/html", w::T)
+@compat function Base.show(io::IO, ::MIME"text/html", w::Widget)
     #widget display is handled in metadata
     nothing
 end
@@ -169,7 +170,15 @@ widget_class(w, suffix) = widget_class(w) * suffix
 view_name(w) = widget_class(w, "View")
 model_name(w) = widget_class(w, "Model")
 
-function metadata{T <: Widget}(x::T)
+"""
+Update output widgets
+"""
+update!(p::Progress, val) = begin
+    p.value = val;
+    update_view(p)
+end
+
+function metadata(x::Widget)
     create_view(x)
     Dict()
 end
@@ -179,15 +188,9 @@ function metadata{T <: Widget}(x::Signal{T})
     Dict()
 end
 
-function add_ipy3_state!(state)
-    for attr in ["color" "background" "width" "height" "border_color" "border_width" "border_style" "font_style" "font_weight" "font_size" "font_family" "padding" "margin" "border_radius"]
-        state[attr] = ""
-    end
-end
-
 function add_ipy4_state!(state)
-    state["_view_module"] = "jupyter-js-widgets"
-    state["_model_module"] = "jupyter-js-widgets"
+    state[:_view_module] = "jupyter-js-widgets"
+    state[:_model_module] = "jupyter-js-widgets"
 end
 
 const widget_comms = Dict{Widget, Comm}()
@@ -198,73 +201,68 @@ function update_view(w::Widget; prevw=w)
         remove_view(prevw)
         create_view(w)
     else
+        #w is same type as prevw
         if w !== prevw
             #new widget instance takes over the comm of the old instnace
             wire_comms(w, widget_comms[prevw])
             delete!(widget_comms, prevw)
         end
-        #update the view
-        send_comm(widget_comms[w], view_state(w))
+        #update all existing views of the widget
+        haskey(widget_comms, w) && send_comm(widget_comms[w], view_state(w))
     end
-end
-
-function view_state(w::InputWidget; src::InputWidget=w)
-    msg = Dict()
-    msg["method"] = "update"
-    state = Dict()
-    state["msg_throttle"] = 3
-    state["_view_name"] = view_name(src)
-    state["_model_name"] = model_name(src)
-    state["model_name"] =  model_name(src)
-    state["description"] = w.label
-    state["visible"] = true
-    state["disabled"] = false
-    state["readout"] = true
-    add_ipy3_state!(state)
-    add_ipy4_state!(state)
-    msg["state"] = merge(state, statedict(src))
-    msg
-end
-
-function view_state(w::Widget; src::Widget=w)
-    msg = Dict()
-    msg["method"] = "update"
-    state = Dict()
-    state["msg_throttle"] = 3
-    state["_view_name"] = view_name(src)
-    state["_model_name"] = model_name(src)
-    state["model_name"] = model_name(src)
-    state["description"] = w.label
-    state["visible"] = true
-    state["disabled"] = false
-    add_ipy3_state!(state)
-    add_ipy4_state!(state)
-
-    msg["state"] = merge(state, statedict(src))
-    msg
 end
 
 function remove_view(prevw::Widget)
     #closing the comm removes ALL widget(s) associated with that comm
     close_comm(widget_comms[prevw])
     delete!(widget_comms, prevw)
+    nothing
 end
 
-function create_view(w::Widget)
+function view_state(w::Widget; src::Widget=w)
+    msg = viewdict(src)
+    msg[:method] = "update"
+    state = Dict()
+    state[:msg_throttle] = 3
+    state[:_view_name] = view_name(src)
+    state[:_model_name] = model_name(src)
+    state[:model_name] =  model_name(src)
+    state[:description] = w.label
+    state[:visible] = true
+    state[:disabled] = false
+    state[:readout] = true
+    add_ipy4_state!(state)
+    msg[:state] = merge(state, statedict(src))
+    msg
+end
+
+function init_widget_dict(w::Widget)
+    merge!(viewdict(w),
+        Dict{Symbol, Any}(
+            :model_name => model_name(w),
+            :_model_name => model_name(w), # Jupyter 4.0 missing (https://github.com/ipython/ipywidgets/pull/84)
+            :_view_module => "jupyter-js-widgets",
+            :_model_module => "jupyter-js-widgets"
+        ))
+end
+
+"""
+`create_view(w::Widget; displayw=true)`
+Creates the widget on the front-end and displays it if `displayw=true`
+Sets `widget_comms[w]` to the widget's comm
+returns the widget's Comm object
+"""
+function create_view(w::Widget; displayw=true)
     if haskey(widget_comms, w)
         comm = widget_comms[w]
     else
         #create the widget on the front-end by opening its comm
-        comm = Comm("jupyter.widget", data=merge(Dict{AbstractString, Any}([
-            ("model_name", model_name(w)),
-            ("_model_name", model_name(w)), # Jupyter 4.0 missing (https://github.com/ipython/ipywidgets/pull/84)
-            ("_view_module", "jupyter-js-widgets"),
-            ("_model_module", "jupyter-js-widgets"),
-        ]), view_state(w)))
+        comm = Comm("jupyter.widget", data=init_widget_dict(w))
         wire_comms(w, comm)
     end
-    send_comm(comm, view_state(w)) #set the state of newly created widget
-    send_comm(comm, @compat Dict("method"=>"display")) #tell front-end to display the widget
+    send_comm(comm, view_state(w)) #set/update the widget's state
+    displayw && send_comm(comm, @compat Dict(:method=>"display"))
+    comm
 end
 
 function wire_comms(w, comm)

@@ -1,6 +1,6 @@
 module Interact
 
-using Reactive, Compat
+using Reactive, Compat, DataStructures
 
 import Base: mimewritable, writemime
 export signal, Widget, InputWidget
@@ -24,6 +24,10 @@ function statedict(w)
         msg[n] = getfield(w, n)
     end
     msg
+end
+
+function viewdict(w::Widget)
+    Dict()
 end
 
 # Convert e.g. JSON values into Julia values
