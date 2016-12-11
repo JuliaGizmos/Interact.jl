@@ -2,11 +2,31 @@ import Base: convert, haskey, setindex!, getindex
 export slider, togglebutton, button,
        checkbox, textbox, textarea,
        radiobuttons, dropdown, selection,
-       togglebuttons, html, latex,
+       togglebuttons, html, latex, hbox, vbox,
        progress, widget, selection_slider
 
 const Empty = VERSION < v"0.4.0-dev" ? Nothing : Void
 
+### Layout Widgets
+type Layout <: Widget
+    box::Any
+end
+
+type Box <: Widget
+    layout::Any
+    vert::Bool
+    children::Vector{Widget}
+    Box(layout, vert, children) = begin
+        b = new(layout, vert, children)
+        layout.box = b
+        b
+    end
+end
+
+hbox(children::Vararg{Widget}) = Box(Layout(nothing), false, collect(children))
+vbox(children::Vararg{Widget}) = Box(Layout(nothing), true, collect(children))
+
+### Input widgets
 """Helps init widget's value and signal depending on which ones were set"""
 function init_wsigval(signal, value; default=value, typ=typeof(default))
     if signal == nothing
@@ -26,7 +46,6 @@ function init_wsigval(signal, value; default=value, typ=typeof(default))
     end
     signal, value
 end
-### Input widgets
 
 ########################## Slider ############################
 
