@@ -3,7 +3,8 @@ export slider, togglebutton, button,
        checkbox, textbox, textarea,
        radiobuttons, dropdown, selection,
        togglebuttons, html, latex, hbox, vbox,
-       progress, widget, selection_slider
+       progress, widget, selection_slider,
+       set!
 
 const Empty = VERSION < v"0.4.0-dev" ? Nothing : Void
 
@@ -339,29 +340,22 @@ Options(view::Symbol, options::OptionDict;
     ow
 end
 
-addoption!(opts, v::NTuple{2}) = opts[string(v[1])] = v[2]
-addoption!(opts, v) = opts[string(v)] = v
 function Options(view::Symbol,
-                    options::AbstractArray;
+                    options::Union{Associative, AbstractArray};
                     kwargs...)
-    opts = OrderedDict()
-    for v in options
-        addoption!(opts, v)
-    end
-    optdict = OptionDict(opts)
-    Options(view, optdict; kwargs...)
+    Options(view, getoptions(options); kwargs...)
 end
 
-function Options(view::Symbol,
-                    options::Associative;
-                    kwargs...)
+function getoptions(options)
     opts = OrderedDict()
-    for (k, v) in options
-        opts[string(k)] = v
+    for el in options
+        addoption!(opts, el)
     end
     optdict = OptionDict(opts)
-    Options(view, optdict; kwargs...)
 end
+
+addoption!(opts, v::NTuple{2}) = opts[string(v[1])] = v[2]
+addoption!(opts, v) = opts[string(v)] = v
 
 """
     dropdown(choices; label="", value, typ, icons, tooltips, signal)
@@ -481,3 +475,30 @@ widget(x::Associative, label="") = togglebuttons(x, label=label)
 widget(x::Bool, label="") = checkbox(x, label=label)
 widget(x::AbstractString, label="") = textbox(x, label=label, typ=AbstractString)
 widget{T <: Number}(x::T, label="") = textbox(typ=T, value=x, label=label)
+
+### Set!
+
+"""
+`set!(w::Widget, fld::Symbol, val)`
+
+Set the value of a widget property and update all displayed instances of the
+widget. If `val` is a `Signal`, then updates to that signal will be reflected in
+widget instances/views.
+
+If `fld` is `:value`, `val` is also `push!`ed to `signal(w)`
+"""
+function set!(w::Widget, fld::Symbol, val)
+    fld == :value && push!(signal(w), val)
+    setfield!(w, fld, val)
+    update_view(w)
+    w
+end
+
+set!(w::Widget, fld::Symbol, valsig::Signal) = begin
+    map(val -> set!(w, fld, val), valsig) |> preserve
+end
+
+set!{T<:Options}(w::T, fld::Symbol, val::Union{Signal,Any}) = begin
+    fld == :options && (val = getoptions(val))
+    invoke(set!, (Widget, Symbol, typeof(val)), w, fld, val)
+end
