@@ -67,9 +67,9 @@ slider{T}(range::Range{T};
                 readout, readout_format, continuous_update)
     if syncsig
         #keep the slider updated if the signal changes
-        keep_updated(new_value) = begin
-            if new_value != s.value
-                s.value = new_value
+        keep_updated(val) = begin
+            if val != s.value
+                s.value = val
                 update_view(s)
             end
             nothing
@@ -181,9 +181,9 @@ function Textbox(; label="",
     t = Textbox(signal, label, range, value)
     if syncsig
         #keep the slider updated if the signal changes
-        keep_updated(new_value) = begin
-            if new_value != t.value
-                t.value = new_value
+        keep_updated(val) = begin
+            if val != t.value
+                t.value = val
                 update_view(t)
             end
             nothing
@@ -259,6 +259,7 @@ Base.getindex(x::OptionDict, y) = getindex(x.dict, y)
 Base.haskey(x::OptionDict, y) = haskey(x.dict, y)
 Base.keys(x::OptionDict) = keys(x.dict)
 Base.values(x::OptionDict) = values(x.dict)
+Base.length(x::OptionDict) = length(keys(x))
 function Base.setindex!(x::OptionDict, v, k)
     x.dict[k] = v
     x.invdict[v] = k
@@ -287,19 +288,27 @@ Options(view::Symbol, options::OptionDict;
         signal=nothing,
         readout=true,
         orientation="horizontal",
-        syncsig=true) = begin
+        syncsig=true,
+        syncnearest=true,
+        sel_mid_idx=0) = begin
+    #sel_mid_idx set in selection_slider(...) so default value_label is middle of range
+    sel_mid_idx != 0 && (value_label = collect(keys(options.dict))[sel_mid_idx])
     signal, value = init_wsigval(signal, value; typ=typ, default=options[value_label])
     typ = typeof(value)
     ow = Options{view, typ}(signal, label, value, value_label,
                     options, icons, tooltips, readout, orientation)
     if syncsig
+        syncselnearest = view == :SelectionSlider && typ <: Real && syncnearest
         if view != :SelectMultiple
             #set up map that keeps the value_label in sync with the value
             #TODO handle SelectMultiple. Need something similar to handle_msg
-            keep_label_updated(new_value) = begin
-                if haskey(ow.options.invdict, new_value) &&
-                  ow.value_label != ow.options.invdict[new_value]
-                    ow.value_label = ow.options.invdict[new_value]
+            keep_label_updated(val) = begin
+                if syncselnearest
+                    val = nearest_val(keys(ow.options.invdict), val)
+                end
+                if haskey(ow.options.invdict, val) &&
+                  ow.value_label != ow.options.invdict[val]
+                    ow.value_label = ow.options.invdict[val]
                     update_view(ow)
                 end
                 nothing
@@ -382,9 +391,32 @@ togglebuttons(opts; kwargs...) =
 
 """
 selection_slider: see the help for `dropdown`
+If the slider has numeric (<:Real) values, and its signal is updated, it will
+update to the nearest value from the range/choices provided. To disable this
+behaviour, so that the widget state will only update if an exact match for
+signal value is found in the range/choice, use `syncnearest=false`.
 """
-selection_slider(opts; kwargs...) =
+selection_slider(opts; kwargs...) = begin
+    if !haskey(Dict(kwargs), :value_label)
+        #default to middle of slider
+        mid_idx = length(opts)÷2 + 1 # +1 to round up.
+        push!(kwargs, (:sel_mid_idx, mid_idx))
+    end
     Options(:SelectionSlider, opts; kwargs...)
+end
+
+function nearest_val(x, val)
+    local valbest
+    local dxbest = typemax(Float64)
+    for v in x
+        dx = abs(v-val)
+        if dx < dxbest
+            dxbest = dx
+            valbest = v
+        end
+    end
+    valbest
+end
 
 ### Output Widgets
 
