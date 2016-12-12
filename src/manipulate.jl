@@ -35,8 +35,11 @@ macro manipulate(expr)
         bindings = [expr.args[1]]
     end
     syms = symbols(bindings)
-    Expr(:let, Expr(:block,
-                    display_widgets(syms)...,
-                    esc(map_block(block, syms))),
-         map(make_widget, bindings)...)
+    Expr(:let,
+            Expr(:tuple,
+                map(sym->esc(sym), syms)...,
+                esc(map_block(block, syms))
+            ),
+            map(make_widget, bindings)...
+    )
 end
