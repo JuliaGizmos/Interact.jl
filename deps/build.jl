@@ -31,6 +31,16 @@ function main()
 end
 
 if isa(Pkg.installed("IJulia"), VersionNumber)
+    if Pkg.installed("IJulia") < v"1.3.3"
+        info("This version of Interact requires IJulia version >= v1.3.3.")
+        info("Attempting to update IJulia now.")
+        try
+            Pkg.update("IJulia")
+        catch err
+            # ask for help on 0.4
+            warn("Failed to update IJulia. Run Pkg.update(\"IJulia\") manually.")
+        end
+    end
     using IJulia
     main()
 else
