@@ -1,5 +1,7 @@
 # Interact
 
+[![Build Status](https://travis-ci.org/JuliaGizmos/Interact.jl.svg?branch=master)](https://travis-ci.org/JuliaGizmos/Interact.jl)
+
 Interact.jl allows you to use interactive widgets such as sliders, dropdowns and checkboxes to play with your Julia code.
 
 ![Screenshot](http://i.imgur.com/xLWjmNb.png)
