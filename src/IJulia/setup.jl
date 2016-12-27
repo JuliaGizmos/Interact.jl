@@ -305,5 +305,13 @@ function create_widget_signal{T<:Widget}(s::Signal{T})
     end
 end
 
+#Manipulate Helpers
+typealias ITypes Union{Signal,Widget}
+display_dict(x::Tuple{Vararg{ITypes}}) = begin
+    foreach(display,x)
+    Dict()
+end
+metadata(x::Tuple{Vararg{ITypes}}) = Dict()
+
 include("statedict.jl")
 include("handle_msg.jl")
