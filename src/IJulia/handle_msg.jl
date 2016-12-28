@@ -33,6 +33,7 @@ function handle_msg{view}(w::Options{view}, msg)
             else
                 key = string(msg.content["data"]["sync_data"]["value"])
                 if haskey(w.options, key)
+                    w.value_label = key
                     recv_msg(w, w.options[key])
                 end
             end

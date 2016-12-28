@@ -321,7 +321,11 @@ Options(view::Symbol, options::OptionDict;
         syncselnearest = view == :SelectionSlider && typ <: Real && syncnearest
         if view != :SelectMultiple
             #set up map that keeps the value_label in sync with the value
-            #TODO handle SelectMultiple. Need something similar to handle_msg
+            #TODO handle SelectMultiple. Need something similar to handle_msg,
+            #note also ow.value_label is an AbstractString whereas for SelectMultiple
+            #it should be a Vector{AbstractString} so would want to have Tvalue and
+            #Tlabel type parameters. Also would need to set w.value_label in handle_msg
+            #to avoid multiple updating
             keep_label_updated(val) = begin
                 if syncselnearest
                     val = nearest_val(keys(ow.options.invdict), val)
