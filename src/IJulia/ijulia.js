@@ -24,15 +24,18 @@
             var _src = 'data:' + type + ';base64,' + val;
 	    $(container).find("img").attr('src', _src);
 	    break;
+	case "text/latex":
+		if (MathJax){
+			var math = MathJax.Hub.getAllJax(container)[0];
+			MathJax.Hub.Queue(["Text", math, val.replace(/^\${1,2}|\${1,2}$/g, '')]);
+			break;
+		}
 	default:
 	    var toinsert = OutputArea.append_map[type].apply(
 		oa, [val, {}, selector]
 	    );
 	    $(container).empty().append(toinsert.contents());
 	    selector.remove();
-	}
-	if (type === "text/latex" && MathJax) {
-	    MathJax.Hub.Queue(["Typeset", MathJax.Hub, toinsert.get(0)]);
 	}
     }
 
