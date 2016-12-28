@@ -393,8 +393,10 @@ selection: see the help for `dropdown`
 """
 function selection(opts; multi=false, kwargs...)
     if multi
-        signal = Signal(collect(opts)[1:1])
-        Options(:SelectMultiple, opts; signal=signal, kwargs...)
+        options = getoptions(opts)
+        #signal needs to be of an array of values, not just a single value
+        signal = Signal(collect(values(options))[1:1])
+        Options(:SelectMultiple, options; signal=signal, kwargs...)
     else
         Options(:Select, opts; kwargs...)
     end
