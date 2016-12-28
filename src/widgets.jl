@@ -1,9 +1,9 @@
 import Base: convert, haskey, setindex!, getindex
-export slider, togglebutton, button,
+export slider, vslider, togglebutton, button,
        checkbox, textbox, textarea,
        radiobuttons, dropdown, selection,
        togglebuttons, html, latex, hbox, vbox,
-       progress, widget, selection_slider,
+       progress, widget, selection_slider, vselection_slider,
        set!
 
 const Empty = VERSION < v"0.4.0-dev" ? Nothing : Void
@@ -98,6 +98,13 @@ slider{T}(range::Range{T};
     end
     s
 end
+
+"""
+`vslider(args...; kwargs...)`
+
+Shorthand for `slider(args...; orientation="vertical", kwargs...)`
+"""
+vslider(args...; kwargs...) = slider(args...; orientation="vertical", kwargs...)
 
 ######################### Checkbox ###########################
 
@@ -420,11 +427,18 @@ signal value is found in the range/choice, use `syncnearest=false`.
 selection_slider(opts; kwargs...) = begin
     if !haskey(Dict(kwargs), :value_label)
         #default to middle of slider
-        mid_idx = length(opts)÷2 + 1 # +1 to round up.
+        mid_idx = length(opts)÷2
         push!(kwargs, (:sel_mid_idx, mid_idx))
     end
     Options(:SelectionSlider, opts; kwargs...)
 end
+
+"""
+`vselection_slider(args...; kwargs...)`
+
+Shorthand for `selection_slider(args...; orientation="vertical", kwargs...)`
+"""
+vselection_slider(args...; kwargs...) = selection_slider(args...; orientation="vertical", kwargs...)
 
 function nearest_val(x, val)
     local valbest
