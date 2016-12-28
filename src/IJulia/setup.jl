@@ -45,7 +45,7 @@ function get_data_dict(value, mimetypes)
             dict[string("text/latex")] =
                 stringmime("application/x-latex", value)
         else
-            warn("IPython seems to be requesting an unavailable mime type")
+            warn("IPython seems to be requesting an unavailable mime type: $m, value: ", string(value))
         end
     end
     return dict
