@@ -197,7 +197,7 @@ end
 
 const widget_comms = Dict{Widget, Comm}()
 function update_view(w::Widget; prevw=w)
-    if typeof(w) != typeof(prevw)
+    if typeof(w) != typeof(prevw) || (isa(w, Box) && (w.vert != prevw.vert))
         #If the widget type has changed, a new widget must be set up and the old
         #one removed.
         remove_view(prevw)
@@ -207,6 +207,7 @@ function update_view(w::Widget; prevw=w)
         if w !== prevw
             #new widget instance takes over the comm of the old instnace
             wire_comms(w, widget_comms[prevw])
+            isa(w, Box) && (w.layout = prevw.layout)
             delete!(widget_comms, prevw)
         end
         #update all existing views of the widget
