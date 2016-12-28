@@ -494,7 +494,7 @@ widget instances/views.
 If `fld` is `:value`, `val` is also `push!`ed to `signal(w)`
 """
 function set!(w::Widget, fld::Symbol, val)
-    fld == :value && push!(signal(w), val)
+    fld == :value && val != signal(w).value && push!(signal(w), val)
     setfield!(w, fld, val)
     update_view(w)
     w

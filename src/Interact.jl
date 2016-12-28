@@ -46,13 +46,16 @@ function error_handler(sig, value, err)
     Reactive.print_error(sig, value, err, open("/tmp/Interact.log", "a"))
 end
 
-function recv_msg{T}(widget ::InputWidget{T}, value)
+function recv_msg{T}(widget::InputWidget{T}, val)
     # Hand-off received value to the signal graph
-    parsed = parse_msg(widget, value)
-    #println(STDERR, signal(widget))
-    push!(signal(widget), parsed)
+    parsed = parse_msg(widget, val)
     widget.value = parsed
-    if value != parsed
+    if signal(widget).value != parsed || isa(widget, Button)
+        #push only changed values, but for Buttons we always push
+        push!(signal(widget), parsed)
+    end
+    if val != parsed
+        println(STDERR, "val != parsed: <val>$val</val> <parsed>$parsed</parsed>")
         update_view(widget)
     end
 end
