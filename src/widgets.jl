@@ -62,7 +62,8 @@ type Slider{T<:Number} <: InputWidget{T}
 end
 
 # differs from median(r) in that it always returns an element of the range
-medianelement(r::Range) = r[(1+length(r))>>1]
+medianidx(r) = (1+length(r))>>1
+medianelement(r::Range) = r[medianidx(r)]
 
 slider(args...) = Slider(args...)
 """
@@ -427,7 +428,7 @@ signal value is found in the range/choice, use `syncnearest=false`.
 selection_slider(opts; kwargs...) = begin
     if !haskey(Dict(kwargs), :value_label)
         #default to middle of slider
-        mid_idx = length(opts)÷2
+        mid_idx = medianidx(opts)
         push!(kwargs, (:sel_mid_idx, mid_idx))
     end
     Options(:SelectionSlider, opts; kwargs...)
