@@ -18,7 +18,11 @@ include(Interact.ijulia_setup_path)
 sliderWidget = slider(1:5)
 @testset "ijulia.jl" begin
 
-    @test """Interact.Slider{Int64}(Signal{Int64}(3, nactions=1),\"\",3,1:5,\"horizontal\",true,\"d\",true)""" == stringmime("text/plain", sliderWidget)
+    removespaces(s) = replace(s, " ", "")
+    # Julia v0.6 uses spaces after commas when printing types, but
+    # previous versions did not. To ensure that this test works on all
+    # versions, we just remove spaces from both sides of the comparison.
+    @test removespaces("""Interact.Slider{Int64}(Signal{Int64}(3, nactions=1),\"\",3,1:5,\"horizontal\",true,\"d\",true)""") == removespaces(stringmime("text/plain", sliderWidget))
     @test "3" == stringmime("text/plain", signal(sliderWidget))
 
     @test "" == stringmime("text/html", sliderWidget)

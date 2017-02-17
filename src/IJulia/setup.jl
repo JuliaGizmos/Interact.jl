@@ -3,17 +3,16 @@ using Reactive
 using Compat
 import Compat.String
 
-import Base: writemime
 import Interact: update_view, Slider, Widget, InputWidget, Latex, HTML, recv_msg,
                  statedict, viewdict, Layout, Box,
                  Progress, Checkbox, Button, ToggleButton, Textarea, Textbox, Options
 
-export mimewritable, writemime
+export mimewritable 
 
 const ijulia_js = readstring(joinpath(dirname(@__FILE__), "ijulia.js"))
 
 if displayable("text/html")
-    display("text/html", """
+    display("text/html", Base.Docs.HTML("""
      <div id="interact-js-shim">
          <script charset="utf-8">$(ijulia_js)</script>
          <script>
@@ -25,7 +24,7 @@ if displayable("text/html")
             })
             \$([IPython.events]).on("kernel_starting.Kernel kernel_restarting.Kernel", function () { window.interactLoadedFlag = false })
         </script>
-     </div>""")
+     </div>"""))
 end
 
 import IJulia
@@ -54,7 +53,7 @@ end
 function init_comm(x::Signal)
     if !haskey(comms, x)
         subscriptions = Dict{Compat.ASCIIString, Int}()
-        function handle_subscriptions(msg)
+        handle_subscriptions = (msg) -> begin
             if haskey(msg.content, "data")
                 action = get(msg.content["data"], "action", "")
                 if action == "subscribe_mime"
@@ -72,7 +71,7 @@ function init_comm(x::Signal)
         # Listen for mime type registrations
         comm.on_msg = handle_subscriptions
         # prevent resending the first time?
-        function notify(value)
+        notify = (value) -> begin
             mimes = keys(filter((k,v) -> v > 0, subscriptions))
             if length(mimes) > 0
                 send_comm(comm, @compat Dict(:value =>

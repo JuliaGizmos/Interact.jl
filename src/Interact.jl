@@ -4,7 +4,7 @@ module Interact
 
 using Reactive, Compat, DataStructures
 
-import Base: mimewritable, writemime
+import Base: mimewritable
 export signal, Widget, InputWidget
 
 # A widget
