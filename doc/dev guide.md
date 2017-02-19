@@ -35,6 +35,7 @@ Interact Does the following to ensure `Signal` values are displayed and updated 
     1. Sends a message to the frontend using `IJulia.send_comm` to tell it to display the widget
 
 Assorted Asides:
+
 1. IJulia/src/inline.jl#L9-L19 evals [`display(d::InlineDisplay, ::MIME{Symbol($mime)}, x)`](https://github.com/JuliaLang/IJulia.jl/src/inline.jl#L9-L19) for a number of mimetypes to create display methods for each of those mimetypes (html, image, ..., text) `display(d::InlineDisplay, ::MIME{Symbol($mime)}, x)`, but these only get called when a mimetype is explicitly provided, i.e. when `display(mimetype, x)` is called
 1. mimetype (`::MIME`) objects can be created with `MIME(mimestring)`, e.g. `MIME("text/html")`, `MIME("image/png")`, `MIME("text/plain")` etc.
 1. Jupyter messages have various msg types, use `IJulia.set_verbose(true)` in a notebook to display all the messages in the shell where jupyter runs. Alternately you can inspect messages in your browser's dev console, network tab, look for `channel?` messages and click the frames tab. The "comm_msg" message type is the main one used for Interact widgets and signals.
