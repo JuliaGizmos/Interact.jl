@@ -1,15 +1,15 @@
-Interact.viewdict(s::Union{Slider, Progress}) =
+viewdict(s::Union{Slider, Progress}) =
     Dict{Symbol, Any}(:orientation => s.orientation)
 
-Interact.viewdict(d::Options) =
+viewdict(d::Options) =
     Dict{Symbol, Any}(:tooltips => d.tooltips,
                     :orientation => d.orientation)
 
-Interact.viewdict(b::Box) = begin
+viewdict(b::Box) = begin
    Dict{Symbol, Any}(:layout => "IPY_MODEL_"*widget_comms[b.layout].id)
 end
 
-@compat Interact.statedict(s::Union{Slider, Progress}) =
+@compat statedict(s::Union{Slider, Progress}) =
     @compat Dict(:value=>s.value,
          :min=>first(s.range),
          :step=>step(s.range),
@@ -22,13 +22,13 @@ end
      )
 
 #each layout has a child box which has child widgets
-Interact.statedict(l::Layout) = begin
+statedict(l::Layout) = begin
    state = Dict{Symbol, Any}(:display => "flex", :align_items => "stretch")
    l.box.vert && (state[:flex_flow] = "column")
    state
 end
 
-Interact.statedict(b::Box) = begin
+statedict(b::Box) = begin
    child_comm_ids = map(b.children) do childw
       haskey(widget_comms, childw) ?
          widget_comms[childw] :
@@ -40,7 +40,7 @@ Interact.statedict(b::Box) = begin
 end
 
 # when we say value to javascript, it really means value label
-Interact.statedict(d::Options) =
+statedict(d::Options) =
     @compat Dict(:selected_label=>d.value_label,
          :value => d.value_label,
          :icons=>d.icons,
@@ -48,7 +48,7 @@ Interact.statedict(d::Options) =
          :readout => d.readout,
          :_options_labels=>collect(keys(d.options)))
 
-function statedict(w::Widget)
+statedict(w::Widget) = begin
     # @compat Dict(f => getfield(w, f) for f in fieldnames(w))
     # Julia issue #16561
     #       commit 879a7f75c7096aec4aa1b0c2a93a3ef432bb4cef
