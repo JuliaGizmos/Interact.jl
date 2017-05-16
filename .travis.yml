@@ -8,13 +8,10 @@ julia:
   - nightly
 notifications:
   email: false
-matrix:
-  allow_failures:
-    - julia: nightly
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia -e 'Pkg.clone(pwd())'
-  - julia -e 'Pkg.test("Interact"; coverage=true)'
+  - julia -e 'cov=(VERSION < v"0.5-" || !is_apple() || VERSION >= v"0.6-"); Pkg.test("Interact"; coverage=cov)'
 after_success:
   - julia --color=yes -e 'cd(Pkg.dir("Interact")); Pkg.add("Coverage"); using Coverage;
     Coveralls.submit(Coveralls.process_folder())'

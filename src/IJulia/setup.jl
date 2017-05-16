@@ -78,7 +78,7 @@ function init_comm(x::Signal)
                                  get_data_dict(value, mimes)))
             end
         end
-        preserve(map(notify, x))
+        preserve(map(notify, x; name="$(x.name) printer (Interact)"))
     else
         comm = comms[x]
     end
