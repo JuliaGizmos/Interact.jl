@@ -8,10 +8,10 @@ import Base: mimewritable
 export signal, Widget, InputWidget
 
 # A widget
-abstract Widget
+@compat abstract type Widget end
 
 # A widget that gives out a signal of type T
-abstract InputWidget{T}  <: Widget
+@compat abstract type InputWidget{T}  <: Widget end
 
 signal(w::InputWidget) = w.signal
 signal(x::Signal) = x

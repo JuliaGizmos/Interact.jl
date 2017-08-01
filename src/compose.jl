@@ -1,6 +1,6 @@
 # Composable Widget API
 
-abstract WidgetMod <: Widget
+@compat abstract type WidgetMod <: Widget end
 
 signal(w::WidgetMod) = signal(w.widget)
 
@@ -24,7 +24,7 @@ end
 
 addclass(widget, class) = WithClass{symbol(class)}(widget)
 
-abstract Container <: Widget
+@compat abstract type Container <: Widget end
 
 immutable WidgetStack{direction} <: Container
     widgets::Vector{Widget}
