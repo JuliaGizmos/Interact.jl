@@ -36,7 +36,7 @@ import Base: show, mimewritable
 const comms = Dict{Signal, Comm}()
 
 function get_data_dict(value, mimetypes)
-    dict = Dict{Compat.ASCIIString, Compat.String}()
+    dict = Dict{String, String}()
     for m in mimetypes
         if mimewritable(m, value)
             dict[m] = stringmime(m, value)
@@ -52,7 +52,7 @@ end
 
 function init_comm(x::Signal)
     if !haskey(comms, x)
-        subscriptions = Dict{Compat.ASCIIString, Int}()
+        subscriptions = Dict{String, Int}()
         handle_subscriptions = (msg) -> begin
             if haskey(msg.content, "data")
                 action = get(msg.content["data"], "action", "")
