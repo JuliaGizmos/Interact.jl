@@ -366,7 +366,7 @@ function getoptions(options)
     optdict = OptionDict(opts)
 end
 
-addoption!(opts, v::Union{Pair, NTuple{2}}) = opts[string(v[1])] = v[2]
+addoption!(opts, v::Union{Pair, Tuple{Any, Any}}) = opts[string(v[1])] = v[2]
 addoption!(opts, v) = opts[string(v)] = v
 
 """

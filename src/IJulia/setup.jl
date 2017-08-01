@@ -225,7 +225,7 @@ function view_state(w::Widget; src::Widget=w)
     msg = viewdict(src)
     msg[:method] = "update"
     state = Dict()
-    state[:msg_throttle] = 3
+    state[:msg_throttle] = 5
     state[:_view_name] = view_name(src)
     state[:_model_name] = model_name(src)
     state[:model_name] =  model_name(src)
@@ -277,7 +277,7 @@ function create_view(b::Box)
     foreach(b.children) do childw
         create_view(childw)
     end
-    invoke(create_view, (Widget,), b)
+    invoke(create_view, Tuple{Widget}, b)
 end
 
 function wire_comms(w, comm)
