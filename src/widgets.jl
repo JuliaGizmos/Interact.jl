@@ -6,8 +6,6 @@ export slider, vslider, togglebutton, button,
        progress, widget, selection_slider, vselection_slider,
        set!
 
-const Empty = VERSION < v"0.4.0-dev" ? Nothing : Void
-
 ### Layout Widgets
 type Layout <: Widget
     box::Any
@@ -183,7 +181,7 @@ button(label; kwargs...) =
 type Textbox{T} <: InputWidget{T}
     signal::Signal{T}
     label::String
-    @compat range::Union{Empty, Range}
+    @compat range::Union{Void, Range}
     value::T
 end
 
