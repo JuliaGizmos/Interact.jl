@@ -7,7 +7,7 @@ import Interact: update_view, Slider, Widget, InputWidget, Latex, HTML, recv_msg
                  statedict, viewdict, Layout, Box,
                  Progress, Checkbox, Button, ToggleButton, Textarea, Textbox, Options
 
-export mimewritable 
+export mimewritable
 
 const ijulia_js = readstring(joinpath(dirname(@__FILE__), "ijulia.js"))
 
@@ -190,8 +190,8 @@ function metadata{T <: Widget}(x::Signal{T})
 end
 
 function add_ipy4_state!(state)
-    state[:_view_module] = "jupyter-js-widgets"
-    state[:_model_module] = "jupyter-js-widgets"
+    state[:_view_module] = "@jupyter-widgets/controls"
+    state[:_model_module] = "@jupyter-widgets/controls"
 end
 
 const widget_comms = Dict{Widget, Comm}()
@@ -240,13 +240,14 @@ end
 
 function init_widget_dict(w::Widget)
     merge!(viewdict(w),
-        Dict{Symbol, Any}(
-            :model_name => model_name(w),
-            :_model_module => "jupyter-js-widgets",
-            :_model_name => model_name(w), # Jupyter 4.0 missing (https://github.com/ipython/ipywidgets/pull/84)
-            :_view_module => "jupyter-js-widgets",
-            :_view_name => view_name(w),
-        ))
+        Dict{Symbol, Any}(:state => Dict{Symbol, Any}(
+            :_model_module => "@jupyter-widgets/controls",
+            :_model_module_version => "1.0.0",
+            :_model_name => model_name(w),
+            :_view_module => "@jupyter-widgets/controls",
+            :_view_module_version => "1.0.0",
+            :_view_name => view_name(w)
+        )))
 end
 
 """
@@ -257,7 +258,15 @@ returns the widget's Comm object
 """
 function display_widget(w::Widget)
     comm = create_view(w::Widget)
-    send_comm(comm, Dict(:method=>"display"))
+    IJulia.send_ipython(IJulia.publish[],
+                 IJulia.msg_pub(IJulia.execute_msg, "display_data",
+                         Dict("source" => "julia", # optional
+                          "metadata" => Dict(),
+                          "data" => Dict("application/vnd.jupyter.widget-view+json"=>Dict(
+                              :model_id=>comm.id,
+                              :version_major => 2,
+                              :version_minor => 0,
+                          )))))
 end
 
 function create_view(w::Widget)
@@ -265,7 +274,7 @@ function create_view(w::Widget)
         comm = widget_comms[w]
     else
         #create the widget on the front-end by opening its comm
-        comm = Comm("jupyter.widget", data=init_widget_dict(w))
+        comm = Comm("jupyter.widget", data=init_widget_dict(w), metadata=Dict(:version=>"2.0"))
         wire_comms(w, comm)
     end
     send_comm(comm, view_state(w)) #set/update the widget's state

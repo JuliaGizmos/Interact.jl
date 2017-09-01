@@ -1,10 +1,10 @@
 import Interact.recv_msg
 
 function handle_msg(w::InputWidget, msg)
-    if msg.content["data"]["method"] == "backbone" &&
-            haskey(msg.content["data"]["sync_data"], "value") #sometimes it sends just selected_label, not value...
+    if msg.content["data"]["method"] == "update" &&
+            haskey(msg.content["data"]["state"], "value") #sometimes it sends just selected_label, not value...
         IJulia.set_cur_msg(msg)
-        recv_msg(w, msg.content["data"]["sync_data"]["value"])
+        recv_msg(w, msg.content["data"]["state"]["value"])
     end
 end
 
@@ -22,16 +22,16 @@ function handle_msg{T}(w::Button{T}, msg)
 end
 
 function handle_msg{view}(w::Options{view}, msg)
-        if msg.content["data"]["method"] == "backbone" &&
-                haskey(msg.content["data"]["sync_data"], "value") #sometimes it sends just selected_label, not value...
+        if msg.content["data"]["method"] == "update" &&
+                haskey(msg.content["data"]["state"], "value") #sometimes it sends just selected_label, not value...
             IJulia.set_cur_msg(msg)
             if view == :SelectMultiple
-                keys = msg.content["data"]["sync_data"]["value"]
+                keys = msg.content["data"]["state"]["value"]
                 if all(map(key->haskey(w.options, key), keys))
                     recv_msg(w, map(key->w.options[key], keys))
                 end
             else
-                key = string(msg.content["data"]["sync_data"]["value"])
+                key = string(msg.content["data"]["state"]["value"])
                 if haskey(w.options, key)
                     w.value_label = key
                     recv_msg(w, w.options[key])
