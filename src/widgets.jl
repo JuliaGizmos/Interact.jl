@@ -297,6 +297,7 @@ type Options{view, T} <: InputWidget{T}
     label::AbstractString
     value::T
     value_label::AbstractString
+    index::Int
     options::OptionDict
     icons::AbstractArray
     tooltips::AbstractArray
@@ -309,6 +310,7 @@ Options(view::Symbol, options::OptionDict;
         value_label=first(keys(options)),
         value=nothing,
         icons=[],
+        index=findfirst(value_label, keys(options)),
         tooltips=[],
         typ=valtype(options.dict),
         signal=nothing,
@@ -318,10 +320,14 @@ Options(view::Symbol, options::OptionDict;
         syncnearest=true,
         sel_mid_idx=0) = begin
     #sel_mid_idx set in selection_slider(...) so default value_label is middle of range
-    sel_mid_idx != 0 && (value_label = collect(keys(options.dict))[sel_mid_idx])
+    if value !== nothing
+        value_label = options.invdict[value]
+    elseif sel_mid_idx != 0
+        value_label = collect(keys(options.dict))[sel_mid_idx]
+    end
     signal, value = init_wsigval(signal, value; typ=typ, default=options[value_label])
     typ = eltype(signal)
-    ow = Options{view, typ}(signal, label, value, value_label,
+    ow = Options{view, typ}(signal, label, value, value_label, index,
                     options, icons, tooltips, readout, orientation)
     if syncsig
         syncselnearest = view == :SelectionSlider && typ <: Real && syncnearest
@@ -488,7 +494,7 @@ progress(;label="", value=0, range=0:100, orientation="horizontal",
 # Make a widget out of a domain
 widget(x::Signal, label="") = x
 widget(x::Widget, label="") = x
-widget(x::Range, label="") = selection_slider(x, label=label)
+widget(x::Range, label="") = selection_slider(x, label=label, index=medianidx(x))
 widget(x::AbstractVector, label="") = togglebuttons(x, label=label)
 widget(x::Associative, label="") = togglebuttons(x, label=label)
 widget(x::Bool, label="") = checkbox(x, label=label)

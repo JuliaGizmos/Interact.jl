@@ -43,6 +43,7 @@ end
 statedict(d::Options) =
     @compat Dict(:selected_label=>d.value_label,
          :value => d.value_label,
+         :index => d.index-1,
          :icons=>d.icons,
          :tooltips=>d.tooltips,
          :readout => d.readout,
