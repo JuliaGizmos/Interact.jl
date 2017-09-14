@@ -17,6 +17,7 @@ function main()
 
     try
         ipywver = readstring(`$python -c 'import ipywidgets; print(ipywidgets.__version__)'`) |> strip |> VersionNumber
+        write("ipywidget_version", string(ipywver))
 
         info("ipywidgets version found: $ipywver")
         if ipywver < v"5.0.0"
