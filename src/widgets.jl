@@ -297,7 +297,7 @@ type Options{view, T} <: InputWidget{T}
     label::AbstractString
     value::T
     value_label::AbstractString
-    index::Int
+    index::Union{Int, Vector{Int}}
     options::OptionDict
     icons::AbstractArray
     tooltips::AbstractArray
@@ -310,7 +310,7 @@ Options(view::Symbol, options::OptionDict;
         value_label=first(keys(options)),
         value=nothing,
         icons=[],
-        index=findfirst(value_label, keys(options)),
+        index=view == :SelectMultiple ? [1] : findfirst(value_label, keys(options)),
         tooltips=[],
         typ=valtype(options.dict),
         signal=nothing,

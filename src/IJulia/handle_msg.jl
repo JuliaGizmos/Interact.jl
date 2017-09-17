@@ -21,6 +21,9 @@ function handle_msg{T}(w::Button{T}, msg)
     end
 end
 
+# keys2idx(x::OptionDict, ks) = findin(keys(s.options), ks)
+idxs2keys(x::Interact.OptionDict, indexes) = collect(keys(s.options))[indexes .+ 1]
+
 function handle_msg{view}(w::Options{view}, msg)
     if msg.content["data"]["method"] == "update" && haskey(msg.content["data"], "state")
             #sometimes it sends just selected_label, not value...
@@ -32,7 +35,9 @@ function handle_msg{view}(w::Options{view}, msg)
                     recv_msg(w, map(key->w.options[key], keys))
                 end
             elseif haskey(msg.content["data"]["state"], "index")
-                keys = msg.content["data"]["state"]["index"]
+                indexes = Array{Int}(msg.content["data"]["state"]["index"])
+                w.index = indexes
+                keys = idxs2keys(w.options, indexes)
                 if all(map(key->haskey(w.options, key), keys))
                     recv_msg(w, map(key->w.options[key], keys))
                 end
