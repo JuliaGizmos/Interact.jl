@@ -98,7 +98,7 @@ function __init__()
     if isdefined(Main, :IJulia)
         if isfile(ipywidgets_version)
             v = VersionNumber(strip(readline(ipywidgets_version)))
-            if v >= v"6.0.0"
+            if v >= v"7.0.0"
                 include(ijulia_setup_path)
             else
                 include(ijulia_setup_path_old)
