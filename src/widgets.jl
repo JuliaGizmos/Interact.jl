@@ -281,8 +281,8 @@ immutable OptionDict
     invdict::Dict
 end
 OptionDict(d::OrderedDict) = begin
-    T1 = eltype([keys(d)...])
-    T2 = eltype([values(d)...])
+    T1 = keytype(d)
+    T2 = valtype(d)
     OptionDict(OrderedDict{T1,T2}(d), Dict{T2,T1}(zip(values(d), keys(d))))
 end
 
@@ -297,7 +297,7 @@ type Options{view, T} <: InputWidget{T}
     label::AbstractString
     value::T
     value_label::AbstractString
-    index::Int
+    index::Union{Int, Vector{Int}}
     options::OptionDict
     icons::AbstractArray
     tooltips::AbstractArray
@@ -305,12 +305,14 @@ type Options{view, T} <: InputWidget{T}
     orientation::AbstractString
 end
 
+labels2idxs(d::OptionDict, labels) = findin(keys(d), labels)
+
 Options(view::Symbol, options::OptionDict;
         label = "",
         value_label=first(keys(options)),
         value=nothing,
         icons=[],
-        index=findfirst(value_label, keys(options)),
+        index=view == :SelectMultiple ? [1] : findfirst(value_label, keys(options)),
         tooltips=[],
         typ=valtype(options.dict),
         signal=nothing,
@@ -320,11 +322,7 @@ Options(view::Symbol, options::OptionDict;
         syncnearest=true,
         sel_mid_idx=0) = begin
     #sel_mid_idx set in selection_slider(...) so default value_label is middle of range
-    if value !== nothing
-        value_label = options.invdict[value]
-    elseif sel_mid_idx != 0
-        value_label = collect(keys(options.dict))[sel_mid_idx]
-    end
+    sel_mid_idx != 0 && (value_label = collect(keys(options.dict))[sel_mid_idx])
     signal, value = init_wsigval(signal, value; typ=typ, default=options[value_label])
     typ = eltype(signal)
     ow = Options{view, typ}(signal, label, value, value_label, index,
@@ -345,6 +343,7 @@ Options(view::Symbol, options::OptionDict;
                 if haskey(ow.options.invdict, val) &&
                   ow.value_label != ow.options.invdict[val]
                     ow.value_label = ow.options.invdict[val]
+                    ow.index = labels2idxs(ow.options, [ow.value_label]) |> first
                     update_view(ow)
                 end
                 nothing

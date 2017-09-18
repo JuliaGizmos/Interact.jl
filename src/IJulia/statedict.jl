@@ -40,10 +40,10 @@ statedict(b::Box) = begin
 end
 
 # when we say value to javascript, it really means value label
-statedict(d::Options) =
+statedict{view, T}(d::Options{view, T}) =
     @compat Dict(:selected_label=>d.value_label,
          :value => d.value_label,
-         :index => d.index-1,
+         :index => view == :SelectMultiple ? d.index .- 1 : d.index-1,
          :icons=>d.icons,
          :tooltips=>d.tooltips,
          :readout => d.readout,
