@@ -21,8 +21,7 @@ function handle_msg{T}(w::Button{T}, msg)
     end
 end
 
-# keys2idx(x::OptionDict, ks) = findin(keys(s.options), ks)
-idxs2keys(x::Interact.OptionDict, indexes) = collect(keys(s.options))[indexes .+ 1]
+idxs2labels(d::Interact.OptionDict, indexes) = collect(keys(d))[indexes]
 
 function handle_msg{view}(w::Options{view}, msg)
     if msg.content["data"]["method"] == "update" && haskey(msg.content["data"], "state")
@@ -30,16 +29,16 @@ function handle_msg{view}(w::Options{view}, msg)
         IJulia.set_cur_msg(msg)
         if view == :SelectMultiple
             if haskey(msg.content["data"]["state"], "value")
-                keys = msg.content["data"]["state"]["value"]
-                if all(map(key->haskey(w.options, key), keys))
-                    recv_msg(w, map(key->w.options[key], keys))
+                labels = msg.content["data"]["state"]["value"]
+                if all(map(label->haskey(w.options, label), labels))
+                    recv_msg(w, map(label->w.options[label], labels))
                 end
             elseif haskey(msg.content["data"]["state"], "index")
-                indexes = Array{Int}(msg.content["data"]["state"]["index"])
+                indexes = Array{Int}(msg.content["data"]["state"]["index"]) .+ 1
                 w.index = indexes
-                keys = idxs2keys(w.options, indexes)
-                if all(map(key->haskey(w.options, key), keys))
-                    recv_msg(w, map(key->w.options[key], keys))
+                labels = idxs2labels(w.options, indexes)
+                if all(map(label->haskey(w.options, label), labels))
+                    recv_msg(w, map(label->w.options[label], labels))
                 end
             end
         else
