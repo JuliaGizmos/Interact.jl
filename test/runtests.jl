@@ -13,3 +13,18 @@ module HygieneTest
         i, j
     end
 end
+
+module HygieneTest2
+    # Verify that `@manipulate` is really using Reactive.signal
+    # and Reactive.preserve, not whatever the user has defined
+
+    using Interact: @manipulate
+
+    # Dummy implementations that should never be called:
+    signal(x...) = error("I should not be called")
+    preserve(x...) = error("I should not be called")
+
+    @manipulate for i in 1:10, j in ["x", "y", "z"]
+        2 * i, j * " hello"
+    end
+end
