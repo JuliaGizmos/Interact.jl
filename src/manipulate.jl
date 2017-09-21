@@ -23,6 +23,13 @@ function symbols(bindings)
     map(x->x.args[1], bindings)
 end
 
+@static if VERSION >= v"0.7.0-DEV.1671"
+    make_let_block(declarations, statements) = Expr(:let, declarations, statements)
+else
+    make_let_block(declarations, statements) = Expr(:let, statements, declarations)
+end
+
+
 macro manipulate(expr)
     if expr.head != :for
         error("@manipulate syntax is @manipulate for ",
@@ -35,8 +42,9 @@ macro manipulate(expr)
         bindings = [expr.args[1]]
     end
     syms = symbols(bindings)
-    Expr(:let, Expr(:block,
-                    display_widgets(syms)...,
-                    map_block(block, syms)),
-         map(make_widget, bindings)...)
+    declarations = Expr(:block, map(make_widget, bindings)...)
+    statements = Expr(:block,
+                      display_widgets(syms)...,
+                      map_block(block, syms)) 
+    make_let_block(declarations, statements)
 end
