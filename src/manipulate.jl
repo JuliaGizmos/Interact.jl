@@ -16,7 +16,7 @@ end
 function map_block(block, symbols)
     lambda = Expr(:(->), Expr(:tuple, symbols...),
                   block)
-    :(preserve(map($lambda, $(map(s->:(signal($s)), symbols)...), typ=Any)))
+    :(preserve(map($(esc(lambda)), $(map(s->:(signal($s)), esc.(symbols))...), typ=Any)))
 end
 
 function symbols(bindings)
@@ -37,6 +37,6 @@ macro manipulate(expr)
     syms = symbols(bindings)
     Expr(:let, Expr(:block,
                     display_widgets(syms)...,
-                    esc(map_block(block, syms))),
+                    map_block(block, syms)),
          map(make_widget, bindings)...)
 end
