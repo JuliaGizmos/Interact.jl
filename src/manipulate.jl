@@ -23,6 +23,11 @@ function symbols(bindings)
     map(x->x.args[1], bindings)
 end
 
+"""
+Work-around for the fact that the order of arguments in `let...end` parsing
+was reversed from v0.6 to v0.7. 
+See: https://github.com/JuliaLang/julia/issues/21774
+"""
 @static if VERSION >= v"0.7.0-DEV.1671"
     function make_let_block(declarations, statements)
         Expr(:let, Expr(:block, declarations...), Expr(:block, statements...))
