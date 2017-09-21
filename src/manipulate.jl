@@ -24,9 +24,13 @@ function symbols(bindings)
 end
 
 @static if VERSION >= v"0.7.0-DEV.1671"
-    make_let_block(declarations, statements) = Expr(:let, declarations, statements)
+    function make_let_block(declarations, statements)
+        Expr(:let, Expr(:block, declarations...), Expr(:block, statements...))
+    end
 else
-    make_let_block(declarations, statements) = Expr(:let, statements, declarations)
+    function make_let_block(declarations, statements)
+        Expr(:let, Expr(:block, statements...), declarations...)
+    end
 end
 
 
@@ -42,9 +46,8 @@ macro manipulate(expr)
         bindings = [expr.args[1]]
     end
     syms = symbols(bindings)
-    declarations = Expr(:block, map(make_widget, bindings)...)
-    statements = Expr(:block,
-                      display_widgets(syms)...,
-                      map_block(block, syms)) 
+    declarations = map(make_widget, bindings)
+    statements = vcat(display_widgets(syms)...,
+                      map_block(block, syms))
     make_let_block(declarations, statements)
 end
