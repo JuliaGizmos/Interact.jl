@@ -16,12 +16,28 @@ end
 function map_block(block, symbols)
     lambda = Expr(:(->), Expr(:tuple, symbols...),
                   block)
-    :(preserve(map($lambda, $(map(s->:(signal($s)), symbols)...), typ=Any)))
+    :(preserve(map($(esc(lambda)), $(map(s->:(signal($s)), esc.(symbols))...), typ=Any)))
 end
 
 function symbols(bindings)
     map(x->x.args[1], bindings)
 end
+
+"""
+Work-around for the fact that the order of arguments in `let...end` parsing
+was reversed from v0.6 to v0.7. 
+See: https://github.com/JuliaLang/julia/issues/21774
+"""
+@static if VERSION >= v"0.7.0-DEV.1671"
+    function make_let_block(declarations, statements)
+        Expr(:let, Expr(:block, declarations...), Expr(:block, statements...))
+    end
+else
+    function make_let_block(declarations, statements)
+        Expr(:let, Expr(:block, statements...), declarations...)
+    end
+end
+
 
 macro manipulate(expr)
     if expr.head != :for
@@ -35,8 +51,8 @@ macro manipulate(expr)
         bindings = [expr.args[1]]
     end
     syms = symbols(bindings)
-    Expr(:let, Expr(:block,
-                    display_widgets(syms)...,
-                    esc(map_block(block, syms))),
-         map(make_widget, bindings)...)
+    declarations = map(make_widget, bindings)
+    statements = vcat(display_widgets(syms)...,
+                      map_block(block, syms))
+    make_let_block(declarations, statements)
 end
