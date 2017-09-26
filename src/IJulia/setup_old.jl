@@ -1,6 +1,9 @@
+module InteractIJulia
+
 using JSON
 using Reactive
 using Compat
+using Interact
 import Compat.String
 
 import Interact: update_view, Slider, Widget, InputWidget, Latex, HTML, recv_msg,
@@ -307,3 +310,5 @@ end
 
 include("statedict_old.jl")
 include("handle_msg_old.jl")
+
+end

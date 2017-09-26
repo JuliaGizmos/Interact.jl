@@ -1,5 +1,8 @@
+module InteractIJulia
+
 using JSON
 using Reactive
+using Interact
 using Compat
 import Compat.String
 
@@ -316,3 +319,5 @@ end
 
 include("statedict.jl")
 include("handle_msg.jl")
+
+end
