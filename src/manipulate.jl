@@ -16,7 +16,7 @@ end
 function map_block(block, symbols)
     lambda = Expr(:(->), Expr(:tuple, symbols...),
                   block)
-    :(preserve(map($lambda, $(map(s->:(signal($s)), symbols)...), typ=Any)))
+    :(Reactive.preserve(map($lambda, $(map(s->:(signal($s)), symbols)...), typ=Any)))
 end
 
 function symbols(bindings)

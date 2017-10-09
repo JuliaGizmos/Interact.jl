@@ -94,18 +94,24 @@ const ijulia_setup_path = joinpath(dirname(@__FILE__), "IJulia", "setup.jl")
 const ijulia_setup_path_old = joinpath(dirname(@__FILE__), "IJulia", "setup_old.jl")
 const ipywidgets_version = joinpath(dirname(@__FILE__), "..", "deps", "ipywidgets_version")
 
+using IJulia
+using IJulia.CommManager
+
 function __init__()
-    if isdefined(Main, :IJulia)
-        if isfile(ipywidgets_version)
-            v = VersionNumber(strip(readline(ipywidgets_version)))
-            if v >= v"6.0.0"
-                include(ijulia_setup_path)
-            else
-                include(ijulia_setup_path_old)
-            end
-        else
+
+    test_id = string(Base.Random.uuid4())
+    test_data = Dict(:state => Dict(:_model_module_version => "1.0.0",:_view_name => "IntSliderView",:_model_name => "IntSliderModel",:_view_module => "@jupyter-widgets/controls",:_model_module => "@jupyter-widgets/controls",:_view_module_version => "1.0.0"),:orientation => "horizontal")
+    comm = Comm("jupyter.widget", test_id, true, (x)->println("Message"), (x)->println("Closed!!"), data=test_data, metadata=Dict(:version=>"2.0"))
+
+    if isfile(ipywidgets_version)
+        v = VersionNumber(strip(readline(ipywidgets_version)))
+        if v >= v"6.0.0"
             include(ijulia_setup_path)
+        else
+            include(ijulia_setup_path_old)
         end
+    else
+        include(ijulia_setup_path)
     end
 end
 
