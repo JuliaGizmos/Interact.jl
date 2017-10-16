@@ -96,7 +96,7 @@ function metadata(x::Signal)
 end
 
 function IJulia.display_dict(x::Signal)
-    IJulia.display_dict(value(x))
+    IJulia.display_dict(Reactive.value(x))
 end
 
 # Render the value of a signal.
@@ -305,8 +305,8 @@ const sigwidg_has_updater = WeakKeyDict{Signal, Bool}()
 Display the current value of a Signal{Widget} and ensure it stays up-to-date
 """
 function create_widget_signal{T<:Widget}(s::Signal{T})
-    local prev_widg = value(s)
-    display_widget(value(s))
+    local prev_widg = Reactive.value(s)
+    display_widget(Reactive.value(s))
     if !haskey(sigwidg_has_updater, s)
         map(s, init=nothing) do x
             update_view(x; prevw=prev_widg)
