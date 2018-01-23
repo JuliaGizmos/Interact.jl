@@ -11,10 +11,10 @@ function main()
     if is_linux() || is_apple()
         python = strip(readline(readstring(`which $(IJulia.jupyter)`)|>strip), ['\n',' ', '#','!'])
     elseif is_windows()
-        if haskey(ENV,"PYTHON")
+        if haskey(ENV,"PYTHON") && ENV["PYTHON"] != ""
             python = ENV["PYTHON"]
         else
-            warn("cannot determine jupyter's python path in Windows, bailing.")
+            warn("Cannot determine jupyter's python path in Windows, bailing. Please add the path to python.exe, e.g. path/to/python.exe, to ENV["PYTHON"].")
             return
         end
     end
