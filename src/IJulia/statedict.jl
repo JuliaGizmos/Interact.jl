@@ -18,6 +18,7 @@ end
          :_model_name => "FloatSliderModel",
          :readout => s.readout,
          :readout_format => s.readout_format,
+         :orientation => s.orientation,
          :continuous_update=>s.continuous_update,
      )
 
@@ -48,6 +49,7 @@ statedict{view, T}(d::Options{view, T}) =
          :tooltips=>d.tooltips,
          :readout => d.readout,
          :continuous_update=>d.continuous_update,
+         :orientation => d.orientation,
          :_options_labels=>collect(keys(d.options)))
 
 statedict(w::Widget) = begin
