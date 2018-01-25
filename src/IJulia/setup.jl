@@ -157,7 +157,7 @@ JSON.lower(s::Signal) = s.value
 # Interact -> IJulia view names
 widget_class(::HTML) = "HTML"
 widget_class(::Layout) = "Layout"
-widget_class(::Box) = "Box"
+widget_class(b::Box) = b.vert ? "VBox" : "Box"
 widget_class(::Latex) = "Label"
 widget_class(::Progress) = "Progress"
 widget_class{T<:Integer}(::Slider{T}) = "IntSlider"
