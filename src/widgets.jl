@@ -364,7 +364,7 @@ function Options(view::Symbol,
 end
 
 function getoptions(options)
-    opts = OrderedDict()
+    opts = OrderedDict{String, eltype(options)}()
     for el in options
         addoption!(opts, el)
     end
