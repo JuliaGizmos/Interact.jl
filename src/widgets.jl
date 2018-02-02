@@ -342,8 +342,7 @@ Options(view::Symbol, options::OptionDict;
                 if syncselnearest
                     val = nearest_val(keys(ow.options.invdict), val)
                 end
-                if haskey(ow.options.invdict, val) &&
-                  ow.value_label != ow.options.invdict[val]
+                if haskey(ow.options.invdict, val)
                     ow.value_label = ow.options.invdict[val]
                     ow.index = labels2idxs(ow.options, [ow.value_label]) |> first
                     update_view(ow)
