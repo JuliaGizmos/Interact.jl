@@ -28,7 +28,7 @@ function main()
         if endswith(IJulia.notebook_cmd[1], "python.exe")
             python = IJulia.notebook_cmd[1]
         elseif startswith(IJulia.jupyter, Pkg.dir("Conda")) # using the Conda Python
-            python = eval(Main, :(using Conda; Conda.PYTHONDIR)) * ".exe"
+            python = joinpath(eval(Main, :(using Conda; Conda.PYTHONDIR)), "python.exe")
         elseif haskey(ENV,"PYTHON") && !isempty(ENV["PYTHON"])
             python = ENV["PYTHON"]
         else
