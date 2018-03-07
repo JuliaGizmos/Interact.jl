@@ -1,6 +1,6 @@
 using Compat
 
-const ipywidgets_version = joinpath(dirname(@__FILE__), "ipywidgets_version")
+const widgver_file = joinpath(dirname(@__FILE__), "widgets_version")
 
 function main()
     info("Enabling widgetsnbextension")
@@ -17,6 +17,7 @@ function main()
             ni = rsearch(n, "notebook")
             nbextension_cmd[end] = n[1:prevind(n,first(ni))] * "nbextension" * n[nextind(n,last(ni)):end]
         end
+        run(`$nbextension_cmd install --py widgetsnbextension`)
         run(`$nbextension_cmd enable --py widgetsnbextension`)
     catch
         warn("Could not enable widgetsnbextension.")
@@ -32,28 +33,34 @@ function main()
         elseif haskey(ENV,"PYTHON") && !isempty(ENV["PYTHON"])
             python = ENV["PYTHON"]
         else
-            vers = isfile(ipywidgets_version) ? readline(ipywidgets_version) : "6.0"
-            warn("""Cannot determine Jupyter's python.exe, will guess that you have ipywidgets $vers.
-                    Otherwise, set ENV["PYTHON"] to the path of your python.exe, or manually edit
-                    $ipywidgets_version to the value of ipywidgets.__version__.""")
+            vers = isfile(widgver_file) ? readline(widgver_file)*" (found in $widgver_file)" : ">= 3.0.0"
+            warn("""Cannot determine Jupyter's python.exe, will guess that you have
+widgetsnbextension $vers. Otherwise, set ENV["PYTHON"] to the path of your
+python.exe and re-run Pkg.build("Interact"), or manually edit $widgver_file to
+the value of widgetsnbextension.__version__, or set e.g.
+ENV["WIDGETS_VERSION"]="2.0.0" before you run `using Interact` """)
             return
         end
     end
 
     try
-        rm(ipywidgets_version, force=true) # remove old version, if any
-        ipywver = readstring(`$python -c 'import ipywidgets; print(ipywidgets.__version__)'`) |> strip |> VersionNumber
-        write(ipywidgets_version, string(ipywver))
+        rm(widgver_file, force=true) # remove old version, if any
+        widgver = readstring(`$python -c 'import widgetsnbextension; print(widgetsnbextension.__version__)'`) |> strip |> VersionNumber
+        write(widgver_file, string(widgver))
 
-        info("ipywidgets version found: $ipywver")
-        if ipywver < v"5.0.0"
-            warn("""This version of Interact requires ipywidgets > 5.0 to work correctly.
-                    If you have ipywidgets version 4.x, run Pkg.checkout("Interact", "ipywidgets-4").""")
+        info("widgetsnbextension version found: $widgver")
+        if widgver < v"1.0.0"
+            warn("""This version of Interact requires widgetsnbextension >= 1.0.0 to work correctly.
+                    If you have widgetsnbextension version 0.x, run Pkg.checkout("Interact", "ipywidgets-4").""")
         else
-            info("A compatible version of ipywidgets was found. All good.")
+            info("A compatible version of widgetsnbextension was found. All good.")
         end
     catch
-        warn("Could not determine ipywidgets version from $python, will guess that you have ≥ 6.0.")
+        warn("""Could not determine widgetsnbextension version from $python, will guess that you
+have ≥ 3.0. If widgets do not display, manually edit $widgver_file to 2.0.0 (or
+the value of widgetsnbextension.__version__ ), or set
+ENV["WIDGETS_VERSION"]="2.0.0" before you run `using Interact`""")
+        write(widgver_file, "3.0.0")
     end
 end
 
