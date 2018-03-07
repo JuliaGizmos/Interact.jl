@@ -4,7 +4,7 @@ export slider, vslider, togglebutton, button,
        radiobuttons, dropdown, selection,
        togglebuttons, html, latex, hbox, vbox,
        progress, widget, selection_slider, vselection_slider,
-       set!
+       set!, update!
 
 ### Layout Widgets
 type Layout <: Widget
@@ -478,7 +478,7 @@ latex(value; label="") = Latex(label, mimewritable("application/x-latex", value)
 
 type Progress <: Widget
     label::AbstractString
-    value::Int
+    value::Float64
     range::Range
     orientation::String
     readout::Bool
@@ -487,9 +487,17 @@ type Progress <: Widget
 end
 
 progress(args...) = Progress(args...)
-progress(;label="", value=0, range=0:100, orientation="horizontal",
+progress(;label="", range=0.0:0.1:100, value=first(range), orientation="horizontal",
             readout=true, readout_format="d", continuous_update=true) =
     Progress(label, value, range, orientation, readout, readout_format, continuous_update)
+
+"""
+Update output widgets
+"""
+function update!(p::Progress, val)
+    p.value = val;
+    update_view(p)
+end
 
 # Make a widget out of a domain
 widget(x::Signal, label="") = x
