@@ -10,7 +10,7 @@ import Interact: update_view, Slider, Widget, InputWidget, Latex, HTML, recv_msg
                  statedict, viewdict, Layout, Box,
                  Progress, Checkbox, Button, ToggleButton, Textarea, Textbox, Options
 
-export mimewritable 
+export mimewritable
 
 const ijulia_js = readstring(joinpath(dirname(@__FILE__), "ijulia.js"))
 
@@ -173,14 +173,6 @@ widget_class{view}(::Options{view}) = string(view)
 widget_class(w, suffix) = widget_class(w) * suffix
 view_name(w) = widget_class(w, "View")
 model_name(w) = widget_class(w, "Model")
-
-"""
-Update output widgets
-"""
-update!(p::Progress, val) = begin
-    p.value = val;
-    update_view(p)
-end
 
 function metadata(x::Widget)
     display_widget(x)
