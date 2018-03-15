@@ -1,4 +1,4 @@
-julia 0.5
+julia 0.6
 JSON 0.7
 Compat 0.17
 Reactive 0.3.7
