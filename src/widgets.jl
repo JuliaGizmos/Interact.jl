@@ -362,8 +362,10 @@ function Options(view::Symbol,
     Options(view, getoptions(options); kwargs...)
 end
 
+getoptions(options::AbstractArray{<:Union{Pair, Tuple}}) = getoptions(Dict(options))
+
 function getoptions(options)
-    opts = OrderedDict{String, eltype(options)}()
+    opts = OrderedDict{String, eltype(values(options))}()
     for el in options
         addoption!(opts, el)
     end
