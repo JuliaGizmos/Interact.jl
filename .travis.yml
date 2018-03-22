@@ -8,9 +8,8 @@ notifications:
   email: false
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia -e 'ENV["PYTHON"]=""; Pkg.clone(pwd())'
-  - julia -e 'ENV["PYTHON"]=""; cov=(VERSION < v"0.5-" || !is_apple() || VERSION >= v"0.6-"); Pkg.test("Interact"; coverage=cov)'
-    # Note: PYTHON env is to ensure that PyPlot uses Conda.jl's Miniconda distribution instead of system Python.
+  - julia -e 'Pkg.clone(pwd())'
+  - julia -e 'cov=(VERSION < v"0.5-" || !is_apple() || VERSION >= v"0.6-"); Pkg.test("Interact"; coverage=cov)'
 after_success:
   - julia --color=yes -e 'cd(Pkg.dir("Interact")); Pkg.add("Coverage"); using Coverage;
     Coveralls.submit(Coveralls.process_folder())'
