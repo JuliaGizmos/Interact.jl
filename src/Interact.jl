@@ -104,10 +104,8 @@ function __init__()
             v = v"3.0.0"
         end
         if v >= v"3.0.0"
-            info("Interact.jl: using new nbwidgetsextension protocol")
             include(ijulia_setup_path)
         else
-            info("Interact.jl: using old nbwidgetsextension protocol")
             include(ijulia_setup_path_old)
         end
     end
