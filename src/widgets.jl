@@ -429,7 +429,7 @@ behaviour, so that the widget state will only update if an exact match for
 signal value is found in the range/choice, use `syncnearest=false`.
 """
 selection_slider(opts; kwargs...) = begin
-    if !haskey(Dict(kwargs), :value_label)
+    if !(:value_label in first.(kwargs))
         #default to middle of slider
         mid_idx = medianidx(opts)
         push!(kwargs, (:sel_mid_idx, mid_idx))
