@@ -92,19 +92,21 @@ include("manipulate.jl")
 
 const ijulia_setup_path = joinpath(dirname(@__FILE__), "IJulia", "setup.jl")
 const ijulia_setup_path_old = joinpath(dirname(@__FILE__), "IJulia", "setup_old.jl")
-const ipywidgets_version = joinpath(dirname(@__FILE__), "..", "deps", "ipywidgets_version")
+const ipywidgets_version = joinpath(dirname(@__FILE__), "..", "deps", "widgets_version")
 
 function __init__()
     if isdefined(Main, :IJulia)
-        if isfile(ipywidgets_version)
+        if haskey(ENV, "WIDGETS_VERSION")
+            v = VersionNumber(ENV["WIDGETS_VERSION"])
+        elseif isfile(ipywidgets_version)
             v = VersionNumber(strip(readline(ipywidgets_version)))
-            if v >= v"6.0.0"
-                include(ijulia_setup_path)
-            else
-                include(ijulia_setup_path_old)
-            end
         else
+            v = v"3.0.0"
+        end
+        if v >= v"3.0.0"
             include(ijulia_setup_path)
+        else
+            include(ijulia_setup_path_old)
         end
     end
 end

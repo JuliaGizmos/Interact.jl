@@ -157,9 +157,9 @@ JSON.lower(s::Signal) = s.value
 # Interact -> IJulia view names
 widget_class(::HTML) = "HTML"
 widget_class(::Layout) = "Layout"
-widget_class(::Box) = "Box"
+widget_class(b::Box) = b.vert ? "VBox" : "Box"
 widget_class(::Latex) = "Label"
-widget_class(::Progress) = "Progress"
+widget_class(::Progress) = "FloatProgress"
 widget_class{T<:Integer}(::Slider{T}) = "IntSlider"
 widget_class(::Button) = "Button"
 widget_class(::Textarea) = "Textarea"
@@ -174,13 +174,8 @@ widget_class(w, suffix) = widget_class(w) * suffix
 view_name(w) = widget_class(w, "View")
 model_name(w) = widget_class(w, "Model")
 
-"""
-Update output widgets
-"""
-update!(p::Progress, val) = begin
-    p.value = val;
-    update_view(p)
-end
+# Special cases
+view_name(w::Progress) = "ProgressView"
 
 function metadata(x::Widget)
     display_widget(x)

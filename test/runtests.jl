@@ -28,3 +28,24 @@ module HygieneTest2
         2 * i, j * " hello"
     end
 end
+
+# Notebooks
+# notebookdirs = [joinpath(@__DIR__, "notebooks"), joinpath(@__DIR__, "..", "doc", "notebooks")]
+notebookdirs = [joinpath(@__DIR__, "..", "doc", "notebooks")] # Interact Manual Tests.ipynb is broken (flatten call)
+excludes = [joinpath(@__DIR__, "..", "doc", "notebooks", "03-Interactive Diagrams and Plots.ipynb")]
+for notebookdir in notebookdirs
+    for file in readdir(notebookdir)
+        path = joinpath(notebookdir, file)
+        path in excludes && continue
+        name, ext = splitext(file)
+        lowercase(ext) == ".ipynb" || continue
+        @eval module $(gensym()) # Each notebook is run in its own module.
+        using Base.Test
+        using NBInclude
+        @testset "$($name)" begin
+            nbinclude($path, regex = r"^((?!\#NBSKIP).)*$"s) # Use #NBSKIP in a cell to skip it during tests.
+        end
+        end # module
+    end
+end
+

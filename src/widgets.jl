@@ -4,7 +4,7 @@ export slider, vslider, togglebutton, button,
        radiobuttons, dropdown, selection,
        togglebuttons, html, latex, hbox, vbox,
        progress, widget, selection_slider, vselection_slider,
-       set!
+       set!, update!
 
 ### Layout Widgets
 type Layout <: Widget
@@ -303,6 +303,7 @@ type Options{view, T} <: InputWidget{T}
     tooltips::AbstractArray
     readout::Bool
     orientation::AbstractString
+    continuous_update::Bool
 end
 
 labels2idxs(d::OptionDict, labels) = findin(keys(d), labels)
@@ -320,13 +321,14 @@ Options(view::Symbol, options::OptionDict;
         orientation="horizontal",
         syncsig=true,
         syncnearest=true,
+        continuous_update=true,
         sel_mid_idx=0) = begin
     #sel_mid_idx set in selection_slider(...) so default value_label is middle of range
     sel_mid_idx != 0 && (value_label = collect(keys(options.dict))[sel_mid_idx])
     signal, value = init_wsigval(signal, value; typ=typ, default=options[value_label])
     typ = eltype(signal)
     ow = Options{view, typ}(signal, label, value, value_label, index,
-                    options, icons, tooltips, readout, orientation)
+                    options, icons, tooltips, readout, orientation, continuous_update)
     if syncsig
         syncselnearest = view == :SelectionSlider && typ <: Real && syncnearest
         if view != :SelectMultiple
@@ -340,8 +342,7 @@ Options(view::Symbol, options::OptionDict;
                 if syncselnearest
                     val = nearest_val(keys(ow.options.invdict), val)
                 end
-                if haskey(ow.options.invdict, val) &&
-                  ow.value_label != ow.options.invdict[val]
+                if haskey(ow.options.invdict, val)
                     ow.value_label = ow.options.invdict[val]
                     ow.index = labels2idxs(ow.options, [ow.value_label]) |> first
                     update_view(ow)
@@ -361,8 +362,10 @@ function Options(view::Symbol,
     Options(view, getoptions(options); kwargs...)
 end
 
+getoptions(options::AbstractArray{<:Union{Pair, Tuple}}) = getoptions(Dict(options))
+
 function getoptions(options)
-    opts = OrderedDict()
+    opts = OrderedDict{String, eltype(values(options))}()
     for el in options
         addoption!(opts, el)
     end
@@ -477,7 +480,7 @@ latex(value; label="") = Latex(label, mimewritable("application/x-latex", value)
 
 type Progress <: Widget
     label::AbstractString
-    value::Int
+    value::Float64
     range::Range
     orientation::String
     readout::Bool
@@ -486,9 +489,17 @@ type Progress <: Widget
 end
 
 progress(args...) = Progress(args...)
-progress(;label="", value=0, range=0:100, orientation="horizontal",
+progress(;label="", range=0.0:0.1:100, value=first(range), orientation="horizontal",
             readout=true, readout_format="d", continuous_update=true) =
     Progress(label, value, range, orientation, readout, readout_format, continuous_update)
+
+"""
+Update output widgets
+"""
+function update!(p::Progress, val)
+    p.value = val;
+    update_view(p)
+end
 
 # Make a widget out of a domain
 widget(x::Signal, label="") = x
