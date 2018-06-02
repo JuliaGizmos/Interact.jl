@@ -18,4 +18,10 @@ function InteractBase.settheme!(s::Symbol)
     settheme!(themes[s])
 end
 
+function __init__()
+    empty!(InteractBase.backend)
+    settheme!(:bulma)
+    nothing
+end
+
 end
