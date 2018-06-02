@@ -18,7 +18,4 @@ function InteractBase.settheme!(s::Symbol)
     settheme!(themes[s])
 end
 
-empty!(InteractBase.backend)
-settheme!(:bulma)
-
 end
