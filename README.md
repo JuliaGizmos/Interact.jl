@@ -4,7 +4,7 @@
 
 Interact.jl allows you to use interactive widgets such as sliders, dropdowns and checkboxes to play with your Julia code:
 
-![interact](https://user-images.githubusercontent.com/6333339/40879429-8b1685d2-6697-11e8-9af7-64b61031dc80.png)
+![interact](https://user-images.githubusercontent.com/6333339/40879483-64afb41c-6698-11e8-8d77-de59a645e6bb.png)
 
 ## Getting Started
 
