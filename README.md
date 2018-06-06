@@ -4,7 +4,7 @@
 
 Interact.jl allows you to use interactive widgets such as sliders, dropdowns and checkboxes to play with your Julia code:
 
-![interact](https://user-images.githubusercontent.com/6333339/40879483-64afb41c-6698-11e8-8d77-de59a645e6bb.png)
+[<img src="https://user-images.githubusercontent.com/6333339/41034492-a797bb62-6981-11e8-9c36-d7cb1f4a6f81.png" width="489">](https://vimeo.com/273565899)
 
 ## Getting Started
 
@@ -21,3 +21,7 @@ The best way to learn to use the interactive widgets is to try out the example n
 using IJulia
 notebook()
 ```
+
+## Learning more
+
+[Documentation](https://piever.github.io/InteractBase.jl/latest/), a [tutorial](https://github.com/piever/InteractBase.jl/blob/master/docs/examples/tutorial.ipynb) and a list of [all available widgets](https://piever.github.io/InteractBase.jl/latest/api_reference.html) are available for the InteractBase package, on which Interact is based. Simply replace `using InteractBase, InteractBulma` with `using Interact`.
