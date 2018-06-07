@@ -1,5 +1,7 @@
 julia 0.6
 JSON 0.7
 Compat 0.17
-Reactive 0.3.7
+InteractBase 0.2.0
+InteractBulma
+InteractUIkit
 DataStructures 0.2.10
