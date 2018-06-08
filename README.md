@@ -15,7 +15,7 @@ Pkg.add("Interact")
 
 ## Example notebooks
 
-The best way to learn to use the interactive widgets is to try out the example notebooks in the doc/notebooks/ directory. Start up IJulia from doc/notebooks/:
+The best way to learn to use the interactive widgets is to try out the example notebooks and the tutorial in the doc/notebooks/ directory. Start up IJulia from doc/notebooks/:
 
 ```julia
 using IJulia
@@ -24,4 +24,4 @@ notebook()
 
 ## Learning more
 
-[Documentation](https://piever.github.io/InteractBase.jl/latest/), a [tutorial](https://github.com/piever/InteractBase.jl/blob/master/docs/examples/tutorial.ipynb) and a list of [all available widgets](https://piever.github.io/InteractBase.jl/latest/api_reference.html) are available for the InteractBase package, on which Interact is based. Simply replace `using InteractBase, InteractBulma` with `using Interact`.
+To learn more, check out the [documentation](https://JuliaGizmos.github.io/Interact.jl/latest/) and the list of [all available widgets](https://JuliaGizmos.github.io/Interact.jl/latest/api_reference.html).
