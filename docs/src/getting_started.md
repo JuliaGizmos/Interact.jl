@@ -12,7 +12,7 @@ in the REPL.
 
 ## Usage
 
-The basic behavior is as follows:
+The basic behavior (in Juno or Jupyter lab/notebook) is as follows:
 
 ```julia
 using Interact
