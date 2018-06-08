@@ -2,7 +2,7 @@
 
 Interact allows to create small GUIs in Julia based on web technology. These GUIs can be deployed in jupyter notebooks, in the Juno IDE plot pane, in an Electron window or in the browser.
 
-To understand how to use it go through the [Tutorial](@ref). The tutorial is also available [here](https://github.com/piever/Interact.jl/blob/master/docs/examples/tutorial.ipynb) as a Jupyter notebook.
+To understand how to use it go through the [Tutorial](@ref). The tutorial is also available [here](https://github.com/JuliaGizmos/Interact.jl/blob/master/doc/notebooks/tutorial.ipynb) as a Jupyter notebook.
 
 A list of available widget can be found at [API reference](@ref)
 
