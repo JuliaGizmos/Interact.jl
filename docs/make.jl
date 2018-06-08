@@ -1,4 +1,4 @@
-using Documenter, InteractBase, Literate
+using Documenter, Interact, Literate
 src = joinpath(@__DIR__, "src")
 Literate.markdown(joinpath(src, "tutorial.jl"), src, codefence = "```julia" => "```")
 

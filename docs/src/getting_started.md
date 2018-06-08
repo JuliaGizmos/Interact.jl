@@ -11,10 +11,10 @@ in the REPL.
 
 ## Usage
 
-The basic behavior is as follows: Interact
+The basic behavior is as follows:
 
 ```julia
-using InteractBulma
+using Interact
 ui = button()
 display(ui)
 ```
