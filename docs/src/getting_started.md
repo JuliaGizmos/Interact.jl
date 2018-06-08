@@ -1,7 +1,8 @@
 # Getting started
 
-## Installing everything
-To install a backend of choice (for example InteractBulma), simply type
+## Installing Interact
+
+To install Interact, simply type
 
 ```julia
 Pkg.add("Interact")
@@ -11,10 +12,10 @@ in the REPL.
 
 ## Usage
 
-The basic behavior is as follows: Interact
+The basic behavior (in Juno or Jupyter lab/notebook) is as follows:
 
 ```julia
-using InteractBulma
+using Interact
 ui = button()
 display(ui)
 ```
