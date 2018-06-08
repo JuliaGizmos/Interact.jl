@@ -1,7 +1,8 @@
 # Getting started
 
-## Installing everything
-To install a backend of choice (for example InteractBulma), simply type
+## Installing Interact
+
+To install Interact, simply type
 
 ```julia
 Pkg.add("Interact")
