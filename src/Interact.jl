@@ -8,6 +8,12 @@ using Reexport
 
 import InteractUIkit, InteractBulma
 
+@reexport using DataStructures
+@reexport using Observables
+@reexport using Vue
+@reexport using CSSUtil
+@reexport using WebIO
+
 const themes = Dict(
     :uikit => InteractUIkit.UIkit(),
     :bulma => InteractBulma.Bulma()

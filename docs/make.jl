@@ -8,8 +8,11 @@ makedocs(
     authors = "JuliaGizmos",
     pages = [
         "Introduction" => "index.md",
+        "Observables" => "observables.md",
+        "Widgets" => "widgets.md",
+        "Layout" => "layout.md",
+        "Deploying the web app" => "deploying.md",
         "Tutorial" => "tutorial.md",
-        "API reference" => "api_reference.md",
     ]
 )
 

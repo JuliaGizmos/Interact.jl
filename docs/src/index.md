@@ -4,9 +4,17 @@ Interact allows to create small GUIs in Julia based on web technology. These GUI
 
 To understand how to use it go through the [Tutorial](@ref). The tutorial is also available [here](https://github.com/JuliaGizmos/Interact.jl/blob/master/doc/notebooks/tutorial.ipynb) as a Jupyter notebook.
 
-A list of available widget can be found at [API reference](@ref)
+[InteractBase](https://github.com/piever/InteractBase.jl), [Vue](https://github.com/JuliaGizmos/Vue.jl) and [WebIO](https://github.com/JuliaGizmos/WebIO.jl) provide the logic that allows the communication between Julia and Javascript and the organization of the widgets.
 
-InteractBase (together with [Vue](https://github.com/JuliaGizmos/Vue.jl) and [WebIO](https://github.com/JuliaGizmos/WebIO.jl)) provides the logic that allows the communication between Julia and Javascript and the organization of the widgets.
+## Overview
+
+Creating an app in Interact requires three ingredients:
+
+- [Observables](@ref): references that can listen to changes in other references
+- [Widgets](@ref): the graphical elements that make up the app
+- [Layout](@ref): tools to assemble together different widgets
+
+To get a quick overview of how these tools work together, go to [Tutorial](@ref).
 
 ## CSS frameworks
 
@@ -24,7 +32,7 @@ or
 settheme!(:uikit)
 ```
 
-## Deploying the web app
+## Deployment
 
 InteractBase works with the following frontends:
 
@@ -34,4 +42,4 @@ InteractBase works with the following frontends:
 - [Mux](https://github.com/JuliaWeb/Mux.jl) - A web server framework
 
 
-See [Displaying a widget](@ref) for instructions.
+See [Deploying the web app](@ref) for instructions.

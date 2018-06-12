@@ -1,4 +1,4 @@
-# API reference
+# Widgets
 
 ## Text input
 
