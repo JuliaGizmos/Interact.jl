@@ -27,7 +27,7 @@ w = Window()
 body!(w, ui);
 # The app can also be served in a webpage via [Mux.jl](https://github.com/JuliaWeb/Mux.jl):
 using Mux
-webio_serve(page("/", req -> ui), rand(8000:9000)) # serve on a random port
+WebIO.webio_serve(page("/", req -> ui), rand(8000:9000)) # serve on a random port
 #
 # ## Adding behavior
 # For now this button doesn't do anything. This can be changed by adding callbacks to its primary observable:

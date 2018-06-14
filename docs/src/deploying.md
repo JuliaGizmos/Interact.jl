@@ -41,5 +41,5 @@ The app can also be served in a webpage:
 
 ```julia
 using Interact, Mux
-webio_serve(page("/", req -> ui), rand(8000:9000)) # serve on a random port
+WebIO.webio_serve(page("/", req -> ui), rand(8000:9000)) # serve on a random port
 ```
