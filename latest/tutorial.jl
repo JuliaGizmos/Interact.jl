@@ -12,7 +12,7 @@
 # The basic behavior is as follows: Interact provides a series of widgets, each widgets has a primary observable that can be obtained with `observe(widget)` and adding listeners to that observable one can provide behavior. Let's see this in practice.
 #
 # ## Displaying a widget
-using Interact, WebIO
+using Interact
 ui = button()
 display(ui)
 
@@ -27,7 +27,7 @@ w = Window()
 body!(w, ui);
 # The app can also be served in a webpage via [Mux.jl](https://github.com/JuliaWeb/Mux.jl):
 using Mux
-webio_serve(page("/", req -> ui), rand(8000:9000)) # serve on a random port
+WebIO.webio_serve(page("/", req -> ui), rand(8000:9000)) # serve on a random port
 #
 # ## Adding behavior
 # For now this button doesn't do anything. This can be changed by adding callbacks to its primary observable:
@@ -63,7 +63,6 @@ togglebuttons(["a", "b", "c"]) |> display # Observable is option selected
 radiobuttons(["a", "b", "c"]) |> display # Observable is option selected
 
 # The option widgets can also take as input a dictionary (ordered dictionary is preferrable, to avoid items getting scrambled), in which case the label displays the key while the observable stores the value:
-using DataStructures
 s = dropdown(OrderedDict("a" => "Value 1", "b" => "Value 2"))
 display(s)
 #-
@@ -89,7 +88,7 @@ ui = @manipulate for nsamples in 1:200,
     )
 end
 # or, if you want a plot with some variables taking discrete values:
-using Plots, DataStructures
+using Plots
 
 x = y = 0:0.1:30
 
@@ -100,12 +99,11 @@ mp = @manipulate for freq1 in freqs, freq2 in slider(0.01:0.1:4π; label="freq2"
     plot(x, y)
 end
 
-# ## Layout
+# ## Widget layout
 #
 # To create a full blown web-app, you should learn the layout tools that the CSS framework you are using provides. Both [Bulma](https://bulma.io/) and [UIkit](https://getuikit.com/) have modern layout tools for responsive design (of course, use Bulma if you're working with the Bulma backend and UIkit if you're working with the UIkit backend). You can use [WebIO](https://github.com/JuliaGizmos/WebIO.jl) to create from Julia the HTML required to create these layouts.
 #
 # However, this can be overwhelming at first (especially for users with no prior experience in web design). A simpler solution is [CSSUtil](https://github.com/JuliaGizmos/CSSUtil.jl), a package that provides some tools to create simple layouts.
-using CSSUtil
 loadbutton = filepicker()
 hellobutton = button("Hello!")
 goodbyebutton = button("Good bye!")
@@ -134,7 +132,6 @@ data = Observable{Any}(DataFrame)
 map!(CSV.read, data, observe(loadbutton))
 #
 # Now as soon as a file is uploaded, the `Observable` `data` gets updated with the correct value. Now, as soon as `data` is updated, we want to update our buttons.
-using CSSUtil
 function makebuttons(df)
     buttons = button.(names(df))
     dom"div"(hbox(buttons))
@@ -154,7 +151,7 @@ function makebuttons(df)
 end
 #
 # To put it all together:
-using CSV, DataFrames, InteractUIkit, WebIO, Observables, Plots, CSSUtil
+using CSV, DataFrames, Interact, Plots
 loadbutton = filepicker()
 columnbuttons = Observable{Any}(dom"div"())
 data = Observable{Any}(DataFrame)
