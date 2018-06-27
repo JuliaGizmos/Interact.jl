@@ -10,7 +10,7 @@ import InteractUIkit, InteractBulma
 
 @reexport using DataStructures
 @reexport using Observables
-@reexport using Vue
+@reexport using Knockout
 @reexport using CSSUtil
 @reexport using WebIO
 
