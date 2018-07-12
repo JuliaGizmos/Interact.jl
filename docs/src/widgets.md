@@ -57,6 +57,8 @@ radiobuttons
 checkboxes
 toggles
 togglebuttons
+```
+```@docs
 tabs
 tabulator
 ```
