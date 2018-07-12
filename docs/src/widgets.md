@@ -64,3 +64,9 @@ toggles
 ```@docs
 latex
 ```
+
+## Create widgets automatically from a Julia variable
+
+```@docs
+widget
+```

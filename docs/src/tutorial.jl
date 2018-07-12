@@ -68,9 +68,42 @@ display(s)
 #-
 observe(s)[]
 #
+# ## Creating custom widgets
+#
+# Interact allows the creation of custom composite widgets starting from simpler ones.
+# Let's say for example that we want to create a widget that has three sliders and a color
+# that is updated to match the RGB value we gave with the sliders.
+
+import Colors
+using Plots
+
+@widget wdg function mycolorpicker()
+    :r = slider(0:255, label = "red")
+    :g = slider(0:255, label = "green")
+    :b = slider(0:255, label = "blue")
+    @output! wdg Colors.RGB($(:r)/255, $(:g)/255, $(:b)/255)
+    @display! wdg plot(sin, color = $(_.output)) ## choose how to display the output, optional
+    @layout! wdg hbox(_.display, vbox(:r, :g, :b)) ## custom layout: by default things are stacked vertically
+end
+
+# And now you can simply instantiate the widget with
+mycolorpicker()
+# Note the `$(:r)` syntax: it means automatically update the widget as soon as the
+# slider changes value. See [`Widgets.@map`](@ref) for more details.
+# If instead we wanted to only update the plot when a button is pressed we would do:
+@widget wdg function mycolorpicker()
+    :r = slider(0:255, label = "red")
+    :g = slider(0:255, label = "green")
+    :b = slider(0:255, label = "blue")
+    :update = button("Update plot")
+    @output! wdg ($(:update); Colors.RGB(:r[]/255, :g[]/255, :b[]/255))
+    @display! wdg plot(sin, color = $(_.output)) ## choose how to display the output, optional
+    @layout! wdg hbox(_.display, vbox(:r, :g, :b, :update)) ## custom layout: by default things are stacked vertically
+end
+
 # ## A simpler approach for simpler cases
 #
-# While the approach sketched above works for all sorts of situations, there is a specific marcro to simplify it in some specific case. If you want to update some result (maybe a plot) as a function of some parameters (discrete or continuous) simply write `@manipulate` before the `for` loop. Discrete parameters will be replaced by `togglebuttons` and continuous parameters by `slider`: the result will be updated as soon as you click on a button or move the slider:
+# While the approach sketched above works for all sorts of situations, there is a specific marcro to simplify it in some specific case. If you just want to update some result (maybe a plot) as a function of some parameters (discrete or continuous) simply write `@manipulate` before the `for` loop. Discrete parameters will be replaced by `togglebuttons` and continuous parameters by `slider`: the result will be updated as soon as you click on a button or move the slider:
 #
 width, height = 700, 300
 colors = ["black", "gray", "silver", "maroon", "red", "olive", "yellow", "green", "lime", "teal", "aqua", "navy", "blue", "purple", "fuchsia"]

@@ -13,6 +13,7 @@ import InteractUIkit, InteractBulma
 @reexport using Knockout
 @reexport using CSSUtil
 @reexport using WebIO
+@reexport using Widgets
 
 const themes = Dict(
     :uikit => InteractUIkit.UIkit(),
