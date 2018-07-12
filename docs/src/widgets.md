@@ -53,10 +53,12 @@ InteractBase.input
 
 ```@docs
 dropdown
-togglebuttons
 radiobuttons
 checkboxes
 toggles
+togglebuttons
+tabs
+tabulator
 ```
 
 ## Output
