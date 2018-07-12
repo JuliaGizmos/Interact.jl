@@ -329,14 +329,6 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "widgets.html#InteractBase.togglebuttons",
-    "page": "Widgets",
-    "title": "InteractBase.togglebuttons",
-    "category": "function",
-    "text": "togglebuttons(options::Associative; value::Union{T, Observable})\n\nCreates a set of toggle buttons whose labels will be the keys of options.\n\ntogglebuttons(values::AbstractArray; kwargs...)\n\ntogglebuttons with labels string.(values) see togglebuttons(options::Associative; ...) for more details\n\n\n\n"
-},
-
-{
     "location": "widgets.html#InteractBase.radiobuttons",
     "page": "Widgets",
     "title": "InteractBase.radiobuttons",
@@ -361,11 +353,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "widgets.html#InteractBase.togglebuttons",
+    "page": "Widgets",
+    "title": "InteractBase.togglebuttons",
+    "category": "function",
+    "text": "togglebuttons(options::Associative; value::Union{T, Observable})\n\nCreates a set of toggle buttons whose labels will be the keys of options.\n\ntogglebuttons(values::AbstractArray; kwargs...)\n\ntogglebuttons with labels string.(values) see togglebuttons(options::Associative; ...) for more details\n\n\n\n"
+},
+
+{
     "location": "widgets.html#Option-input-1",
     "page": "Widgets",
     "title": "Option input",
     "category": "section",
-    "text": "dropdown\ntogglebuttons\nradiobuttons\ncheckboxes\ntoggles"
+    "text": "dropdown\nradiobuttons\ncheckboxes\ntoggles\ntogglebuttonstabs\ntabulator"
 },
 
 {
@@ -417,6 +417,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "custom_widgets.html#The-Widget-type-1",
+    "page": "Custom widgets",
+    "title": "The Widget type",
+    "category": "section",
+    "text": "The Widget type can be used to create custom widgets. The types is parametric, with the parameter being the name of the widget and it takes as argument a OrderedDict of children.For example:d = OrderedDict(:label => \"My label\", :button => button(\"My button\"))\nw = Interact.Widget{:mywidget}(d)The @output! and @display! macros can be used to set the output of the widget and define how to display it.@output! w $(:button) > 5 ? \"You pressed me many times\" : \"You didn\'t press me enough\"\n@display! w dom\"div\"($(_.output), style = Dict(\"color\" => \"red\"))Finally the @layout! macro allows us to set the layout of the widget:@layout! w hbox(vbox(:label, :button), _.display)"
+},
+
+{
     "location": "custom_widgets.html#Widgets.@widget",
     "page": "Custom widgets",
     "title": "Widgets.@widget",
@@ -429,7 +437,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Custom widgets",
     "title": "The recipe macro",
     "category": "section",
-    "text": "@widget"
+    "text": "To simplify adding children to a custom widget (as well as to register it as a \"widget recipe\"), a @widget macro is provided.See Creating custom widgets for examples.@widget"
 },
 
 {
@@ -473,11 +481,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "custom_widgets.html#Widgets.@nodeps",
+    "page": "Custom widgets",
+    "title": "Widgets.@nodeps",
+    "category": "macro",
+    "text": "@nodeps(expr)\n\nMacro to remove need to depend on package X that defines a recipe to use it in one\'s own recipe. For example, InteractBase defines dropwdown recipe. To use dropdown in a recipe in a package, without depending on InteractBase, wrap the dropdown call in the @nodeps macro:\n\n@widget wdg function myrecipe(i)\n    :label = \"My recipe\"\n    :dropdown = Widgets.@nodeps dropdown(i)\nend\n\n\n\n"
+},
+
+{
     "location": "custom_widgets.html#Auxiliary-functions-1",
     "page": "Custom widgets",
     "title": "Auxiliary functions",
     "category": "section",
-    "text": "Widgets.@map\n@output!\n@display!\nWidgets.@layout\n@layout!"
+    "text": "Widgets.@map\n@output!\n@display!\nWidgets.@layout\n@layout!\nWidgets.@nodeps"
 },
 
 {
