@@ -7,7 +7,7 @@ using Reexport
 @reexport using InteractBase
 
 import InteractUIkit, InteractBulma
-import Widgets: Widget, @layout, @nodeps
+import Widgets: Widget, @layout, @nodeps, @map
 
 @reexport using DataStructures
 @reexport using Observables
