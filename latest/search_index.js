@@ -13,7 +13,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Introduction",
     "title": "Interact",
     "category": "section",
-    "text": "Interact allows to create small GUIs in Julia based on web technology. These GUIs can be deployed in jupyter notebooks, in the Juno IDE plot pane, in an Electron window or in the browser.To understand how to use it go through the Tutorial. The tutorial is also available here as a Jupyter notebook.InteractBase, Vue and WebIO provide the logic that allows the communication between Julia and Javascript and the organization of the widgets."
+    "text": "Interact allows to create small GUIs in Julia based on web technology. These GUIs can be deployed in jupyter notebooks, in the Juno IDE plot pane, in an Electron window or in the browser.To understand how to use it go through the Tutorial. The tutorial is also available here as a Jupyter notebook.InteractBase, Knockout and WebIO provide the logic that allows the communication between Julia and Javascript and the organization of the widgets."
 },
 
 {
@@ -325,7 +325,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Widgets",
     "title": "InteractBase.dropdown",
     "category": "function",
-    "text": "dropdown(options::Associative;\n         value = first(values(options)),\n         label = nothing,\n         multiple = false)\n\nA dropdown menu whose item labels will be the keys of options. If multiple=true the observable will hold an array containing the values of all selected items e.g. dropdown(OrderedDict(\"good\"=>1, \"better\"=>2, \"amazing\"=>9001))\n\n\n\ndropdown(values::AbstractArray; kwargs...)\n\ndropdown with labels string.(values) see dropdown(options::Associative; ...) for more details\n\n\n\n"
+    "text": "dropdown(options::Associative;\n         value = first(values(options)),\n         label = nothing,\n         multiple = false)\n\nA dropdown menu whose item labels will be the keys of options. If multiple=true the observable will hold an array containing the values of all selected items e.g. dropdown(OrderedDict(\"good\"=>1, \"better\"=>2, \"amazing\"=>9001))\n\ndropdown(values::AbstractArray; kwargs...)\n\ndropdown with labels string.(values) see dropdown(options::Associative; ...) for more details\n\n\n\n"
 },
 
 {
@@ -333,7 +333,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Widgets",
     "title": "InteractBase.togglebuttons",
     "category": "function",
-    "text": "togglebuttons(options::Associative; value::Union{T, Observable})\n\nCreates a set of toggle buttons whose labels will be the keys of options.\n\n\n\n"
+    "text": "togglebuttons(options::Associative; value::Union{T, Observable})\n\nCreates a set of toggle buttons whose labels will be the keys of options.\n\ntogglebuttons(values::AbstractArray; kwargs...)\n\ntogglebuttons with labels string.(values) see togglebuttons(options::Associative; ...) for more details\n\n\n\n"
 },
 
 {
@@ -341,7 +341,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Widgets",
     "title": "InteractBase.radiobuttons",
     "category": "function",
-    "text": "radiobuttons(options::Associative;\n             value::Union{T, Observable} = first(values(options)))\n\ne.g. radiobuttons(OrderedDict(\"good\"=>1, \"better\"=>2, \"amazing\"=>9001))\n\n\n\nradiobuttons(values::AbstractArray; kwargs...)\n\nradiobuttons with labels string.(values) see radiobuttons(options::Associative; ...) for more details\n\n\n\n"
+    "text": "radiobuttons(options::Associative;\n             value::Union{T, Observable} = first(values(options)))\n\ne.g. radiobuttons(OrderedDict(\"good\"=>1, \"better\"=>2, \"amazing\"=>9001))\n\nradiobuttons(values::AbstractArray; kwargs...)\n\nradiobuttons with labels string.(values) see radiobuttons(options::Associative; ...) for more details\n\n\n\n"
 },
 
 {
@@ -349,7 +349,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Widgets",
     "title": "InteractBase.checkboxes",
     "category": "function",
-    "text": "checkboxes(options::Associative;\n         value = first(values(options)))\n\nA list of checkboxes whose item labels will be the keys of options. Tthe observable will hold an array containing the values of all selected items, e.g. checkboxes(OrderedDict(\"good\"=>1, \"better\"=>2, \"amazing\"=>9001))\n\n\n\ncheckboxes(values::AbstractArray; kwargs...)\n\ncheckboxes with labels string.(values) see checkboxes(options::Associative; ...) for more details\n\n\n\n"
+    "text": "checkboxes(options::Associative;\n         value = first(values(options)))\n\nA list of checkboxes whose item labels will be the keys of options. Tthe observable will hold an array containing the values of all selected items, e.g. checkboxes(OrderedDict(\"good\"=>1, \"better\"=>2, \"amazing\"=>9001))\n\ncheckboxes(values::AbstractArray; kwargs...)\n\ncheckboxes with labels string.(values) see checkboxes(options::Associative; ...) for more details\n\n\n\n"
 },
 
 {
@@ -357,7 +357,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Widgets",
     "title": "InteractBase.toggles",
     "category": "function",
-    "text": "toggles(options::Associative;\n         value = first(values(options)))\n\nA list of toggle switches whose item labels will be the keys of options. Tthe observable will hold an array containing the values of all selected items, e.g. toggles(OrderedDict(\"good\"=>1, \"better\"=>2, \"amazing\"=>9001))\n\n\n\ntoggles(values::AbstractArray; kwargs...)\n\ntoggles with labels string.(values) see toggles(options::Associative; ...) for more details\n\n\n\n"
+    "text": "toggles(options::Associative;\n         value = first(values(options)))\n\nA list of toggle switches whose item labels will be the keys of options. Tthe observable will hold an array containing the values of all selected items, e.g. toggles(OrderedDict(\"good\"=>1, \"better\"=>2, \"amazing\"=>9001))\n\ntoggles(values::AbstractArray; kwargs...)\n\ntoggles with labels string.(values) see toggles(options::Associative; ...) for more details\n\n\n\n"
 },
 
 {
@@ -382,6 +382,118 @@ var documenterSearchIndex = {"docs": [
     "title": "Output",
     "category": "section",
     "text": "latex"
+},
+
+{
+    "location": "widgets.html#Widgets.widget",
+    "page": "Widgets",
+    "title": "Widgets.widget",
+    "category": "function",
+    "text": "widget(args...; kwargs...)\n\nAutomatically convert Julia types into appropriate widgets. kwargs are passed to the more specific widget function.\n\nExamples\n\nmap(display, [\n    widget(1:10),                 # Slider\n    widget(false),                # Checkbox\n    widget(\"text\"),               # Textbox\n    widget(1.1),                  # Spinbox\n    widget([:on, :off]),          # Toggle Buttons\n    widget(Dict(\"π\" => float(π), \"τ\" => 2π)),\n    widget(colorant\"red\"),        # Color picker\n    widget(Dates.today()),        # Date picker\n    widget(Dates.Time()),         # Time picker\n    ]);\n\n\n\n"
+},
+
+{
+    "location": "widgets.html#Create-widgets-automatically-from-a-Julia-variable-1",
+    "page": "Widgets",
+    "title": "Create widgets automatically from a Julia variable",
+    "category": "section",
+    "text": "widget"
+},
+
+{
+    "location": "custom_widgets.html#",
+    "page": "Custom widgets",
+    "title": "Custom widgets",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "custom_widgets.html#Custom-widgets-1",
+    "page": "Custom widgets",
+    "title": "Custom widgets",
+    "category": "section",
+    "text": "Besides the standard widgets, Interact provides a framework to define custom GUIs. This is currently possible with two approaches, the full featured @widget macro and the simple to use but more basic @manipulate macro."
+},
+
+{
+    "location": "custom_widgets.html#Widgets.@widget",
+    "page": "Custom widgets",
+    "title": "Widgets.@widget",
+    "category": "macro",
+    "text": "@widget(wdgname, func_call)\n\nSpecial macro to create \"recipes\" for custom widgets. The @widget macro takes to argument, a variable name wdgname and a function call func_call. The function call is changed by the macro in several ways:\n\nan extra line is added at the beginning to initiliaze a variable called wdgname::Widget that can be used to refer to the widget in the function body\nall lines of the type sym::Symbol = expr are replaced with wdgname[sym] = @map(wdgname, expr), see Widgets.@map for more details\nan extra line is added at the end to return wdgname\n\nThe macro then registers the function func_call and exports it. It also overloads the widget function with the following signature:\n\nWidgets.widget(::Val{Symbol(func_name)}, args...; kwargs..) = func_name(args...; kwargs...)\n\n\n\n"
+},
+
+{
+    "location": "custom_widgets.html#The-recipe-macro-1",
+    "page": "Custom widgets",
+    "title": "The recipe macro",
+    "category": "section",
+    "text": "@widget"
+},
+
+{
+    "location": "custom_widgets.html#Widgets.@map",
+    "page": "Custom widgets",
+    "title": "Widgets.@map",
+    "category": "macro",
+    "text": "@map(d, x)\n\nApply the expression x to the widget d, replacing e.g. symbol :s with the corresponding Observable observe(d[:s]). To use the value of some of d\'s children, use :s[]. Use $(:s) if you want the output to update automatically as soon as the value of observe(d[:s]) changes. In this context, _ refers to the whole widget. To use actual symbols, escape them with ^, as in ^(:a).\n\nExamples\n\njulia> using DataStructures, InteractBase, Observables\n\njulia> t = Widgets.Widget{:test}(OrderedDict(:a => Observable(2), :b => slider(1:100), :c => button()));\n\nThis updates as soon as observe(t[:a]) or observe(t[:b]) change:\n\njulia> Widgets.@map t $(:a) + $(:b)\nObservables.Observable{Int64}(\"ob_31\", 52, Any[])\n\nwhereas this only updates when button :c is pressed:\n\njulia> Widgets.@map t ($(:c); :a[] + :b[])\nObservables.Observable{Int64}(\"ob_33\", 52, Any[])\n\n\n\n"
+},
+
+{
+    "location": "custom_widgets.html#Widgets.@output!",
+    "page": "Custom widgets",
+    "title": "Widgets.@output!",
+    "category": "macro",
+    "text": "@output!(d, x)\n\nComputes Widgets.@map(d, x) and sets d.output to be the result (see Widgets.@map for more details). d.display is also set by default to match d.output. To have a custom display use @display!(d, expr) _after_ @output!(d, x)\n\n\n\n"
+},
+
+{
+    "location": "custom_widgets.html#Widgets.@display!",
+    "page": "Custom widgets",
+    "title": "Widgets.@display!",
+    "category": "macro",
+    "text": "@display!(d, x)\n\nComputes Widgets.@map(d, x) and sets d.display to be the result (see Widgets.@map for more details).\n\n\n\n"
+},
+
+{
+    "location": "custom_widgets.html#Widgets.@layout",
+    "page": "Custom widgets",
+    "title": "Widgets.@layout",
+    "category": "macro",
+    "text": "@layout(x)\n\nReturns a function, that takes as argument a widget d and replaces e.g. symbol :s with the corresponding subwidget d[:s]. In this context, _ refers to the whole widget. To use actual symbols, escape them with ^, as in ^(:a).\n\nExamples\n\njulia> using DataStructures, InteractBase, CSSUtil\n\njulia> f = Widgets.@layout hbox(:b, CSSUtil.hskip(1em), :c);\n\njulia> t = Widgets.Widget{:test}(OrderedDict(:b => slider(1:100), :c => button()));\n\njulia> f(t);\n\n\n\n"
+},
+
+{
+    "location": "custom_widgets.html#Widgets.@layout!",
+    "page": "Custom widgets",
+    "title": "Widgets.@layout!",
+    "category": "macro",
+    "text": "@layout!(d, x)\n\nSet d.layout to match the result of Widgets.@layout(x). See Widgets.@layout for more information.\n\nExamples\n\njulia> using DataStructures, InteractBase, CSSUtil\n\njulia> t = Widgets.Widget{:test}(OrderedDict(:b => slider(1:100), :c => button()));\n\njulia> @layout! t hbox(:b, CSSUtil.hskip(1em), :c);\n\n\n\n"
+},
+
+{
+    "location": "custom_widgets.html#Auxiliary-functions-1",
+    "page": "Custom widgets",
+    "title": "Auxiliary functions",
+    "category": "section",
+    "text": "Widgets.@map\n@output!\n@display!\nWidgets.@layout\n@layout!"
+},
+
+{
+    "location": "custom_widgets.html#InteractBase.@manipulate",
+    "page": "Custom widgets",
+    "title": "InteractBase.@manipulate",
+    "category": "macro",
+    "text": "@manipulate expr\n\nThe @manipulate macro lets you play with any expression using widgets. expr needs to be a for loop. The for loop variable are converted to widgets using the widget function (ranges become slider, lists of options become togglebuttons, etc...). The for loop body is displayed beneath the widgets and automatically updated as soon as the widgets change value.\n\nUse throttle = df to only update the output after a small time interval dt (useful if the update is costly as it prevents multiple updates when moving for example a slider).\n\nExamples\n\nusing Colors\n\n@manipulate for r = 0:.05:1, g = 0:.05:1, b = 0:.05:1\n    HTML(string(\"<div style=\'color:#\", hex(RGB(r,g,b)), \"\'>Color me</div>\"))\nend\n\n@manipulate throttle = 0.1 for r = 0:.05:1, g = 0:.05:1, b = 0:.05:1\n    HTML(string(\"<div style=\'color:#\", hex(RGB(r,g,b)), \"\'>Color me</div>\"))\nend\n\n@layout! can be used to adjust the layout of a manipulate block:\n\nusing Widgets, CSSUtil, WebIO\n\nui = @manipulate throttle = 0.1 for r = 0:.05:1, g = 0:.05:1, b = 0:.05:1\n    HTML(string(\"<div style=\'color:#\", hex(RGB(r,g,b)), \"\'>Color me</div>\"))\nend\n@layout! ui dom\"div\"(_.display, vskip(2em), :r, :g, :b)\nui\n\n\n\n"
+},
+
+{
+    "location": "custom_widgets.html#A-simpler-approach:-the-manipulate-macro-1",
+    "page": "Custom widgets",
+    "title": "A simpler approach: the manipulate macro",
+    "category": "section",
+    "text": "@manipulate"
 },
 
 {
@@ -497,11 +609,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "tutorial.html#Creating-custom-widgets-1",
+    "page": "Tutorial",
+    "title": "Creating custom widgets",
+    "category": "section",
+    "text": "Interact allows the creation of custom composite widgets starting from simpler ones. Let\'s say for example that we want to create a widget that has three sliders and a color that is updated to match the RGB value we gave with the sliders.import Colors\nusing Plots\n\n@widget wdg function mycolorpicker()\n    :r = slider(0:255, label = \"red\")\n    :g = slider(0:255, label = \"green\")\n    :b = slider(0:255, label = \"blue\")\n    @output! wdg Colors.RGB($(:r)/255, $(:g)/255, $(:b)/255)\n    @display! wdg plot(sin, color = $(_.output)) ## choose how to display the output, optional\n    @layout! wdg hbox(_.display, vbox(:r, :g, :b)) ## custom layout: by default things are stacked vertically\nendAnd now you can simply instantiate the widget withmycolorpicker()Note the $(:r) syntax: it means automatically update the widget as soon as the slider changes value. See Widgets.@map for more details. If instead we wanted to only update the plot when a button is pressed we would do:@widget wdg function mycolorpicker()\n    :r = slider(0:255, label = \"red\")\n    :g = slider(0:255, label = \"green\")\n    :b = slider(0:255, label = \"blue\")\n    :update = button(\"Update plot\")\n    @output! wdg ($(:update); Colors.RGB(:r[]/255, :g[]/255, :b[]/255))\n    @display! wdg plot(sin, color = $(_.output)) ## choose how to display the output, optional\n    @layout! wdg hbox(_.display, vbox(:r, :g, :b, :update)) ## custom layout: by default things are stacked vertically\nend"
+},
+
+{
     "location": "tutorial.html#A-simpler-approach-for-simpler-cases-1",
     "page": "Tutorial",
     "title": "A simpler approach for simpler cases",
     "category": "section",
-    "text": "While the approach sketched above works for all sorts of situations, there is a specific marcro to simplify it in some specific case. If you want to update some result (maybe a plot) as a function of some parameters (discrete or continuous) simply write @manipulate before the for loop. Discrete parameters will be replaced by togglebuttons and continuous parameters by slider: the result will be updated as soon as you click on a button or move the slider:width, height = 700, 300\ncolors = [\"black\", \"gray\", \"silver\", \"maroon\", \"red\", \"olive\", \"yellow\", \"green\", \"lime\", \"teal\", \"aqua\", \"navy\", \"blue\", \"purple\", \"fuchsia\"]\ncolor(i) = colors[i%length(colors)+1]\nui = @manipulate for nsamples in 1:200,\n        sample_step in slider(0.01:0.01:1.0, value=0.1, label=\"sample step\"),\n        phase in slider(0:0.1:2pi, value=0.0, label=\"phase\"),\n        radii in 0.1:0.1:60\n    cxs_unscaled = [i*sample_step + phase for i in 1:nsamples]\n    cys = sin.(cxs_unscaled) .* height/3 .+ height/2\n    cxs = cxs_unscaled .* width/4pi\n    dom\"svg:svg[width=$width, height=$height]\"(\n        (dom\"svg:circle[cx=$(cxs[i]), cy=$(cys[i]), r=$radii, fill=$(color(i))]\"()\n            for i in 1:nsamples)...\n    )\nendor, if you want a plot with some variables taking discrete values:using Plots\n\nx = y = 0:0.1:30\n\nfreqs = OrderedDict(zip([\"pi/4\", \"π/2\", \"3π/4\", \"π\"], [π/4, π/2, 3π/4, π]))\n\nmp = @manipulate for freq1 in freqs, freq2 in slider(0.01:0.1:4π; label=\"freq2\")\n    y = @. sin(freq1*x) * sin(freq2*x)\n    plot(x, y)\nend"
+    "text": "While the approach sketched above works for all sorts of situations, there is a specific marcro to simplify it in some specific case. If you just want to update some result (maybe a plot) as a function of some parameters (discrete or continuous) simply write @manipulate before the for loop. Discrete parameters will be replaced by togglebuttons and continuous parameters by slider: the result will be updated as soon as you click on a button or move the slider:width, height = 700, 300\ncolors = [\"black\", \"gray\", \"silver\", \"maroon\", \"red\", \"olive\", \"yellow\", \"green\", \"lime\", \"teal\", \"aqua\", \"navy\", \"blue\", \"purple\", \"fuchsia\"]\ncolor(i) = colors[i%length(colors)+1]\nui = @manipulate for nsamples in 1:200,\n        sample_step in slider(0.01:0.01:1.0, value=0.1, label=\"sample step\"),\n        phase in slider(0:0.1:2pi, value=0.0, label=\"phase\"),\n        radii in 0.1:0.1:60\n    cxs_unscaled = [i*sample_step + phase for i in 1:nsamples]\n    cys = sin.(cxs_unscaled) .* height/3 .+ height/2\n    cxs = cxs_unscaled .* width/4pi\n    dom\"svg:svg[width=$width, height=$height]\"(\n        (dom\"svg:circle[cx=$(cxs[i]), cy=$(cys[i]), r=$radii, fill=$(color(i))]\"()\n            for i in 1:nsamples)...\n    )\nendor, if you want a plot with some variables taking discrete values:using Plots\n\nx = y = 0:0.1:30\n\nfreqs = OrderedDict(zip([\"pi/4\", \"π/2\", \"3π/4\", \"π\"], [π/4, π/2, 3π/4, π]))\n\nmp = @manipulate for freq1 in freqs, freq2 in slider(0.01:0.1:4π; label=\"freq2\")\n    y = @. sin(freq1*x) * sin(freq2*x)\n    plot(x, y)\nend"
 },
 
 {
