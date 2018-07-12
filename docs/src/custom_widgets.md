@@ -13,6 +13,13 @@ d = OrderedDict(:label => "My label", :button => button("My button"))
 w = Interact.Widget{:mywidget}(d)
 ```
 
+Children can be accessed and modified using `getindex` and `setindex!` on the `Widget` object:
+
+```julia
+println(w[:label])
+w[:label] = "A new label"
+```
+
 The [`@output!`](@ref) and [`@display!`](@ref) macros can be used to set the output of the widget and define how to display it.
 
 ```julia
