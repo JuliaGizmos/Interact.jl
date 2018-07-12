@@ -421,7 +421,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Custom widgets",
     "title": "The Widget type",
     "category": "section",
-    "text": "The Widget type can be used to create custom widgets. The types is parametric, with the parameter being the name of the widget and it takes as argument a OrderedDict of children.For example:d = OrderedDict(:label => \"My label\", :button => button(\"My button\"))\nw = Interact.Widget{:mywidget}(d)The @output! and @display! macros can be used to set the output of the widget and define how to display it.@output! w $(:button) > 5 ? \"You pressed me many times\" : \"You didn\'t press me enough\"\n@display! w dom\"div\"($(_.output), style = Dict(\"color\" => \"red\"))Finally the @layout! macro allows us to set the layout of the widget:@layout! w hbox(vbox(:label, :button), _.display)"
+    "text": "The Widget type can be used to create custom widgets. The types is parametric, with the parameter being the name of the widget and it takes as argument a OrderedDict of children.For example:d = OrderedDict(:label => \"My label\", :button => button(\"My button\"))\nw = Interact.Widget{:mywidget}(d)Children can be accessed and modified using getindex and setindex! on the Widget object:println(w[:label])\nw[:label] = \"A new label\"The @output! and @display! macros can be used to set the output of the widget and define how to display it.@output! w $(:button) > 5 ? \"You pressed me many times\" : \"You didn\'t press me enough\"\n@display! w dom\"div\"($(_.output), style = Dict(\"color\" => \"red\"))Finally the @layout! macro allows us to set the layout of the widget:@layout! w hbox(vbox(:label, :button), _.display)"
 },
 
 {
