@@ -1,4 +1,12 @@
 # # Tutorial
+#md #
+#md # This tutorial is available in the Jupyter notebook format, togeter with other example notebooks, in the doc folder.
+#md # To open Jupyter notebook in the correct folder simply type:
+#md # ```julia
+#md # using IJulia, Interact
+#md # notebook(dir = Interact.notebookdir)
+#md # ```
+#md # in your Julia REPL. You can also view it online [here](https://github.com/JuliaGizmos/Interact.jl/blob/master/doc/notebooks/tutorial.ipynb).
 #
 # ## Installing everything
 #

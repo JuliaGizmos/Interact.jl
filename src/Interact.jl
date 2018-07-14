@@ -16,6 +16,8 @@ import Widgets: Widget, @layout, @nodeps, @map
 @reexport using WebIO
 @reexport using Widgets
 
+const notebookdir = joinpath(@__DIR__, "..", "doc", "notebooks")
+
 const themes = Dict(
     :uikit => InteractUIkit.UIkit(),
     :bulma => InteractBulma.Bulma()
