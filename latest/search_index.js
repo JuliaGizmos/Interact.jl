@@ -465,6 +465,30 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "custom_widgets.html#Widgets.@map!",
+    "page": "Custom widgets",
+    "title": "Widgets.@map!",
+    "category": "macro",
+    "text": "@map!(d, target, x)\n\nIn the expression x to the widget d, replace e.g. symbol :s with the corresponding Observable observe(d[:s]). To use the value of some of d\'s children, use :s[]. As soon as one of the symbols wrapped in a $ changes value, the observable target gets updated with the value of that expression. If no symbol is wrapped in a $, nothing happens. In this context, _ refers to the whole widget. To use actual symbols, escape them with ^, as in ^(:a).\n\nExamples\n\njulia> using DataStructures, InteractBase, Observables\n\njulia> t = Widgets.Widget{:test}(OrderedDict(:a => Observable(2), :b => slider(1:100), :c => button()));\n\nThis updates t[:a] as soon as the user moves the slider:\n\njulia> Widgets.@map! t :a $(:b);\n\n@map!(target, x)\n\nCurried version of @map!(d, target, x): anonymous function mapping d to @map(d, target, x).\n\n\n\n"
+},
+
+{
+    "location": "custom_widgets.html#Widgets.@on",
+    "page": "Custom widgets",
+    "title": "Widgets.@on",
+    "category": "macro",
+    "text": "@on(d, x)\n\nIn the expression x to the widget d, replace e.g. symbol :s with the corresponding Observable observe(d[:s]). To use the value of some of d\'s children, use :s[]. As soon as one of the symbols wrapped in a $ changes value, the expression x gets executed with the updated value. If no symbol is wrapped in a $, nothing happens. In this context, _ refers to the whole widget. To use actual symbols, escape them with ^, as in ^(:a).\n\nExamples\n\njulia> using DataStructures, InteractBase, Observables\n\njulia> t = Widgets.Widget{:test}(OrderedDict(:a => Observable(2), :b => slider(1:100), :c => button()));\n\nThis prints the value of the slider as soon as the user moves it:\n\njulia> Widgets.@on t println($(:b));\n\n@on(x)\n\nCurried version of @on(d, x): anonymous function mapping d to @on(d, x).\n\n\n\n"
+},
+
+{
+    "location": "custom_widgets.html#Auxiliary-functions-1",
+    "page": "Custom widgets",
+    "title": "Auxiliary functions",
+    "category": "section",
+    "text": "Widgets.@map\n@map!\n@on"
+},
+
+{
     "location": "custom_widgets.html#Widgets.@output!",
     "page": "Custom widgets",
     "title": "Widgets.@output!",
@@ -497,6 +521,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "custom_widgets.html#Customizing-output,-display-and-layout-1",
+    "page": "Custom widgets",
+    "title": "Customizing output, display and layout",
+    "category": "section",
+    "text": "@output!\n@display!\nWidgets.@layout\n@layout!"
+},
+
+{
     "location": "custom_widgets.html#Widgets.@nodeps",
     "page": "Custom widgets",
     "title": "Widgets.@nodeps",
@@ -505,11 +537,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "custom_widgets.html#Auxiliary-functions-1",
+    "location": "custom_widgets.html#Defining-custom-widgets-without-depending-on-Interact-1",
     "page": "Custom widgets",
-    "title": "Auxiliary functions",
+    "title": "Defining custom widgets without depending on Interact",
     "category": "section",
-    "text": "Widgets.@map\n@output!\n@display!\nWidgets.@layout\n@layout!\nWidgets.@nodeps"
+    "text": "Widgets.@nodeps"
 },
 
 {
