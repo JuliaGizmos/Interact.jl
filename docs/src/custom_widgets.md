@@ -43,14 +43,26 @@ See [Creating custom widgets](@ref) for examples.
 @widget
 ```
 
-### Auxiliary functions
+## Auxiliary functions
 
 ```@docs
 Widgets.@map
+@map!
+@on
+```
+
+## Customizing output, display and layout
+
+```@docs
 @output!
 @display!
 Widgets.@layout
 @layout!
+```
+
+## Defining custom widgets without depending on Interact
+
+```@docs
 Widgets.@nodeps
 ```
 
