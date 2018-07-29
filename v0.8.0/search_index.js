@@ -25,11 +25,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "index.html#CSS-frameworks-1",
+    "location": "index.html#CSS-framework-1",
     "page": "Introduction",
-    "title": "CSS frameworks",
+    "title": "CSS framework",
     "category": "section",
-    "text": "Two CSS frameworks are available, based one on Bulma and the other on UIkit. Choosing one or the other is mainly a matter of taste. Bulma is the default: it is a pure CSS framework (no extra Javascript), which leaves Julia fully in control of manipulating the DOM (which in turn means less surface area for bugs).To change backend in the middle of the session simply do:settheme!(:bulma)orsettheme!(:uikit)"
+    "text": "Interact widgets are by default styled with the Bulma CSS framework (the previously supported UIkit backend is now deprecated). Bulma is a pure CSS framework (no extra Javascript), which leaves Julia fully in control of manipulating the DOM (which in turn means less surface area for bugs).To use unstyled widgets in the middle of the session (or to style them again) simply do:settheme!(:nativehtml)\nsettheme!(:bulma)respectively."
 },
 
 {
@@ -241,19 +241,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "widgets.html#InteractBase.togglecontent",
-    "page": "Widgets",
-    "title": "InteractBase.togglecontent",
-    "category": "function",
-    "text": "togglecontent(content, value::Union{Bool, Observable}=false; label)\n\nA toggle switch that, when activated, displays content e.g. togglecontent(checkbox(\"Yes, I am sure\"), false, label=\"Are you sure?\")\n\n\n\n"
-},
-
-{
     "location": "widgets.html#Type-input-1",
     "page": "Widgets",
     "title": "Type input",
     "category": "section",
-    "text": "These are widgets to select a specific, non-text, type of input. So far, Date, Time, Color and Bool are supported. Types that allow a empty field (Date and Time) are initialized as nothing by default, whereas Color and Bool are initialized with the default HTML value (colorant\"black\" and false respectively).datepicker\ntimepicker\ncolorpicker\ncheckbox\ntoggle\ntogglecontent"
+    "text": "These are widgets to select a specific, non-text, type of input. So far, Date, Time, Color and Bool are supported. Types that allow a empty field (Date and Time) are initialized as nothing by default, whereas Color and Bool are initialized with the default HTML value (colorant\"black\" and false respectively).datepicker\ntimepicker\ncolorpicker\ncheckbox\ntoggle"
 },
 
 {
@@ -381,7 +373,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Widgets",
     "title": "Option input",
     "category": "section",
-    "text": "dropdown\nradiobuttons\ncheckboxes\ntoggles\ntogglebuttonstabs\ntabulator"
+    "text": "dropdown\nradiobuttons\ncheckboxes\ntoggles\ntogglebuttons\ntabs\ntabulator"
 },
 
 {
@@ -393,11 +385,43 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "widgets.html#InteractBase.alert",
+    "page": "Widgets",
+    "title": "InteractBase.alert",
+    "category": "function",
+    "text": "alert(text=\"\")\n\nCreates a Widget{:alert}. To cause it to trigger an alert, do:\n\nwdg = alert(\"Error!\")\nwdg()\n\nCalling wdg with a string will set the alert message to that string before triggering the alert:\n\nwdg = alert(\"Error!\")\nwdg(\"New error message!\")\n\nFor the javascript to work, the widget needs to be part of the UI, even though it is not visible.\n\n\n\n"
+},
+
+{
+    "location": "widgets.html#InteractBase.highlight",
+    "page": "Widgets",
+    "title": "InteractBase.highlight",
+    "category": "function",
+    "text": "highlight(txt; language = \"julia\")\n\nlanguage syntax highlighting for txt.\n\n\n\n"
+},
+
+{
+    "location": "widgets.html#InteractBase.notifications",
+    "page": "Widgets",
+    "title": "InteractBase.notifications",
+    "category": "function",
+    "text": "notifications(v=[]; layout = Node(:div))\n\nDisplay elements of v inside notification boxes that can be closed with a close button. The elements are laid out according to layout. observe on this widget returns the observable of the list of elements that have not bein deleted.\n\n\n\n"
+},
+
+{
+    "location": "widgets.html#InteractBase.togglecontent",
+    "page": "Widgets",
+    "title": "InteractBase.togglecontent",
+    "category": "function",
+    "text": "togglecontent(content, value::Union{Bool, Observable}=false; label)\n\nA toggle switch that, when activated, displays content e.g. togglecontent(checkbox(\"Yes, I am sure\"), false, label=\"Are you sure?\")\n\n\n\n"
+},
+
+{
     "location": "widgets.html#Output-1",
     "page": "Widgets",
     "title": "Output",
     "category": "section",
-    "text": "latex"
+    "text": "latex\nalert\nhighlight\nInteractBase.notifications\ntogglecontent"
 },
 
 {
@@ -461,7 +485,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Custom widgets",
     "title": "Widgets.@map",
     "category": "macro",
-    "text": "@map(d, x)\n\nApply the expression x to the widget d, replacing e.g. symbol :s with the corresponding Observable observe(d[:s]). To use the value of some of d\'s children, use :s[]. Use $(:s) if you want the output to update automatically as soon as the value of observe(d[:s]) changes. In this context, _ refers to the whole widget. To use actual symbols, escape them with ^, as in ^(:a).\n\nExamples\n\njulia> using DataStructures, InteractBase, Observables\n\njulia> t = Widgets.Widget{:test}(OrderedDict(:a => Observable(2), :b => slider(1:100), :c => button()));\n\nThis updates as soon as observe(t[:a]) or observe(t[:b]) change:\n\njulia> Widgets.@map t $(:a) + $(:b)\nObservables.Observable{Int64}(\"ob_31\", 52, Any[])\n\nwhereas this only updates when button :c is pressed:\n\njulia> Widgets.@map t ($(:c); :a[] + :b[])\nObservables.Observable{Int64}(\"ob_33\", 52, Any[])\n\n@map(x)\n\nCurried version of @map(d, x): anonymous function mapping d to @map(d, x).\n\n\n\n"
+    "text": "@map(d, x)\n\nApply the expression x to the widget d, replacing e.g. symbol :s with the corresponding Observable observe(d[:s]). To use the value of some of d\'s components, use :s[]. Use $(:s) if you want the output to update automatically as soon as the value of observe(d[:s]) changes. In this context, _ refers to the whole widget. To use actual symbols, escape them with ^, as in ^(:a).\n\nExamples\n\njulia> using DataStructures, InteractBase, Observables\n\njulia> t = Widgets.Widget{:test}(OrderedDict(:a => Observable(2), :b => slider(1:100), :c => button()));\n\nThis updates as soon as observe(t[:a]) or observe(t[:b]) change:\n\njulia> Widgets.@map t $(:a) + $(:b)\nObservables.Observable{Int64}(\"ob_31\", 52, Any[])\n\nwhereas this only updates when button :c is pressed:\n\njulia> Widgets.@map t ($(:c); :a[] + :b[])\nObservables.Observable{Int64}(\"ob_33\", 52, Any[])\n\n@map(x)\n\nCurried version of @map(d, x): anonymous function mapping d to @map(d, x).\n\n\n\n"
 },
 
 {
@@ -469,7 +493,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Custom widgets",
     "title": "Widgets.@map!",
     "category": "macro",
-    "text": "@map!(d, target, x)\n\nIn the expression x to the widget d, replace e.g. symbol :s with the corresponding Observable observe(d[:s]). To use the value of some of d\'s children, use :s[]. As soon as one of the symbols wrapped in a $ changes value, the observable target gets updated with the value of that expression. If no symbol is wrapped in a $, nothing happens. In this context, _ refers to the whole widget. To use actual symbols, escape them with ^, as in ^(:a).\n\nExamples\n\njulia> using DataStructures, InteractBase, Observables\n\njulia> t = Widgets.Widget{:test}(OrderedDict(:a => Observable(2), :b => slider(1:100), :c => button()));\n\nThis updates t[:a] as soon as the user moves the slider:\n\njulia> Widgets.@map! t :a $(:b);\n\n@map!(target, x)\n\nCurried version of @map!(d, target, x): anonymous function mapping d to @map(d, target, x).\n\n\n\n"
+    "text": "@map!(d, target, x)\n\nIn the expression x to the widget d, replace e.g. symbol :s with the corresponding Observable observe(d[:s]). To use the value of some of d\'s components, use :s[]. As soon as one of the symbols wrapped in a $ changes value, the observable target gets updated with the value of that expression. If no symbol is wrapped in a $, nothing happens. In this context, _ refers to the whole widget. To use actual symbols, escape them with ^, as in ^(:a).\n\nExamples\n\njulia> using DataStructures, InteractBase, Observables\n\njulia> t = Widgets.Widget{:test}(OrderedDict(:a => Observable(2), :b => slider(1:100), :c => button()));\n\nThis updates t[:a] as soon as the user moves the slider:\n\njulia> Widgets.@map! t :a $(:b);\n\n@map!(target, x)\n\nCurried version of @map!(d, target, x): anonymous function mapping d to @map(d, target, x).\n\n\n\n"
 },
 
 {
@@ -477,7 +501,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Custom widgets",
     "title": "Widgets.@on",
     "category": "macro",
-    "text": "@on(d, x)\n\nIn the expression x to the widget d, replace e.g. symbol :s with the corresponding Observable observe(d[:s]). To use the value of some of d\'s children, use :s[]. As soon as one of the symbols wrapped in a $ changes value, the expression x gets executed with the updated value. If no symbol is wrapped in a $, nothing happens. In this context, _ refers to the whole widget. To use actual symbols, escape them with ^, as in ^(:a).\n\nExamples\n\njulia> using DataStructures, InteractBase, Observables\n\njulia> t = Widgets.Widget{:test}(OrderedDict(:a => Observable(2), :b => slider(1:100), :c => button()));\n\nThis prints the value of the slider as soon as the user moves it:\n\njulia> Widgets.@on t println($(:b));\n\n@on(x)\n\nCurried version of @on(d, x): anonymous function mapping d to @on(d, x).\n\n\n\n"
+    "text": "@on(d, x)\n\nIn the expression x to the widget d, replace e.g. symbol :s with the corresponding Observable observe(d[:s]). To use the value of some of d\'s components, use :s[]. As soon as one of the symbols wrapped in a $ changes value, the expression x gets executed with the updated value. If no symbol is wrapped in a $, nothing happens. In this context, _ refers to the whole widget. To use actual symbols, escape them with ^, as in ^(:a).\n\nExamples\n\njulia> using DataStructures, InteractBase, Observables\n\njulia> t = Widgets.Widget{:test}(OrderedDict(:a => Observable(2), :b => slider(1:100), :c => button()));\n\nThis prints the value of the slider as soon as the user moves it:\n\njulia> Widgets.@on t println($(:b));\n\n@on(x)\n\nCurried version of @on(d, x): anonymous function mapping d to @on(d, x).\n\n\n\n"
 },
 
 {
@@ -693,7 +717,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Tutorial",
     "title": "Widget layout",
     "category": "section",
-    "text": "To create a full blown web-app, you should learn the layout tools that the CSS framework you are using provides. Both Bulma and UIkit have modern layout tools for responsive design (of course, use Bulma if you\'re working with the Bulma backend and UIkit if you\'re working with the UIkit backend). You can use WebIO to create from Julia the HTML required to create these layouts.However, this can be overwhelming at first (especially for users with no prior experience in web design). A simpler solution is CSSUtil, a package that provides some tools to create simple layouts.loadbutton = filepicker()\nhellobutton = button(\"Hello!\")\ngoodbyebutton = button(\"Good bye!\")\nui = vbox( # put things one on top of the other\n    loadbutton,\n    hbox( # put things one next to the other\n        pad(1em, hellobutton), # to allow some white space around the widget\n        pad(1em, goodbyebutton),\n    )\n)\ndisplay(ui)"
+    "text": "To create a full blown web-app, you should learn the layout tools that the CSS framework you are using provides. See for example the columns and layout section of the Bulma docs. You can use WebIO to create from Julia the HTML required to create these layouts.However, this can be overwhelming at first (especially for users with no prior experience in web design). A simpler solution is CSSUtil, a package that provides some tools to create simple layouts.loadbutton = filepicker()\nhellobutton = button(\"Hello!\")\ngoodbyebutton = button(\"Good bye!\")\nui = vbox( # put things one on top of the other\n    loadbutton,\n    hbox( # put things one next to the other\n        pad(1em, hellobutton), # to allow some white space around the widget\n        pad(1em, goodbyebutton),\n    )\n)\ndisplay(ui)"
 },
 
 {

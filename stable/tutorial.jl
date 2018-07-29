@@ -142,7 +142,7 @@ end
 
 # ## Widget layout
 #
-# To create a full blown web-app, you should learn the layout tools that the CSS framework you are using provides. Both [Bulma](https://bulma.io/) and [UIkit](https://getuikit.com/) have modern layout tools for responsive design (of course, use Bulma if you're working with the Bulma backend and UIkit if you're working with the UIkit backend). You can use [WebIO](https://github.com/JuliaGizmos/WebIO.jl) to create from Julia the HTML required to create these layouts.
+# To create a full blown web-app, you should learn the layout tools that the CSS framework you are using provides. See for example the [columns](https://bulma.io/documentation/columns/) and [layout](https://bulma.io/documentation/layout/) section of the Bulma docs. You can use [WebIO](https://github.com/JuliaGizmos/WebIO.jl) to create from Julia the HTML required to create these layouts.
 #
 # However, this can be overwhelming at first (especially for users with no prior experience in web design). A simpler solution is [CSSUtil](https://github.com/JuliaGizmos/CSSUtil.jl), a package that provides some tools to create simple layouts.
 loadbutton = filepicker()
