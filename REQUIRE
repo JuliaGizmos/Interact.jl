@@ -3,7 +3,6 @@ JSON 0.7
 Compat 0.17
 InteractBase 0.5.0
 InteractBulma 0.3.2
-InteractUIkit 0.3.2
 WebIO
 CSSUtil
 Knockout

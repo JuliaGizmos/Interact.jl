@@ -16,21 +16,18 @@ Creating an app in Interact requires three ingredients:
 
 To get a quick overview of how these tools work together, go to [Tutorial](@ref).
 
-## CSS frameworks
+## CSS framework
 
-Two CSS frameworks are available, based one on [Bulma](https://bulma.io/) and the other on [UIkit](https://getuikit.com/). Choosing one or the other is mainly a matter of taste. Bulma is the default: it is a pure CSS framework (no extra Javascript), which leaves Julia fully in control of manipulating the DOM (which in turn means less surface area for bugs).
+Interact widgets are by default styled with the [Bulma](https://bulma.io/) CSS framework (the previously supported [UIkit](https://getuikit.com/) backend is now deprecated). Bulma is a pure CSS framework (no extra Javascript), which leaves Julia fully in control of manipulating the DOM (which in turn means less surface area for bugs).
 
-To change backend in the middle of the session simply do:
+To use unstyled widgets in the middle of the session (or to style them again) simply do:
 
 ```julia
+settheme!(:nativehtml)
 settheme!(:bulma)
 ```
 
-or
-
-```julia
-settheme!(:uikit)
-```
+respectively.
 
 ## Deployment
 

@@ -6,7 +6,7 @@ using Reexport
 
 @reexport using InteractBase
 
-import InteractUIkit, InteractBulma
+import InteractBulma
 import Widgets: Widget, @layout, @nodeps, @map
 
 @reexport using DataStructures
@@ -19,7 +19,7 @@ import Widgets: Widget, @layout, @nodeps, @map
 const notebookdir = joinpath(@__DIR__, "..", "doc", "notebooks")
 
 const themes = Dict(
-    :uikit => InteractUIkit.UIkit(),
+    :nativehtml => InteractBase.NativeHTML(),
     :bulma => InteractBulma.Bulma()
 )
 
