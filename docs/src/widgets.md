@@ -21,7 +21,6 @@ timepicker
 colorpicker
 checkbox
 toggle
-togglecontent
 ```
 
 ## File input
@@ -57,8 +56,6 @@ radiobuttons
 checkboxes
 toggles
 togglebuttons
-```
-```@docs
 tabs
 tabulator
 ```
@@ -67,6 +64,10 @@ tabulator
 
 ```@docs
 latex
+alert
+highlight
+InteractBase.notifications
+togglecontent
 ```
 
 ## Create widgets automatically from a Julia variable
