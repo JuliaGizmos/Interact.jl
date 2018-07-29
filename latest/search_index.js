@@ -241,19 +241,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "widgets.html#InteractBase.togglecontent",
-    "page": "Widgets",
-    "title": "InteractBase.togglecontent",
-    "category": "function",
-    "text": "togglecontent(content, value::Union{Bool, Observable}=false; label)\n\nA toggle switch that, when activated, displays content e.g. togglecontent(checkbox(\"Yes, I am sure\"), false, label=\"Are you sure?\")\n\n\n\n"
-},
-
-{
     "location": "widgets.html#Type-input-1",
     "page": "Widgets",
     "title": "Type input",
     "category": "section",
-    "text": "These are widgets to select a specific, non-text, type of input. So far, Date, Time, Color and Bool are supported. Types that allow a empty field (Date and Time) are initialized as nothing by default, whereas Color and Bool are initialized with the default HTML value (colorant\"black\" and false respectively).datepicker\ntimepicker\ncolorpicker\ncheckbox\ntoggle\ntogglecontent"
+    "text": "These are widgets to select a specific, non-text, type of input. So far, Date, Time, Color and Bool are supported. Types that allow a empty field (Date and Time) are initialized as nothing by default, whereas Color and Bool are initialized with the default HTML value (colorant\"black\" and false respectively).datepicker\ntimepicker\ncolorpicker\ncheckbox\ntoggle"
 },
 
 {
@@ -381,7 +373,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Widgets",
     "title": "Option input",
     "category": "section",
-    "text": "dropdown\nradiobuttons\ncheckboxes\ntoggles\ntogglebuttonstabs\ntabulator"
+    "text": "dropdown\nradiobuttons\ncheckboxes\ntoggles\ntogglebuttons\ntabs\ntabulator"
 },
 
 {
@@ -393,11 +385,43 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "widgets.html#InteractBase.alert",
+    "page": "Widgets",
+    "title": "InteractBase.alert",
+    "category": "function",
+    "text": "alert(text=\"\")\n\nCreates a Widget{:alert}. To cause it to trigger an alert, do:\n\nwdg = alert(\"Error!\")\nwdg()\n\nCalling wdg with a string will set the alert message to that string before triggering the alert:\n\nwdg = alert(\"Error!\")\nwdg(\"New error message!\")\n\nFor the javascript to work, the widget needs to be part of the UI, even though it is not visible.\n\n\n\n"
+},
+
+{
+    "location": "widgets.html#InteractBase.highlight",
+    "page": "Widgets",
+    "title": "InteractBase.highlight",
+    "category": "function",
+    "text": "highlight(txt; language = \"julia\")\n\nlanguage syntax highlighting for txt.\n\n\n\n"
+},
+
+{
+    "location": "widgets.html#InteractBase.notifications",
+    "page": "Widgets",
+    "title": "InteractBase.notifications",
+    "category": "function",
+    "text": "notifications(v=[]; layout = Node(:div))\n\nDisplay elements of v inside notification boxes that can be closed with a close button. The elements are laid out according to layout. observe on this widget returns the observable of the list of elements that have not bein deleted.\n\n\n\n"
+},
+
+{
+    "location": "widgets.html#InteractBase.togglecontent",
+    "page": "Widgets",
+    "title": "InteractBase.togglecontent",
+    "category": "function",
+    "text": "togglecontent(content, value::Union{Bool, Observable}=false; label)\n\nA toggle switch that, when activated, displays content e.g. togglecontent(checkbox(\"Yes, I am sure\"), false, label=\"Are you sure?\")\n\n\n\n"
+},
+
+{
     "location": "widgets.html#Output-1",
     "page": "Widgets",
     "title": "Output",
     "category": "section",
-    "text": "latex"
+    "text": "latex\nalert\nhighlight\nInteractBase.notifications\ntogglecontent"
 },
 
 {
