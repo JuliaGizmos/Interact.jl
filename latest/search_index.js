@@ -269,7 +269,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Widgets",
     "title": "InteractBase.slider",
     "category": "function",
-    "text": "function slider(vals::Range; # Range\n                value=medianelement(valse),\n                label=\"\", kwargs...)\n\nCreates a slider widget which can take on the values in vals, and updates observable value when the slider is changed:\n\n\n\n"
+    "text": "function slider(vals::Range; # Range\n                value=medianelement(vals),\n                label=nothing, readout=true, kwargs...)\n\nCreates a slider widget which can take on the values in vals, and updates observable value when the slider is changed.\n\n\n\n"
 },
 
 {
@@ -297,9 +297,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "widgets.html#InteractBase.input",
+    "location": "widgets.html#Widgets.input",
     "page": "Widgets",
-    "title": "InteractBase.input",
+    "title": "Widgets.input",
     "category": "function",
     "text": "input(o; typ=\"text\")\n\nCreate an HTML5 input element of type type (e.g. \"text\", \"color\", \"number\", \"date\") with o as initial value.\n\n\n\n"
 },
@@ -365,7 +365,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Widgets",
     "title": "InteractBase.tabulator",
     "category": "function",
-    "text": "tabulator(options::Associative; index = 1, key = nothing)\n\nCreates a set of toggle buttons whose labels are the keys of options. Displays the value of the selected option underneath. Use index::Int to select which should be the index of the initial option, or key::String. The output is the selected index. Use index=0 to not have any selected option.\n\nExamples\n\ntabulator(OrderedDict(\"plot\" => plot(rand10), \"scatter\" => scatter(rand(10))), index = 1)\ntabulator(OrderedDict(\"plot\" => plot(rand10), \"scatter\" => scatter(rand(10))), key = \"plot\")\n\ntabulator(values::AbstractArray; kwargs...)\n\ntabulator with labels values see tabulator(options::Associative; ...) for more details\n\ntabulator(options::Observable; kwargs...)\n\nTabulator whose options are a given Observable. Set the Observable to some other value to update the options in real time.\n\nExamples\n\noptions = Observable([\"a\", \"b\", \"c\"])\nwdg = tabulator(options)\noptions[] = [\"c\", \"d\", \"e\"]\n\nNote that the options can be modified from the widget directly:\n\nwdg[:options][] = [\"c\", \"d\", \"e\"]\n\n\n\n"
+    "text": "tabulator(options::Associative; index, key)\n\nCreates a set of toggle buttons whose labels are the keys of options. Displays the value of the selected option underneath. Use index::Int to select which should be the index of the initial option, or key::String. The output is the selected index. Use index=0 to not have any selected option.\n\nExamples\n\ntabulator(OrderedDict(\"plot\" => plot(rand10), \"scatter\" => scatter(rand(10))), index = 1)\ntabulator(OrderedDict(\"plot\" => plot(rand10), \"scatter\" => scatter(rand(10))), key = \"plot\")\n\ntabulator(values::AbstractArray; kwargs...)\n\ntabulator with labels values see tabulator(options::Associative; ...) for more details\n\ntabulator(options::Observable; kwargs...)\n\nTabulator whose options are a given Observable. Set the Observable to some other value to update the options in real time.\n\nExamples\n\noptions = Observable([\"a\", \"b\", \"c\"])\nwdg = tabulator(options)\noptions[] = [\"c\", \"d\", \"e\"]\n\nNote that the options can be modified from the widget directly:\n\nwdg[:options][] = [\"c\", \"d\", \"e\"]\n\n\n\n"
 },
 
 {
