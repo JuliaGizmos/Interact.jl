@@ -8,3 +8,5 @@ CSSUtil
 Knockout
 DataStructures 0.2.10
 Widgets 0.2.3
+Reexport 0.1.0
+Observables 0.1.2
