@@ -1,10 +1,9 @@
-using Compat
-using Compat.Test
+using Test
 
 using Interact
 
-@test gettheme() == InteractBulma.Bulma()
+@test gettheme() == Interact.InteractBulma.Bulma()
 settheme!(:nativehtml)
-@test gettheme() == InteractBase.NativeHTML()
+@test gettheme() == Interact.InteractBase.NativeHTML()
 settheme!(:bulma)
-@test gettheme() == InteractBulma.Bulma()
+@test gettheme() == Interact.InteractBulma.Bulma()
