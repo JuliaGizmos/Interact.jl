@@ -20,44 +20,28 @@ println(w[:label])
 w[:label] = "A new label"
 ```
 
-The [`@output!`](@ref) and [`@display!`](@ref) macros can be used to set the output of the widget and define how to display it.
+Optionally, the `Widget` can have some output, which should be an `Observable`:
 
 ```julia
-@output! w $(:button) > 5 ? "You pressed me many times" : "You didn't press me enough"
-@display! w dom"div"($(_.output), style = Dict("color" => "red"))
+d = OrderedDict(:label => "My label", :button => button("My button"))
+output = map(t -> t > 5 ? "You pressed me many times" : "You didn't press me enough", d[:button])
+w = Interact.Widget{:mywidget}(d, output = output)
 ```
 
 Finally the [`@layout!`](@ref) macro allows us to set the layout of the widget:
 
 ```julia
-@layout! w hbox(vbox(:label, :button), _.display)
-```
-
-## The recipe macro
-
-To simplify adding children to a custom widget (as well as to register it as a "widget recipe"), a `@widget` macro is provided.
-
-See [Creating custom widgets](@ref) for examples.
-
-```@docs
-@widget
+@layout! w hbox(vbox(:label, :button), observe(_)) # observe(_) refers to the output of the widget
 ```
 
 ## Auxiliary functions
 
-```@docs
-Widgets.@map
-@map!
-@on
-```
-
-## Customizing output, display and layout
+Some auxiliary functions are provided to make working with `Observables` easier in the recipe process:
 
 ```@docs
-@output!
-@display!
-Widgets.@layout
-@layout!
+Interact.@map
+Interact.@map!
+Interact.@on
 ```
 
 ## Defining custom widgets without depending on Interact

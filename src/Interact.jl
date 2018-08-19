@@ -7,7 +7,8 @@ using Reexport
 @reexport using InteractBase
 import InteractBase: notifications
 import InteractBulma
-import Widgets: Widget, @layout, @nodeps, @map
+import Widgets: Widget, @layout, @nodeps
+import Observables: @on, @map!, @map
 
 @reexport using DataStructures
 @reexport using Observables
