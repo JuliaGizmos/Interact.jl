@@ -1,6 +1,6 @@
 # Custom widgets
 
-Besides the standard widgets, Interact provides a framework to define custom GUIs. This is currently possible with two approaches, the full featured [`@widget`](@ref) macro and the simple to use but more basic [`@manipulate`](@ref) macro.
+Besides the standard widgets, Interact provides a framework to define custom GUIs. This is currently possible with two approaches, the full featured `Widget` type and the simple to use but more basic [`@manipulate`](@ref) macro.
 
 ## The Widget type
 
@@ -10,7 +10,7 @@ For example:
 
 ```julia
 d = OrderedDict(:label => "My label", :button => button("My button"))
-w = Interact.Widget{:mywidget}(d)
+w = Widget{:mywidget}(d)
 ```
 
 Children can be accessed and modified using `getindex` and `setindex!` on the `Widget` object:
@@ -32,6 +32,11 @@ Finally the [`@layout!`](@ref) macro allows us to set the layout of the widget:
 
 ```julia
 @layout! w hbox(vbox(:label, :button), observe(_)) # observe(_) refers to the output of the widget
+```
+
+```@docs
+@layout!
+Interact.@layout
 ```
 
 ## Auxiliary functions
