@@ -18,21 +18,24 @@ radiobuttons([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]) |&gt; display # Obse
 display(s)</code></pre><pre><code class="language-julia">observe(s)[]</code></pre><h2><a class="nav-anchor" id="Creating-custom-widgets-1" href="#Creating-custom-widgets-1">Creating custom widgets</a></h2><p>Interact allows the creation of custom composite widgets starting from simpler ones. Let&#39;s say for example that we want to create a widget that has three sliders and a color that is updated to match the RGB value we gave with the sliders.</p><pre><code class="language-julia">import Colors
 using Plots
 
-@widget wdg function mycolorpicker()
-    :r = slider(0:255, label = &quot;red&quot;)
-    :g = slider(0:255, label = &quot;green&quot;)
-    :b = slider(0:255, label = &quot;blue&quot;)
-    @output! wdg Colors.RGB($(:r)/255, $(:g)/255, $(:b)/255)
-    @display! wdg plot(sin, color = $(_.output)) ## choose how to display the output, optional
-    @layout! wdg hbox(_.display, vbox(:r, :g, :b)) ## custom layout: by default things are stacked vertically
-end</code></pre><p>And now you can simply instantiate the widget with</p><pre><code class="language-julia">mycolorpicker()</code></pre><p>Note the <code>$(:r)</code> syntax: it means automatically update the widget as soon as the slider changes value. See <a href="custom_widgets.html#Widgets.@map"><code>Widgets.@map</code></a> for more details. If instead we wanted to only update the plot when a button is pressed we would do:</p><pre><code class="language-julia">@widget wdg function mycolorpicker()
-    :r = slider(0:255, label = &quot;red&quot;)
-    :g = slider(0:255, label = &quot;green&quot;)
-    :b = slider(0:255, label = &quot;blue&quot;)
-    :update = button(&quot;Update plot&quot;)
-    @output! wdg ($(:update); Colors.RGB(:r[]/255, :g[]/255, :b[]/255))
-    @display! wdg plot(sin, color = $(_.output)) ## choose how to display the output, optional
-    @layout! wdg hbox(_.display, vbox(:r, :g, :b, :update)) ## custom layout: by default things are stacked vertically
+function mycolorpicker()
+    r = slider(0:255, label = &quot;red&quot;)
+    g = slider(0:255, label = &quot;green&quot;)
+    b = slider(0:255, label = &quot;blue&quot;)
+    output = Interact.@map Colors.RGB(&amp;r/255, &amp;g/255, &amp;b/255)
+    plt = Interact.@map plot(sin, color = &amp;output)
+    wdg = Widget{:mycolorpicker}([&quot;r&quot; =&gt; r, &quot;g&quot; =&gt; g, &quot;b&quot; =&gt; b], output = output)
+    @layout! wdg hbox(plt, vbox(:r, :g, :b))
+    wdg ## custom layout: by default things are stacked vertically
+end</code></pre><p>And now you can simply instantiate the widget with</p><pre><code class="language-julia">mycolorpicker()</code></pre><p>Note the <code>&amp;r</code> syntax: it means automatically update the widget as soon as the slider changes value. See <a href="custom_widgets.html#Observables.@map"><code>Interact.@map</code></a> for more details. If instead we wanted to only update the plot when a button is pressed we would do:</p><pre><code class="language-julia">function mycolorpicker()
+    r = slider(0:255, label = &quot;red&quot;)
+    g = slider(0:255, label = &quot;green&quot;)
+    b = slider(0:255, label = &quot;blue&quot;)
+    update = button(&quot;Update plot&quot;)
+    output = Interact.@map (&amp;update; Colors.RGB(r[]/255, g[]/255, b[]/255))
+    plt = Interact.@map plot(sin, color = &amp;output)
+    wdg = Widget{:mycolorpicker}([&quot;r&quot; =&gt; r, &quot;g&quot; =&gt; g, &quot;b&quot; =&gt; b, &quot;update&quot; =&gt; update], output = output)
+    @layout! wdg hbox(plt, vbox(:r, :g, :b, :update)) ## custom layout: by default things are stacked vertically
 end</code></pre><h2><a class="nav-anchor" id="A-simpler-approach-for-simpler-cases-1" href="#A-simpler-approach-for-simpler-cases-1">A simpler approach for simpler cases</a></h2><p>While the approach sketched above works for all sorts of situations, there is a specific marcro to simplify it in some specific case. If you just want to update some result (maybe a plot) as a function of some parameters (discrete or continuous) simply write <code>@manipulate</code> before the <code>for</code> loop. Discrete parameters will be replaced by <code>togglebuttons</code> and continuous parameters by <code>slider</code>: the result will be updated as soon as you click on a button or move the slider:</p><pre><code class="language-julia">width, height = 700, 300
 colors = [&quot;black&quot;, &quot;gray&quot;, &quot;silver&quot;, &quot;maroon&quot;, &quot;red&quot;, &quot;olive&quot;, &quot;yellow&quot;, &quot;green&quot;, &quot;lime&quot;, &quot;teal&quot;, &quot;aqua&quot;, &quot;navy&quot;, &quot;blue&quot;, &quot;purple&quot;, &quot;fuchsia&quot;]
 color(i) = colors[i%length(colors)+1]
