@@ -85,28 +85,31 @@ observe(s)[]
 import Colors
 using Plots
 
-@widget wdg function mycolorpicker()
-    :r = slider(0:255, label = "red")
-    :g = slider(0:255, label = "green")
-    :b = slider(0:255, label = "blue")
-    @output! wdg Colors.RGB($(:r)/255, $(:g)/255, $(:b)/255)
-    @display! wdg plot(sin, color = $(_.output)) ## choose how to display the output, optional
-    @layout! wdg hbox(_.display, vbox(:r, :g, :b)) ## custom layout: by default things are stacked vertically
+function mycolorpicker()
+    r = slider(0:255, label = "red")
+    g = slider(0:255, label = "green")
+    b = slider(0:255, label = "blue")
+    output = Interact.@map Colors.RGB(&r/255, &g/255, &b/255)
+    plt = Interact.@map plot(sin, color = &output)
+    wdg = Widget{:mycolorpicker}(["r" => r, "g" => g, "b" => b], output = output)
+    @layout! wdg hbox(plt, vbox(:r, :g, :b))
+    wdg ## custom layout: by default things are stacked vertically
 end
 
 # And now you can simply instantiate the widget with
 mycolorpicker()
-# Note the `$(:r)` syntax: it means automatically update the widget as soon as the
-# slider changes value. See [`Widgets.@map`](@ref) for more details.
+# Note the `&r` syntax: it means automatically update the widget as soon as the
+# slider changes value. See [`Interact.@map`](@ref) for more details.
 # If instead we wanted to only update the plot when a button is pressed we would do:
-@widget wdg function mycolorpicker()
-    :r = slider(0:255, label = "red")
-    :g = slider(0:255, label = "green")
-    :b = slider(0:255, label = "blue")
-    :update = button("Update plot")
-    @output! wdg ($(:update); Colors.RGB(:r[]/255, :g[]/255, :b[]/255))
-    @display! wdg plot(sin, color = $(_.output)) ## choose how to display the output, optional
-    @layout! wdg hbox(_.display, vbox(:r, :g, :b, :update)) ## custom layout: by default things are stacked vertically
+function mycolorpicker()
+    r = slider(0:255, label = "red")
+    g = slider(0:255, label = "green")
+    b = slider(0:255, label = "blue")
+    update = button("Update plot")
+    output = Interact.@map (&update; Colors.RGB(r[]/255, g[]/255, b[]/255))
+    plt = Interact.@map plot(sin, color = &output)
+    wdg = Widget{:mycolorpicker}(["r" => r, "g" => g, "b" => b, "update" => update], output = output)
+    @layout! wdg hbox(plt, vbox(:r, :g, :b, :update)) ## custom layout: by default things are stacked vertically
 end
 
 # ## A simpler approach for simpler cases
