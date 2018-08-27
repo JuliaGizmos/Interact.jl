@@ -39,16 +39,6 @@ Finally the [`@layout!`](@ref) macro allows us to set the layout of the widget:
 Interact.@layout
 ```
 
-## Auxiliary functions
-
-Some auxiliary functions are provided to make working with `Observables` easier in the recipe process:
-
-```@docs
-Interact.@map
-Interact.@map!
-Interact.@on
-```
-
 ## Defining custom widgets without depending on Interact
 
 ```@docs

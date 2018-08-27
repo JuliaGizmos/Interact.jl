@@ -33,8 +33,15 @@ Another difference is Observables are synchronous, Signals are asynchronous. Obs
 
 ## API
 
+### Type
+
 ```@docs
 Observable{T}
+```
+
+### Functions
+
+```@docs
 on(f, o::Observable)
 off(o::Observable, f)
 Base.setindex!(o::Observable, val)
@@ -43,4 +50,11 @@ onany(f, os...)
 Base.map!(f, o::Observable, os...)
 connect!(o1::Observable, o2::Observable)
 Base.map(f, o::Observable, os...; init)
+```
+### Macros
+
+```@docs
+Interact.@map
+Interact.@map!
+Interact.@on
 ```
