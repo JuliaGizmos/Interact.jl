@@ -72,8 +72,6 @@ checkboxes
 toggles
 togglebuttons
 tabs
-tabulator
-mask
 ```
 
 ## Output
@@ -84,6 +82,8 @@ alert
 highlight
 InteractBase.notifications
 togglecontent
+tabulator
+mask
 ```
 
 ## Create widgets automatically from a Julia variable
