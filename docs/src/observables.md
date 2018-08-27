@@ -3,7 +3,7 @@
 Observables are like `Ref`s but you can listen to changes.
 
 ```@repl manual
-using Observables
+using Interact
 
 observable = Observable(0)
 
