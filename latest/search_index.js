@@ -53,7 +53,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Observables",
     "title": "Observables",
     "category": "section",
-    "text": "Observables are like Refs but you can listen to changes.using Observables\n\nobservable = Observable(0)\n\nh = on(observable) do val\n    println(\"Got an update: \", val)\nend\n\nobservable[] = 42To get the value of an observable index it with no argumentsobservable[]To remove a handler use off with the return value of on:off(observable, h)"
+    "text": "Observables are like Refs but you can listen to changes.using Interact\n\nobservable = Observable(0)\n\nh = on(observable) do val\n    println(\"Got an update: \", val)\nend\n\nobservable[] = 42To get the value of an observable index it with no argumentsobservable[]To remove a handler use off with the return value of on:off(observable, h)"
 },
 
 {
