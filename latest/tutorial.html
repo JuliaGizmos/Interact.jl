@@ -25,8 +25,7 @@ function mycolorpicker()
     output = Interact.@map Colors.RGB(&amp;r/255, &amp;g/255, &amp;b/255)
     plt = Interact.@map plot(sin, color = &amp;output)
     wdg = Widget{:mycolorpicker}([&quot;r&quot; =&gt; r, &quot;g&quot; =&gt; g, &quot;b&quot; =&gt; b], output = output)
-    @layout! wdg hbox(plt, vbox(:r, :g, :b))
-    wdg ## custom layout: by default things are stacked vertically
+    @layout! wdg hbox(plt, vbox(:r, :g, :b)) ## custom layout: by default things are stacked vertically
 end</code></pre><p>And now you can simply instantiate the widget with</p><pre><code class="language-julia">mycolorpicker()</code></pre><p>Note the <code>&amp;r</code> syntax: it means automatically update the widget as soon as the slider changes value. See <a href="observables.html#Observables.@map"><code>Interact.@map</code></a> for more details. If instead we wanted to only update the plot when a button is pressed we would do:</p><pre><code class="language-julia">function mycolorpicker()
     r = slider(0:255, label = &quot;red&quot;)
     g = slider(0:255, label = &quot;green&quot;)

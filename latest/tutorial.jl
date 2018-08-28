@@ -92,8 +92,7 @@ function mycolorpicker()
     output = Interact.@map Colors.RGB(&r/255, &g/255, &b/255)
     plt = Interact.@map plot(sin, color = &output)
     wdg = Widget{:mycolorpicker}(["r" => r, "g" => g, "b" => b], output = output)
-    @layout! wdg hbox(plt, vbox(:r, :g, :b))
-    wdg ## custom layout: by default things are stacked vertically
+    @layout! wdg hbox(plt, vbox(:r, :g, :b)) ## custom layout: by default things are stacked vertically
 end
 
 # And now you can simply instantiate the widget with
