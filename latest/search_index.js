@@ -65,11 +65,27 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "observables.html#API-1",
+    "page": "Observables",
+    "title": "API",
+    "category": "section",
+    "text": ""
+},
+
+{
     "location": "observables.html#Observables.Observable",
     "page": "Observables",
     "title": "Observables.Observable",
     "category": "type",
     "text": "Like a Ref but updates can be watched by adding a handler using on.\n\n\n\n\n\n"
+},
+
+{
+    "location": "observables.html#Type-1",
+    "page": "Observables",
+    "title": "Type",
+    "category": "section",
+    "text": "Observable{T}"
 },
 
 {
@@ -137,11 +153,43 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "observables.html#API-1",
+    "location": "observables.html#Functions-1",
     "page": "Observables",
-    "title": "API",
+    "title": "Functions",
     "category": "section",
-    "text": "Observable{T}\non(f, o::Observable)\noff(o::Observable, f)\nBase.setindex!(o::Observable, val)\nBase.getindex(o::Observable)\nonany(f, os...)\nBase.map!(f, o::Observable, os...)\nconnect!(o1::Observable, o2::Observable)\nBase.map(f, o::Observable, os...; init)"
+    "text": "on(f, o::Observable)\noff(o::Observable, f)\nBase.setindex!(o::Observable, val)\nBase.getindex(o::Observable)\nonany(f, os...)\nBase.map!(f, o::Observable, os...)\nconnect!(o1::Observable, o2::Observable)\nBase.map(f, o::Observable, os...; init)"
+},
+
+{
+    "location": "observables.html#Observables.@map",
+    "page": "Observables",
+    "title": "Observables.@map",
+    "category": "macro",
+    "text": "@map(expr)\n\nWrap AbstractObservables in & to compute expression expr using their value. The expression will be computed when @map is called and  every time the AbstractObservables are updated.\n\nExamples\n\njulia> a = Observable(2);\n\njulia> b = Observable(3);\n\njulia> c = Observables.@map &a + &b;\n\njulia> c[]\n5\n\njulia> a[] = 100\n100\n\njulia> c[]\n103\n\n\n\n\n\n"
+},
+
+{
+    "location": "observables.html#Observables.@map!",
+    "page": "Observables",
+    "title": "Observables.@map!",
+    "category": "macro",
+    "text": "@map!(d, expr)\n\nWrap AbstractObservables in & to compute expression expr using their value: the expression will be computed every time the AbstractObservables are updated and d will be set to match that value.\n\nExamples\n\njulia> a = Observable(2);\n\njulia> b = Observable(3);\n\njulia> c = Observable(10);\n\njulia> Observables.@map! c &a + &b;\n\njulia> c[]\n10\n\njulia> a[] = 100\n100\n\njulia> c[]\n103\n\n\n\n\n\n"
+},
+
+{
+    "location": "observables.html#Observables.@on",
+    "page": "Observables",
+    "title": "Observables.@on",
+    "category": "macro",
+    "text": "@on(expr)\n\nWrap AbstractObservables in & to execute expression expr using their value. The expression will be computed every time the AbstractObservables are updated.\n\nExamples\n\njulia> a = Observable(2);\n\njulia> b = Observable(3);\n\njulia> Observables.@on println(\"The sum of a+b is $(&a + &b)\");\n\njulia> a[] = 100;\nThe sum of a+b is 103\n\n\n\n\n\n"
+},
+
+{
+    "location": "observables.html#Macros-1",
+    "page": "Observables",
+    "title": "Macros",
+    "category": "section",
+    "text": "Interact.@map\nInteract.@map!\nInteract.@on"
 },
 
 {
@@ -158,6 +206,14 @@ var documenterSearchIndex = {"docs": [
     "title": "Widgets",
     "category": "section",
     "text": ""
+},
+
+{
+    "location": "widgets.html#What-is-a-widget?-1",
+    "page": "Widgets",
+    "title": "What is a widget?",
+    "category": "section",
+    "text": "A widget is simply some graphical component that we can generate from Julia and that has an output. The output of a widget is a Observable and can be accessed with observe.A Widget itself behaves pretty much like a Observable and the techniques discussed in Observables apply. For example:using Interact\ns = slider(1:100);\ns[]\nInteract.@on print(string(\"The value is \", &s))\ns[] = 12;"
 },
 
 {
@@ -361,19 +417,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "widgets.html#InteractBase.tabulator",
-    "page": "Widgets",
-    "title": "InteractBase.tabulator",
-    "category": "function",
-    "text": "tabulator(options::AbstractDict; index, key)\n\nCreates a set of toggle buttons whose labels are the keys of options. Displays the value of the selected option underneath. Use index::Int to select which should be the index of the initial option, or key::String. The output is the selected index. Use index=0 to not have any selected option.\n\nExamples\n\ntabulator(OrderedDict(\"plot\" => plot(rand10), \"scatter\" => scatter(rand(10))), index = 1)\ntabulator(OrderedDict(\"plot\" => plot(rand10), \"scatter\" => scatter(rand(10))), key = \"plot\")\n\ntabulator(values::AbstractArray; kwargs...)\n\ntabulator with labels values see tabulator(options::AbstractDict; ...) for more details\n\ntabulator(options::Observable; kwargs...)\n\nTabulator whose options are a given Observable. Set the Observable to some other value to update the options in real time.\n\nExamples\n\noptions = Observable([\"a\", \"b\", \"c\"])\nwdg = tabulator(options)\noptions[] = [\"c\", \"d\", \"e\"]\n\nNote that the options can be modified from the widget directly:\n\nwdg[:options][] = [\"c\", \"d\", \"e\"]\n\n\n\n\n\n"
-},
-
-{
     "location": "widgets.html#Option-input-1",
     "page": "Widgets",
     "title": "Option input",
     "category": "section",
-    "text": "dropdown\nradiobuttons\ncheckboxes\ntoggles\ntogglebuttons\ntabs\ntabulator"
+    "text": "dropdown\nradiobuttons\ncheckboxes\ntoggles\ntogglebuttons\ntabs"
 },
 
 {
@@ -417,11 +465,27 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "widgets.html#InteractBase.tabulator",
+    "page": "Widgets",
+    "title": "InteractBase.tabulator",
+    "category": "function",
+    "text": "tabulator(options::AbstractDict; index, key)\n\nCreates a set of toggle buttons whose labels are the keys of options. Displays the value of the selected option underneath. Use index::Int to select which should be the index of the initial option, or key::String. The output is the selected index. Use index=0 to not have any selected option.\n\nExamples\n\ntabulator(OrderedDict(\"plot\" => plot(rand10), \"scatter\" => scatter(rand(10))), index = 1)\ntabulator(OrderedDict(\"plot\" => plot(rand10), \"scatter\" => scatter(rand(10))), key = \"plot\")\n\ntabulator(values::AbstractArray; kwargs...)\n\ntabulator with labels values see tabulator(options::AbstractDict; ...) for more details\n\ntabulator(options::Observable; kwargs...)\n\nTabulator whose options are a given Observable. Set the Observable to some other value to update the options in real time.\n\nExamples\n\noptions = Observable([\"a\", \"b\", \"c\"])\nwdg = tabulator(options)\noptions[] = [\"c\", \"d\", \"e\"]\n\nNote that the options can be modified from the widget directly:\n\nwdg[:options][] = [\"c\", \"d\", \"e\"]\n\n\n\n\n\n"
+},
+
+{
+    "location": "widgets.html#InteractBase.mask",
+    "page": "Widgets",
+    "title": "InteractBase.mask",
+    "category": "function",
+    "text": "mask(options; index, key)\n\nOnly display the index-th element of options. If options is a AbstractDict, it is possible to specify which option to show using key. options can be a Observable, in which case mask updates automatically. Use index=0 or key = nothing to not have any selected option.\n\nExamples\n\nwdg = mask(OrderedDict(\"plot\" => plot(rand10), \"scatter\" => scatter(rand(10))), index = 1)\nwdg = mask(OrderedDict(\"plot\" => plot(rand10), \"scatter\" => scatter(rand(10))), key = \"plot\")\n\nNote that the options can be modified from the widget directly:\n\nwdg[:options][] = [\"c\", \"d\", \"e\"]\n\n\n\n\n\n"
+},
+
+{
     "location": "widgets.html#Output-1",
     "page": "Widgets",
     "title": "Output",
     "category": "section",
-    "text": "latex\nalert\nhighlight\nInteractBase.notifications\ntogglecontent"
+    "text": "latex\nalert\nhighlight\nInteractBase.notifications\ntogglecontent\ntabulator\nmask"
 },
 
 {
@@ -478,38 +542,6 @@ var documenterSearchIndex = {"docs": [
     "title": "The Widget type",
     "category": "section",
     "text": "The Widget type can be used to create custom widgets. The types is parametric, with the parameter being the name of the widget and it takes as argument a OrderedDict of children.For example:d = OrderedDict(:label => \"My label\", :button => button(\"My button\"))\nw = Widget{:mywidget}(d)Children can be accessed and modified using getindex and setindex! on the Widget object:println(w[:label])\nw[:label] = \"A new label\"Optionally, the Widget can have some output, which should be an Observable:d = OrderedDict(:label => \"My label\", :button => button(\"My button\"))\noutput = map(t -> t > 5 ? \"You pressed me many times\" : \"You didn\'t press me enough\", d[:button])\nw = Interact.Widget{:mywidget}(d, output = output)Finally the @layout! macro allows us to set the layout of the widget:@layout! w hbox(vbox(:label, :button), observe(_)) # observe(_) refers to the output of the widget@layout!\nInteract.@layout"
-},
-
-{
-    "location": "custom_widgets.html#Observables.@map",
-    "page": "Custom widgets",
-    "title": "Observables.@map",
-    "category": "macro",
-    "text": "@map(expr)\n\nWrap AbstractObservables in & to compute expression expr using their value. The expression will be computed when @map is called and  every time the AbstractObservables are updated.\n\nExamples\n\njulia> a = Observable(2);\n\njulia> b = Observable(3);\n\njulia> c = Observables.@map &a + &b;\n\njulia> c[]\n5\n\njulia> a[] = 100\n100\n\njulia> c[]\n103\n\n\n\n\n\n"
-},
-
-{
-    "location": "custom_widgets.html#Observables.@map!",
-    "page": "Custom widgets",
-    "title": "Observables.@map!",
-    "category": "macro",
-    "text": "@map!(d, expr)\n\nWrap AbstractObservables in & to compute expression expr using their value: the expression will be computed every time the AbstractObservables are updated and d will be set to match that value.\n\nExamples\n\njulia> a = Observable(2);\n\njulia> b = Observable(3);\n\njulia> c = Observable(10);\n\njulia> Observables.@map! c &a + &b;\n\njulia> c[]\n10\n\njulia> a[] = 100\n100\n\njulia> c[]\n103\n\n\n\n\n\n"
-},
-
-{
-    "location": "custom_widgets.html#Observables.@on",
-    "page": "Custom widgets",
-    "title": "Observables.@on",
-    "category": "macro",
-    "text": "@on(expr)\n\nWrap AbstractObservables in & to execute expression expr using their value. The expression will be computed every time the AbstractObservables are updated.\n\nExamples\n\njulia> a = Observable(2);\n\njulia> b = Observable(3);\n\njulia> Observables.@on println(\"The sum of a+b is $(&a + &b)\");\n\njulia> a[] = 100;\nThe sum of a+b is 103\n\n\n\n\n\n"
-},
-
-{
-    "location": "custom_widgets.html#Auxiliary-functions-1",
-    "page": "Custom widgets",
-    "title": "Auxiliary functions",
-    "category": "section",
-    "text": "Some auxiliary functions are provided to make working with Observables easier in the recipe process:Interact.@map\nInteract.@map!\nInteract.@on"
 },
 
 {
