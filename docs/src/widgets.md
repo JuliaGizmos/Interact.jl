@@ -1,5 +1,20 @@
 # Widgets
 
+## What is a widget?
+
+A widget is simply some graphical component that we can generate from Julia and that has an output.
+The output of a widget is a [`Observable`](@ref) and can be accessed with `observe`.
+
+A `Widget` itself behaves pretty much like a [`Observable`](@ref) and the techniques discussed in [Observables](@ref) apply. For example:
+
+```@repl manual
+using Interact
+s = slider(1:100);
+s[]
+Interact.@on print(string("The value is ", &s))
+s[] = 12;
+```
+
 ## Text input
 
 These are widgets to select text input that's typed in by the user. For numbers use [`spinbox`](@ref) and for strings use [`textbox`](@ref). String entries ([`textbox`](@ref) and [`autocomplete`](@ref)) are initialized as `""`, whereas [`spinbox`](@ref) defaults to `nothing`, which corresponds to the empty entry.
@@ -57,7 +72,6 @@ checkboxes
 toggles
 togglebuttons
 tabs
-tabulator
 ```
 
 ## Output
@@ -68,6 +82,8 @@ alert
 highlight
 InteractBase.notifications
 togglecontent
+tabulator
+mask
 ```
 
 ## Create widgets automatically from a Julia variable
