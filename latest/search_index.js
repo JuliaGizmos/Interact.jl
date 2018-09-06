@@ -325,7 +325,23 @@ var documenterSearchIndex = {"docs": [
     "page": "Widgets",
     "title": "InteractBase.slider",
     "category": "function",
-    "text": "function slider(vals::AbstractRange;\n                value=medianelement(vals),\n                label=nothing, readout=true, kwargs...)\n\nCreates a slider widget which can take on the values in vals, and updates observable value when the slider is changed.\n\n\n\n\n\n"
+    "text": "function slider(vals::AbstractArray;\n                value=medianelement(vals),\n                label=nothing, readout=true, kwargs...)\n\nCreates a slider widget which can take on the values in vals, and updates observable value when the slider is changed.\n\n\n\n\n\n"
+},
+
+{
+    "location": "widgets.html#InteractBase.rangeslider",
+    "page": "Widgets",
+    "title": "InteractBase.rangeslider",
+    "category": "function",
+    "text": "function rangeslider(vals::AbstractArray;\n                value=medianelement(vals),\n                label=nothing, readout=true, kwargs...)\n\nCreates a slider widget which can take on the values in vals and accepts several \"handles\". Pass a vector to value with two values if you want to select a range.\n\n\n\n\n\n"
+},
+
+{
+    "location": "widgets.html#InteractBase.rangepicker",
+    "page": "Widgets",
+    "title": "InteractBase.rangepicker",
+    "category": "function",
+    "text": "function rangepicker(vals::AbstractArray;\n                value=[extrema(vals)...],\n                label=nothing, readout=true, kwargs...)\n\nA multihandle slider with a set of spinboxes, one per handle.\n\n\n\n\n\n"
 },
 
 {
@@ -333,7 +349,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Widgets",
     "title": "Range input",
     "category": "section",
-    "text": "slider"
+    "text": "slider\nrangeslider\nrangepicker"
 },
 
 {
@@ -565,7 +581,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Custom widgets",
     "title": "InteractBase.@manipulate",
     "category": "macro",
-    "text": "@manipulate expr\n\nThe @manipulate macro lets you play with any expression using widgets. expr needs to be a for loop. The for loop variable are converted to widgets using the widget function (ranges become slider, lists of options become togglebuttons, etc...). The for loop body is displayed beneath the widgets and automatically updated as soon as the widgets change value.\n\nUse throttle = df to only update the output after a small time interval dt (useful if the update is costly as it prevents multiple updates when moving for example a slider).\n\nExamples\n\nusing Colors\n\n@manipulate for r = 0:.05:1, g = 0:.05:1, b = 0:.05:1\n    HTML(string(\"<div style=\'color:#\", hex(RGB(r,g,b)), \"\'>Color me</div>\"))\nend\n\n@manipulate throttle = 0.1 for r = 0:.05:1, g = 0:.05:1, b = 0:.05:1\n    HTML(string(\"<div style=\'color:#\", hex(RGB(r,g,b)), \"\'>Color me</div>\"))\nend\n\n@layout! can be used to adjust the layout of a manipulate block:\n\nusing Widgets, CSSUtil, WebIO\n\nui = @manipulate throttle = 0.1 for r = 0:.05:1, g = 0:.05:1, b = 0:.05:1\n    HTML(string(\"<div style=\'color:#\", hex(RGB(r,g,b)), \"\'>Color me</div>\"))\nend\n@layout! ui dom\"div\"(observe(_), vskip(2em), :r, :g, :b)\nui\n\n\n\n\n\n"
+    "text": "@manipulate expr\n\nThe @manipulate macro lets you play with any expression using widgets. expr needs to be a for loop. The for loop variable are converted to widgets using the widget function (ranges become slider, lists of options become togglebuttons, etc...). The for loop body is displayed beneath the widgets and automatically updated as soon as the widgets change value.\n\nUse throttle = df to only update the output after a small time interval dt (useful if the update is costly as it prevents multiple updates when moving for example a slider).\n\nExamples\n\nusing Colors\n\n@manipulate for r = 0:.05:1, g = 0:.05:1, b = 0:.05:1\n    HTML(string(\"<div style=\'color:#\", hex(RGB(r,g,b)), \"\'>Color me</div>\"))\nend\n\n@manipulate throttle = 0.1 for r = 0:.05:1, g = 0:.05:1, b = 0:.05:1\n    HTML(string(\"<div style=\'color:#\", hex(RGB(r,g,b)), \"\'>Color me</div>\"))\nend\n\n@layout! can be used to adjust the layout of a manipulate block:\n\nusing Interact\n\nui = @manipulate throttle = 0.1 for r = 0:.05:1, g = 0:.05:1, b = 0:.05:1\n    HTML(string(\"<div style=\'color:#\", hex(RGB(r,g,b)), \"\'>Color me</div>\"))\nend\n@layout! ui dom\"div\"(observe(_), vskip(2em), :r, :g, :b)\nui\n\n\n\n\n\n"
 },
 
 {

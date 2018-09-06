@@ -26,7 +26,7 @@ end
 
 @manipulate throttle = 0.1 for r = 0:.05:1, g = 0:.05:1, b = 0:.05:1
     HTML(string(&quot;&lt;div style=&#39;color:#&quot;, hex(RGB(r,g,b)), &quot;&#39;&gt;Color me&lt;/div&gt;&quot;))
-end</code></pre><p><a href="custom_widgets.html#Widgets.@layout!"><code>@layout!</code></a> can be used to adjust the layout of a manipulate block:</p><pre><code class="language-julia">using Widgets, CSSUtil, WebIO
+end</code></pre><p><a href="custom_widgets.html#Widgets.@layout!"><code>@layout!</code></a> can be used to adjust the layout of a manipulate block:</p><pre><code class="language-julia">using Interact
 
 ui = @manipulate throttle = 0.1 for r = 0:.05:1, g = 0:.05:1, b = 0:.05:1
     HTML(string(&quot;&lt;div style=&#39;color:#&quot;, hex(RGB(r,g,b)), &quot;&#39;&gt;Color me&lt;/div&gt;&quot;))
