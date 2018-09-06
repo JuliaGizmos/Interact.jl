@@ -48,6 +48,8 @@ filepicker
 
 ```@docs
 slider
+rangeslider
+rangepicker
 ```
 
 ## Callback input
