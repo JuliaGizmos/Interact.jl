@@ -17,7 +17,7 @@
 
 # in the REPL.
 #
-# The basic behavior is as follows: Interact provides a series of widgets, each widgets has a primary observable that can be obtained with `observe(widget)` and adding listeners to that observable one can provide behavior. Let's see this in practice.
+# The basic behavior is as follows: Interact provides a series of widgets. Each widget has an output that can be directly inspected or used to trigger some callbacks (i.e. run some code as soon as the widget changes value): the abstract supertype that gives this behavior is called `AbstractObservable`. Let's see this in practice.
 #
 # ## Displaying a widget
 using Interact
@@ -38,43 +38,47 @@ using Mux
 WebIO.webio_serve(page("/", req -> ui), rand(8000:9000)) # serve on a random port
 #
 # ## Adding behavior
-# For now this button doesn't do anything. This can be changed by adding callbacks to its primary observable:
-o = observe(ui)
-# Each observable holds a value and its value can be inspected with the `[]` syntax:
-o[]
-# In the case of the button, the observable represents the number of times it has been clicked: click on it and check the value again.
+# The value of our button can be inspected using `getindex`:
+ui[]
+# In the case of a button, the observable represents the number of times it has been clicked: click on it and check the value again.
+# For now however this button doesn't do anything. This can be changed by adding callbacks to it.
 #
-# To add some behavior to the widget we can use the `on` construct. `on` takes two arguments, a function and an observable. As soon as the observable is changed, the function is called with the latest value.
-on(println, o)
+# To add some behavior to the widget we can use the `on` construct. `on` takes two arguments, a function and an `AbstractObservable`. As soon as the observable is changed, the function is called with the latest value.
+on(println, ui)
 # If you click again on the button you will see it printing the number of times it has been clicked so far.
 #
 # *Tip*: anonymous function are very useful in this programming paradigm. For example, if you want the button to say "Hello!" when pressed, you should use:
-on(n -> println("Hello!"), o)
+on(n -> println("Hello!"), ui)
 #
-# *Tip n. 2*: using the `[]` syntax you can also set the value of the observable:
-o[] = 33;
-# To learn more about Observables, check out their documentation [here](https://juliagizmos.github.io/Observables.jl/latest/).
+# *Tip n. 2*: using the `[]` syntax you can also set the value of the widget:
+ui[] = 33;
+
+# ### Observables: the implementation of a widget's output
+# The updatable container that only has the output of the widget but not the widget itself is a `Observable` and can be accessede using `observe(ui)`, though it should normally not be necessary to do so.  
+# To learn more about `Observables` and `AbstractObservable`, check out their documentation [here](https://juliagizmos.github.io/Observables.jl/latest/).
+
 # ## What widgets are there?
 #
 # Once you have grasped this paradigm, you can play with any of the many widgets available:
-filepicker() |> display # observable is the path of selected file
-textbox("Write here") |> display # observable is the text typed in by the user
+filepicker() |> display # value is the path of selected file
+textbox("Write here") |> display # value is the text typed in by the user
 autocomplete(["Mary", "Jane", "Jack"]) |> display # as above, but you can autocomplete words
-checkbox(label = "Check me!") |> display # observable is a boolean describing whether it's ticked
+checkbox(label = "Check me!") |> display # value is a boolean describing whether it's ticked
 toggle(label = "I have read and agreed") |> display # same as a checkbox but styled differently
-slider(1:100, label = "To what extent?", value = 33) |> display # Observable is the number selected
+slider(1:100, label = "To what extent?", value = 33) |> display # value is the number selected
 
 # As well as the option widgets, that allow to choose among options:
 
-dropdown(["a", "b", "c"]) |> display # Observable is option selected
-togglebuttons(["a", "b", "c"]) |> display # Observable is option selected
-radiobuttons(["a", "b", "c"]) |> display # Observable is option selected
+dropdown(["a", "b", "c"]) |> display # value is option selected
+togglebuttons(["a", "b", "c"]) |> display # value is option selected
+radiobuttons(["a", "b", "c"]) |> display # value is option selected
 
-# The option widgets can also take as input a dictionary (ordered dictionary is preferrable, to avoid items getting scrambled), in which case the label displays the key while the observable stores the value:
+# The option widgets can also take as input a dictionary (ordered dictionary is preferrable, to avoid items getting scrambled), in which case the label displays the key while the output stores the value:
+
 s = dropdown(OrderedDict("a" => "Value 1", "b" => "Value 2"))
 display(s)
 #-
-observe(s)[]
+s[]
 #
 # ## Creating custom widgets
 #
@@ -91,7 +95,7 @@ function mycolorpicker()
     b = slider(0:255, label = "blue")
     output = Interact.@map Colors.RGB(&r/255, &g/255, &b/255)
     plt = Interact.@map plot(sin, color = &output)
-    wdg = Widget{:mycolorpicker}(["r" => r, "g" => g, "b" => b], output = output)
+    wdg = Widget(["r" => r, "g" => g, "b" => b], output = output)
     @layout! wdg hbox(plt, vbox(:r, :g, :b)) ## custom layout: by default things are stacked vertically
 end
 
@@ -107,7 +111,7 @@ function mycolorpicker()
     update = button("Update plot")
     output = Interact.@map (&update; Colors.RGB(r[]/255, g[]/255, b[]/255))
     plt = Interact.@map plot(sin, color = &output)
-    wdg = Widget{:mycolorpicker}(["r" => r, "g" => g, "b" => b, "update" => update], output = output)
+    wdg = Widget(["r" => r, "g" => g, "b" => b, "update" => update], output = output)
     @layout! wdg hbox(plt, vbox(:r, :g, :b, :update)) ## custom layout: by default things are stacked vertically
 end
 
@@ -172,7 +176,7 @@ columnbuttons = Observable{Any}(dom"div"())
 # To add behavior, we can use `map!`:
 using CSV, DataFrames
 data = Observable{Any}(DataFrame)
-map!(CSV.read, data, observe(loadbutton))
+map!(CSV.read, data, loadbutton)
 #
 # Now as soon as a file is uploaded, the `Observable` `data` gets updated with the correct value. Now, as soon as `data` is updated, we want to update our buttons.
 function makebuttons(df)
@@ -181,14 +185,13 @@ function makebuttons(df)
 end
 
 map!(makebuttons, columnbuttons, data)
-# Note that `data` is already an `Observable`, so there's no need to do `observe(data)`, `observe` can only be applied on a widget.
 # We are almost done, we only need to add a callback to the buttons. The cleanest way is to do it during button initialization, meaning during our `makebuttons` step:
 using Plots
 plt = Observable{Any}(plot()) # the container for our plot
 function makebuttons(df)
     buttons = button.(string.(names(df)))
     for (btn, name) in zip(buttons, names(df))
-        map!(t -> histogram(df[name]), plt, observe(btn))
+        map!(t -> histogram(df[name]), plt, btn)
     end
     dom"div"(hbox(buttons))
 end
@@ -199,12 +202,12 @@ loadbutton = filepicker()
 columnbuttons = Observable{Any}(dom"div"())
 data = Observable{Any}(DataFrame)
 plt = Observable{Any}(plot())
-map!(CSV.read, data, observe(loadbutton))
+map!(CSV.read, data, loadbutton)
 
 function makebuttons(df)
     buttons = button.(string.(names(df)))
     for (btn, name) in zip(buttons, names(df))
-        map!(t -> histogram(df[name]), plt, observe(btn))
+        map!(t -> histogram(df[name]), plt, btn)
     end
     dom"div"(hbox(buttons))
 end
