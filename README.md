@@ -25,4 +25,4 @@ notebook()
 
 ## Learning more
 
-To learn more, check out the [documentation](https://JuliaGizmos.github.io/Interact.jl/latest/) and the list of [all available widgets](https://JuliaGizmos.github.io/Interact.jl/latest/api_reference.html).
+To learn more, check out the [documentation](https://JuliaGizmos.github.io/Interact.jl/latest/) and the list of [all available widgets](https://juliagizmos.github.io/Interact.jl/latest/widgets.html).
