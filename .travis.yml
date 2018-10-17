@@ -17,4 +17,4 @@ notifications:
 #   - julia -e 'cov=(VERSION < v"0.5-" || !is_apple() || VERSION >= v"0.6-"); Pkg.test("Interact"; coverage=cov)'
 after_success:
   - julia --color=yes -e 'import Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
-  - julia -e 'import Pkg; Pkg.add("Documenter"); Pkg.add("Literate"); include(joinpath("docs", "make.jl"))'
+  - julia -e 'import Pkg; ps=Pkg.PackageSpec(name="Documenter", version="0.19"); Pkg.add(ps); Pkg.pin(ps); Pkg.add("Literate"); include(joinpath("docs", "make.jl"))'
