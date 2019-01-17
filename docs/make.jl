@@ -10,6 +10,7 @@ makedocs(
         "Observables" => "observables.md",
         "Widgets" => "widgets.md",
         "Custom widgets" => "custom_widgets.md",
+        "Modifiers" => "modifiers.md",
         "Layout" => "layout.md",
         "Deploying the web app" => "deploying.md",
         "Tutorial" => "tutorial.md",
