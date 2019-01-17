@@ -1,9 +1,8 @@
 using Documenter, Interact, Literate
 src = joinpath(@__DIR__, "src")
-Literate.markdown(joinpath(src, "tutorial.jl"), src, codefence = "```julia" => "```")
+Literate.markdown(joinpath(src, "notebooks", "tutorial.jl"), src, codefence = "```julia" => "```")
 
 makedocs(
-    format = :html,
     sitename = "Interact",
     authors = "JuliaGizmos",
     pages = [
@@ -19,9 +18,4 @@ makedocs(
 
 deploydocs(
     repo = "github.com/JuliaGizmos/Interact.jl.git",
-    target = "build",
-    julia  = "1.0",
-    osname = "linux",
-    deps   = nothing,
-    make   = nothing
 )

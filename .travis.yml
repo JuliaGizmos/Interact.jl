@@ -10,11 +10,19 @@ matrix:
   allow_failures:
   - julia: nightly
 notifications:
-  email: false
-# script:
-#   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-#   - julia -e 'Pkg.clone(pwd())'
-#   - julia -e 'cov=(VERSION < v"0.5-" || !is_apple() || VERSION >= v"0.6-"); Pkg.test("Interact"; coverage=cov)'
+  - email: false
+
+jobs:
+  include:
+    - stage: "Documentation"
+      julia: 1.0
+      os: linux
+      script:
+        - julia --project=docs/ -e 'using Pkg; Pkg.instantiate();
+                                    Pkg.develop(PackageSpec(path=pwd()))'
+        - julia --project=docs/ docs/make.jl
+      after_success: skip
+
 after_success:
   - julia --color=yes -e 'import Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
   - julia -e 'import Pkg; ps=Pkg.PackageSpec(name="Documenter", version="0.19"); Pkg.add(ps); Pkg.pin(ps); Pkg.add("Literate"); include(joinpath("docs", "make.jl"))'
