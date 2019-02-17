@@ -1,5 +1,3 @@
-__precompile__()
-
 module Interact
 
 using Reexport
@@ -30,7 +28,6 @@ function InteractBase.settheme!(s::Symbol)
 end
 
 function __init__()
-    empty!(InteractBase.backend)
     settheme!(:bulma)
     nothing
 end
