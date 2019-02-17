@@ -217,33 +217,33 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "widgets/#InteractBase.spinbox",
+    "location": "widgets/#Widgets.spinbox",
     "page": "Widgets",
-    "title": "InteractBase.spinbox",
+    "title": "Widgets.spinbox",
     "category": "function",
     "text": "spinbox([range,] label=\"\"; value=nothing)\n\nCreate a widget to select numbers with placeholder label. An optional range first argument specifies maximum and minimum value accepted as well as the step.\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.textbox",
+    "location": "widgets/#Widgets.textbox",
     "page": "Widgets",
-    "title": "InteractBase.textbox",
+    "title": "Widgets.textbox",
     "category": "function",
     "text": "textbox(hint=\"\"; value=\"\")\n\nCreate a text input area with an optional placeholder hint e.g. textbox(\"enter number:\"). Use typ=... to specify the type of text. For example typ=\"email\" or typ=password. Use multiline=true to display a textarea spanning several lines.\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.textarea",
+    "location": "widgets/#Widgets.textarea",
     "page": "Widgets",
-    "title": "InteractBase.textarea",
+    "title": "Widgets.textarea",
     "category": "function",
     "text": "textarea(hint=\"\"; value=\"\")\n\nCreate a textarea with an optional placeholder hint e.g. textarea(\"enter number:\"). Use rows=... to specify how many rows to display\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.autocomplete",
+    "location": "widgets/#Widgets.autocomplete",
     "page": "Widgets",
-    "title": "InteractBase.autocomplete",
+    "title": "Widgets.autocomplete",
     "category": "function",
     "text": "autocomplete(options, label=\"\"; value=\"\")\n\nCreate a textbox input with autocomplete options specified by options, with value as initial value and label as label.\n\n\n\n\n\n"
 },
@@ -257,41 +257,41 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "widgets/#InteractBase.datepicker",
+    "location": "widgets/#Widgets.datepicker",
     "page": "Widgets",
-    "title": "InteractBase.datepicker",
+    "title": "Widgets.datepicker",
     "category": "function",
     "text": "datepicker(value::Union{Dates.Date, Observable, Nothing}=nothing)\n\nCreate a widget to select dates.\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.timepicker",
+    "location": "widgets/#Widgets.timepicker",
     "page": "Widgets",
-    "title": "InteractBase.timepicker",
+    "title": "Widgets.timepicker",
     "category": "function",
     "text": "timepicker(value::Union{Dates.Time, Observable, Nothing}=nothing)\n\nCreate a widget to select times.\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.colorpicker",
+    "location": "widgets/#Widgets.colorpicker",
     "page": "Widgets",
-    "title": "InteractBase.colorpicker",
+    "title": "Widgets.colorpicker",
     "category": "function",
     "text": "colorpicker(value::Union{Color, Observable}=colorant\"#000000\")\n\nCreate a widget to select colors.\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.checkbox",
+    "location": "widgets/#Widgets.checkbox",
     "page": "Widgets",
-    "title": "InteractBase.checkbox",
+    "title": "Widgets.checkbox",
     "category": "function",
     "text": "checkbox(value::Union{Bool, AbstractObservable}=false; label)\n\nA checkbox. e.g. checkbox(label=\"be my friend?\")\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.toggle",
+    "location": "widgets/#Widgets.toggle",
     "page": "Widgets",
-    "title": "InteractBase.toggle",
+    "title": "Widgets.toggle",
     "category": "function",
     "text": "toggle(value::Union{Bool, AbstractObservable}=false; label)\n\nA toggle switch. e.g. toggle(label=\"be my friend?\")\n\n\n\n\n\n"
 },
@@ -305,9 +305,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "widgets/#InteractBase.filepicker",
+    "location": "widgets/#Widgets.filepicker",
     "page": "Widgets",
-    "title": "InteractBase.filepicker",
+    "title": "Widgets.filepicker",
     "category": "function",
     "text": "filepicker(label=\"Choose a file...\"; multiple=false, accept=\"*\")\n\nCreate a widget to select files. If multiple=true the observable will hold an array containing the paths of all selected files. Use accept to only accept some formats, e.g. accept=\".csv\"\n\n\n\n\n\n"
 },
@@ -321,25 +321,25 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "widgets/#InteractBase.slider",
+    "location": "widgets/#Widgets.slider",
     "page": "Widgets",
-    "title": "InteractBase.slider",
+    "title": "Widgets.slider",
     "category": "function",
     "text": "function slider(vals::AbstractArray;\n                value=medianelement(vals),\n                label=nothing, readout=true, kwargs...)\n\nCreates a slider widget which can take on the values in vals, and updates observable value when the slider is changed.\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.rangeslider",
+    "location": "widgets/#Widgets.rangeslider",
     "page": "Widgets",
-    "title": "InteractBase.rangeslider",
+    "title": "Widgets.rangeslider",
     "category": "function",
     "text": "function rangeslider(vals::AbstractArray;\n                value=medianelement(vals),\n                label=nothing, readout=true, kwargs...)\n\nCreates a slider widget which can take on the values in vals and accepts several \"handles\". Pass a vector to value with two values if you want to select a range.\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.rangepicker",
+    "location": "widgets/#Widgets.rangepicker",
     "page": "Widgets",
-    "title": "InteractBase.rangepicker",
+    "title": "Widgets.rangepicker",
     "category": "function",
     "text": "function rangepicker(vals::AbstractArray;\n                value=[extrema(vals)...],\n                label=nothing, readout=true, kwargs...)\n\nA multihandle slider with a set of spinboxes, one per handle.\n\n\n\n\n\n"
 },
@@ -353,9 +353,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "widgets/#InteractBase.button",
+    "location": "widgets/#Widgets.button",
     "page": "Widgets",
-    "title": "InteractBase.button",
+    "title": "Widgets.button",
     "category": "function",
     "text": "button(content... = \"Press me!\"; value=0)\n\nA button. content goes inside the button. Note the button content supports a special clicks variable, that gets incremented by 1 with each click e.g.: button(\"clicked {{clicks}} times\"). The clicks variable is initialized at value=0\n\n\n\n\n\n"
 },
@@ -385,49 +385,49 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "widgets/#InteractBase.dropdown",
+    "location": "widgets/#Widgets.dropdown",
     "page": "Widgets",
-    "title": "InteractBase.dropdown",
+    "title": "Widgets.dropdown",
     "category": "function",
     "text": "dropdown(options::AbstractDict;\n         value = first(values(options)),\n         label = nothing,\n         multiple = false)\n\nA dropdown menu whose item labels are the keys of options. If multiple=true the observable will hold an array containing the values of all selected items e.g. dropdown(OrderedDict(\"good\"=>1, \"better\"=>2, \"amazing\"=>9001))\n\ndropdown(values::AbstractArray; kwargs...)\n\ndropdown with labels string.(values) see dropdown(options::AbstractDict; ...) for more details\n\n\n\n\n\ndropdown(options::AbstractObservable;\n         value = first(values(options[])),\n         label = nothing,\n         multiple = false)\n\nA dropdown menu whose options are a given Observable. Set the Observable to some other value to update the options in real time.\n\nExamples\n\noptions = Observable([\"a\", \"b\", \"c\"])\nwdg = dropdown(options)\noptions[] = [\"c\", \"d\", \"e\"]\n\nNote that the options can be modified from the widget directly:\n\nwdg[:options][] = [\"c\", \"d\", \"e\"]\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.radiobuttons",
+    "location": "widgets/#Widgets.radiobuttons",
     "page": "Widgets",
-    "title": "InteractBase.radiobuttons",
+    "title": "Widgets.radiobuttons",
     "category": "function",
     "text": "radiobuttons(options::AbstractDict;\n             value::Union{T, Observable} = first(values(options)))\n\ne.g. radiobuttons(OrderedDict(\"good\"=>1, \"better\"=>2, \"amazing\"=>9001))\n\nradiobuttons(values::AbstractArray; kwargs...)\n\nradiobuttons with labels string.(values) see radiobuttons(options::AbstractDict; ...) for more details\n\nradiobuttons(options::AbstractObservable; kwargs...)\n\nRadio buttons whose options are a given Observable. Set the Observable to some other value to update the options in real time.\n\nExamples\n\noptions = Observable([\"a\", \"b\", \"c\"])\nwdg = radiobuttons(options)\noptions[] = [\"c\", \"d\", \"e\"]\n\nNote that the options can be modified from the widget directly:\n\nwdg[:options][] = [\"c\", \"d\", \"e\"]\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.checkboxes",
+    "location": "widgets/#Widgets.checkboxes",
     "page": "Widgets",
-    "title": "InteractBase.checkboxes",
+    "title": "Widgets.checkboxes",
     "category": "function",
     "text": "checkboxes(options::AbstractDict;\n         value = first(values(options)))\n\nA list of checkboxes whose item labels are the keys of options. Tthe observable will hold an array containing the values of all selected items, e.g. checkboxes(OrderedDict(\"good\"=>1, \"better\"=>2, \"amazing\"=>9001))\n\ncheckboxes(values::AbstractArray; kwargs...)\n\ncheckboxes with labels string.(values) see checkboxes(options::AbstractDict; ...) for more details\n\ncheckboxes(options::AbstractObservable; kwargs...)\n\nCheckboxes whose options are a given Observable. Set the Observable to some other value to update the options in real time.\n\nExamples\n\noptions = Observable([\"a\", \"b\", \"c\"])\nwdg = checkboxes(options)\noptions[] = [\"c\", \"d\", \"e\"]\n\nNote that the options can be modified from the widget directly:\n\nwdg[:options][] = [\"c\", \"d\", \"e\"]\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.toggles",
+    "location": "widgets/#Widgets.toggles",
     "page": "Widgets",
-    "title": "InteractBase.toggles",
+    "title": "Widgets.toggles",
     "category": "function",
     "text": "toggles(options::AbstractDict;\n         value = first(values(options)))\n\nA list of toggle switches whose item labels are the keys of options. Tthe observable will hold an array containing the values of all selected items, e.g. toggles(OrderedDict(\"good\"=>1, \"better\"=>2, \"amazing\"=>9001))\n\ntoggles(values::AbstractArray; kwargs...)\n\ntoggles with labels string.(values) see toggles(options::AbstractDict; ...) for more details\n\ntoggles(options::AbstractObservable; kwargs...)\n\nToggles whose options are a given Observable. Set the Observable to some other value to update the options in real time.\n\nExamples\n\noptions = Observable([\"a\", \"b\", \"c\"])\nwdg = toggles(options)\noptions[] = [\"c\", \"d\", \"e\"]\n\nNote that the options can be modified from the widget directly:\n\nwdg[:options][] = [\"c\", \"d\", \"e\"]\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.togglebuttons",
+    "location": "widgets/#Widgets.togglebuttons",
     "page": "Widgets",
-    "title": "InteractBase.togglebuttons",
+    "title": "Widgets.togglebuttons",
     "category": "function",
     "text": "togglebuttons(options::AbstractDict; value::Union{T, Observable})\n\nCreates a set of toggle buttons whose labels are the keys of options.\n\ntogglebuttons(values::AbstractArray; kwargs...)\n\ntogglebuttons with labels string.(values) see togglebuttons(options::AbstractDict; ...) for more details\n\ntogglebuttons(options::AbstractObservable; kwargs...)\n\nTogglebuttons whose options are a given Observable. Set the Observable to some other value to update the options in real time.\n\nExamples\n\noptions = Observable([\"a\", \"b\", \"c\"])\nwdg = togglebuttons(options)\noptions[] = [\"c\", \"d\", \"e\"]\n\nNote that the options can be modified from the widget directly:\n\nwdg[:options][] = [\"c\", \"d\", \"e\"]\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.tabs",
+    "location": "widgets/#Widgets.tabs",
     "page": "Widgets",
-    "title": "InteractBase.tabs",
+    "title": "Widgets.tabs",
     "category": "function",
     "text": "tabs(options::AbstractDict; value::Union{T, Observable})\n\nCreates a set of tabs whose labels are the keys of options. The label can be a link.\n\ntabs(values::AbstractArray; kwargs...)\n\ntabs with labels values see tabs(options::AbstractDict; ...) for more details\n\ntabs(options::AbstractObservable; kwargs...)\n\nTabs whose options are a given Observable. Set the Observable to some other value to update the options in real time.\n\nExamples\n\noptions = Observable([\"a\", \"b\", \"c\"])\nwdg = tabs(options)\noptions[] = [\"c\", \"d\", \"e\"]\n\nNote that the options can be modified from the widget directly:\n\nwdg[:options][] = [\"c\", \"d\", \"e\"]\n\n\n\n\n\n"
 },
@@ -441,57 +441,57 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "widgets/#InteractBase.latex",
+    "location": "widgets/#Widgets.latex",
     "page": "Widgets",
-    "title": "InteractBase.latex",
+    "title": "Widgets.latex",
     "category": "function",
     "text": "latex(txt)\n\nRender txt in LaTeX using KaTeX. Backslashes need to be escaped: latex(\"\\\\sum_{i=1}^{\\\\infty} e^i\")\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.alert",
+    "location": "widgets/#Widgets.alert",
     "page": "Widgets",
-    "title": "InteractBase.alert",
+    "title": "Widgets.alert",
     "category": "function",
     "text": "alert(text=\"\")\n\nCreates a Widget{:alert}. To cause it to trigger an alert, do:\n\nwdg = alert(\"Error!\")\nwdg()\n\nCalling wdg with a string will set the alert message to that string before triggering the alert:\n\nwdg = alert(\"Error!\")\nwdg(\"New error message!\")\n\nFor the javascript to work, the widget needs to be part of the UI, even though it is not visible.\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.highlight",
+    "location": "widgets/#Widgets.highlight",
     "page": "Widgets",
-    "title": "InteractBase.highlight",
+    "title": "Widgets.highlight",
     "category": "function",
     "text": "highlight(txt; language = \"julia\")\n\nlanguage syntax highlighting for txt.\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.notifications",
+    "location": "widgets/#Widgets.notifications",
     "page": "Widgets",
-    "title": "InteractBase.notifications",
+    "title": "Widgets.notifications",
     "category": "function",
     "text": "notifications(v=[]; layout = node(:div))\n\nDisplay elements of v inside notification boxes that can be closed with a close button. The elements are laid out according to layout. observe on this widget returns the observable of the list of elements that have not bein deleted.\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.togglecontent",
+    "location": "widgets/#Widgets.togglecontent",
     "page": "Widgets",
-    "title": "InteractBase.togglecontent",
+    "title": "Widgets.togglecontent",
     "category": "function",
     "text": "togglecontent(content, value::Union{Bool, Observable}=false; label)\n\nA toggle switch that, when activated, displays content e.g. togglecontent(checkbox(\"Yes, I am sure\"), false, label=\"Are you sure?\")\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.tabulator",
+    "location": "widgets/#Widgets.tabulator",
     "page": "Widgets",
-    "title": "InteractBase.tabulator",
+    "title": "Widgets.tabulator",
     "category": "function",
     "text": "tabulator(options::AbstractDict; index, key)\n\nCreates a set of toggle buttons whose labels are the keys of options. Displays the value of the selected option underneath. Use index::Int to select which should be the index of the initial option, or key::String. The output is the selected index. Use index=0 to not have any selected option.\n\nExamples\n\ntabulator(OrderedDict(\"plot\" => plot(rand(10)), \"scatter\" => scatter(rand(10))), index = 1)\ntabulator(OrderedDict(\"plot\" => plot(rand(10)), \"scatter\" => scatter(rand(10))), key = \"plot\")\n\ntabulator(values::AbstractArray; kwargs...)\n\ntabulator with labels values see tabulator(options::AbstractDict; ...) for more details\n\ntabulator(options::Observable; kwargs...)\n\nTabulator whose options are a given Observable. Set the Observable to some other value to update the options in real time.\n\nExamples\n\noptions = Observable([\"a\", \"b\", \"c\"])\nwdg = tabulator(options)\noptions[] = [\"c\", \"d\", \"e\"]\n\nNote that the options can be modified from the widget directly:\n\nwdg[:options][] = [\"c\", \"d\", \"e\"]\n\n\n\n\n\n"
 },
 
 {
-    "location": "widgets/#InteractBase.mask",
+    "location": "widgets/#Widgets.mask",
     "page": "Widgets",
-    "title": "InteractBase.mask",
+    "title": "Widgets.mask",
     "category": "function",
     "text": "mask(options; index, key)\n\nOnly display the index-th element of options. If options is a AbstractDict, it is possible to specify which option to show using key. options can be a Observable, in which case mask updates automatically. Use index=0 or key = nothing to not have any selected option.\n\nExamples\n\nwdg = mask(OrderedDict(\"plot\" => plot(rand(10)), \"scatter\" => scatter(rand(10))), index = 1)\nwdg = mask(OrderedDict(\"plot\" => plot(rand(10)), \"scatter\" => scatter(rand(10))), key = \"plot\")\n\nNote that the options can be modified from the widget directly:\n\nwdg[:options][] = [\"c\", \"d\", \"e\"]\n\n\n\n\n\n"
 },
@@ -577,9 +577,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "custom_widgets/#InteractBase.@manipulate",
+    "location": "custom_widgets/#Widgets.@manipulate",
     "page": "Custom widgets",
-    "title": "InteractBase.@manipulate",
+    "title": "Widgets.@manipulate",
     "category": "macro",
     "text": "@manipulate expr\n\nThe @manipulate macro lets you play with any expression using widgets. expr needs to be a for loop. The for loop variable are converted to widgets using the widget function (ranges become slider, lists of options become togglebuttons, etc...). The for loop body is displayed beneath the widgets and automatically updated as soon as the widgets change value.\n\nUse throttle = df to only update the output after a small time interval dt (useful if the update is costly as it prevents multiple updates when moving for example a slider).\n\nExamples\n\nusing Colors\n\n@manipulate for r = 0:.05:1, g = 0:.05:1, b = 0:.05:1\n    HTML(string(\"<div style=\'color:#\", hex(RGB(r,g,b)), \"\'>Color me</div>\"))\nend\n\n@manipulate throttle = 0.1 for r = 0:.05:1, g = 0:.05:1, b = 0:.05:1\n    HTML(string(\"<div style=\'color:#\", hex(RGB(r,g,b)), \"\'>Color me</div>\"))\nend\n\n@layout! can be used to adjust the layout of a manipulate block:\n\nusing Interact\n\nui = @manipulate throttle = 0.1 for r = 0:.05:1, g = 0:.05:1, b = 0:.05:1\n    HTML(string(\"<div style=\'color:#\", hex(RGB(r,g,b)), \"\'>Color me</div>\"))\nend\n@layout! ui dom\"div\"(observe(_), vskip(2em), :r, :g, :b)\nui\n\n\n\n\n\n"
 },
@@ -601,17 +601,17 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "modifiers/#InteractBase.tooltip!",
+    "location": "modifiers/#Widgets.tooltip!",
     "page": "Modifiers",
-    "title": "InteractBase.tooltip!",
+    "title": "Widgets.tooltip!",
     "category": "function",
     "text": "tooltip!(wdg::AbstractWidget, tooltip; className = \"\")\n\nExperimental. Add a tooltip to widget wdg. tooltip is the text that will be shown and className can be used to customize the tooltip, for example is-tooltip-bottom or is-tooltip-danger.\n\n\n\n\n\n"
 },
 
 {
-    "location": "modifiers/#InteractBase.onchange",
+    "location": "modifiers/#Widgets.onchange",
     "page": "Modifiers",
-    "title": "InteractBase.onchange",
+    "title": "Widgets.onchange",
     "category": "function",
     "text": "onchange(w::AbstractWidget, change = w[:changes])\n\nReturn a widget that\'s identical to w but only updates on change. For a slider it corresponds to releasing it and for a textbox it corresponds to losing focus.\n\nExamples\n\nsld = slider(1:100) |> onchange # update on release\ntxt = textbox(\"Write here\") |> onchange # update on losing focuse\n\n\n\n\n\n"
 },
