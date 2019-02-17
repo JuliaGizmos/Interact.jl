@@ -1,11 +1,11 @@
 julia 0.7
 JSON 0.7
-InteractBase 0.8.1
+InteractBase 0.8.3
 InteractBulma 0.4.0
 WebIO 0.3.1
 CSSUtil
 Knockout
 DataStructures 0.2.10
-Widgets 0.4.1
+Widgets 0.5.0
 Reexport 0.1.0
 Observables 0.2.2
