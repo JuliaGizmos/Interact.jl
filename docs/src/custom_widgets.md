@@ -41,8 +41,21 @@ Interact.@layout
 
 ## Defining custom widgets without depending on Interact
 
-```@docs
-Widgets.@nodeps
+This is only relevant for package authors: it is not necessary to depend on Interact to define custom widgets. One can instead use the low-dependency package [Widgets](https://github.com/piever/Widgets.jl) that defines (but does not export) all the widgets. For example:
+
+```julia
+# in the package MyPackage defining the recipe:
+using Widgets
+function myrecipe(i)
+    label = "My recipe"
+    wdg = Widgets.dropdown(i)
+    Widget(["label" => label, "dropdown" => wdg])
+end
+
+# The user would then do:
+using MyPackage, Interact
+
+myrecipe(["a", "b", "c"])
 ```
 
 ## A simpler approach: the manipulate macro
