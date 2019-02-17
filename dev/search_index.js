@@ -561,19 +561,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "custom_widgets/#Widgets.@nodeps",
-    "page": "Custom widgets",
-    "title": "Widgets.@nodeps",
-    "category": "macro",
-    "text": "@nodeps(expr)\n\nMacro to remove need to depend on package X that defines a recipe to use it in one\'s own recipe. For example, InteractBase defines dropwdown recipe. To use dropdown in a recipe in a package, without depending on InteractBase, wrap the dropdown call in the @nodeps macro:\n\nfunction myrecipe(i)\n    label = \"My recipe\"\n    wdg = Widgets.@nodeps dropdown(i)\n    Widget([\"label\" => label, \"dropdown\" => wdg])\nend\n\n\n\n\n\n"
-},
-
-{
     "location": "custom_widgets/#Defining-custom-widgets-without-depending-on-Interact-1",
     "page": "Custom widgets",
     "title": "Defining custom widgets without depending on Interact",
     "category": "section",
-    "text": "Widgets.@nodeps"
+    "text": "This is only relevant for package authors: it is not necessary to depend on Interact to define custom widgets. One can instead use the low-dependency package Widgets that defines (but does not export) all the widgets. For example:# in the package MyPackage defining the recipe:\nusing Widgets\nfunction myrecipe(i)\n    label = \"My recipe\"\n    wdg = Widgets.dropdown(i)\n    Widget([\"label\" => label, \"dropdown\" => wdg])\nend\n\n# The user would then do:\nusing MyPackage, Interact\n\nmyrecipe([\"a\", \"b\", \"c\"])"
 },
 
 {
