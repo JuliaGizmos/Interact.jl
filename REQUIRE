@@ -1,7 +1,6 @@
 julia 0.7
 JSON 0.7
 InteractBase 0.8.3
-InteractBulma 0.4.0
 WebIO 0.3.1
 CSSUtil
 Knockout
