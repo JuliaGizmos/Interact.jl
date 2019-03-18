@@ -28,7 +28,7 @@ end
 
 const themes = Dict(
     :nativehtml => InteractBase.NativeHTML(),
-    :bulma => InteractBulma.Bulma()
+    :bulma => Bulma()
 )
 
 function InteractBase.settheme!(s::Symbol)
