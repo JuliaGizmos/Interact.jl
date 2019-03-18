@@ -4,7 +4,6 @@ using Reexport
 
 @reexport using InteractBase
 import InteractBase: notifications
-import InteractBulma
 import Widgets: Widget, @layout, @nodeps
 import Observables: @on, @map!, @map
 
@@ -15,11 +14,21 @@ import Observables: @on, @map!, @map
 @reexport using WebIO
 @reexport using Widgets
 
+struct Bulma<:InteractBase.WidgetTheme; end
+
 const notebookdir = joinpath(@__DIR__, "..", "doc", "notebooks")
+
+const main_css = joinpath(@__DIR__, "..", "assets", "main.min.css")
+const main_interactbulma_css = joinpath(@__DIR__, "..", "assets", "main_interactbulma.min.css")
+
+function InteractBase.libraries(::Bulma)
+    bulmalib = InteractBase.isijulia() ? main_interactbulma_css : main_css
+    vcat(InteractBase.font_awesome, InteractBase.style_css, bulmalib)
+end
 
 const themes = Dict(
     :nativehtml => InteractBase.NativeHTML(),
-    :bulma => InteractBulma.Bulma()
+    :bulma => Bulma()
 )
 
 function InteractBase.settheme!(s::Symbol)
