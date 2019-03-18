@@ -13,3 +13,6 @@ settheme!(:bulma)
 
 @test first(eachline(Interact.main_css))[1:20] == "/*! bulma.io v0.7.4 "
 @test first(eachline(Interact.main_interactbulma_css))[1:20] == ".interactbulma{/*! b"
+
+@test length(InteractBase.libraries(Interact.Bulma())) == 3
+@test all(isfile, InteractBase.libraries(Interact.Bulma()))
