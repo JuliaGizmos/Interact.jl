@@ -18,11 +18,11 @@ struct Bulma<:InteractBase.WidgetTheme; end
 
 const notebookdir = joinpath(@__DIR__, "..", "doc", "notebooks")
 
-const main_css = joinpath(@__DIR__, "..", "assets", "main.min.css")
-const main_confined_css = joinpath(@__DIR__, "..", "assets", "main_confined.min.css")
+const bulma_css = joinpath(@__DIR__, "..", "assets", "bulma.min.css")
+const bulma_confined_css = joinpath(@__DIR__, "..", "assets", "bulma_confined.min.css")
 
 function InteractBase.libraries(::Bulma)
-    bulmalib = InteractBase.isijulia() ? main_confined_css : main_css
+    bulmalib = InteractBase.isijulia() ? bulma_confined_css : bulma_css
     vcat(InteractBase.font_awesome, InteractBase.style_css, bulmalib)
 end
 
