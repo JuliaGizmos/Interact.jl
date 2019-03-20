@@ -7,7 +7,7 @@ import InteractBase: notifications
 import Widgets: Widget, @layout, @nodeps
 import Observables: @on, @map!, @map
 
-@reexport using DataStructures
+@reexport using OrderedCollections
 @reexport using Observables
 @reexport using Knockout
 @reexport using CSSUtil
