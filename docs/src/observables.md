@@ -50,6 +50,7 @@ onany(f, os...)
 Base.map!(f, o::Observable, os...)
 connect!(o1::Observable, o2::Observable)
 Base.map(f, o::Observable, os...; init)
+throttle(dt, o::Observable)
 ```
 ### Macros
 
