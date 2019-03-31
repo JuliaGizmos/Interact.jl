@@ -153,11 +153,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "observables/#Observables.throttle-Tuple{Any,Observable}",
+    "page": "Observables",
+    "title": "Observables.throttle",
+    "category": "method",
+    "text": "throttle(dt, input::AbstractObservable)\n\nThrottle a signal to update at most once every dt seconds. The throttled signal holds the last update of the input signal during each dt second time window.\n\n\n\n\n\n"
+},
+
+{
     "location": "observables/#Functions-1",
     "page": "Observables",
     "title": "Functions",
     "category": "section",
-    "text": "on(f, o::Observable)\noff(o::Observable, f)\nBase.setindex!(o::Observable, val)\nBase.getindex(o::Observable)\nonany(f, os...)\nBase.map!(f, o::Observable, os...)\nconnect!(o1::Observable, o2::Observable)\nBase.map(f, o::Observable, os...; init)"
+    "text": "on(f, o::Observable)\noff(o::Observable, f)\nBase.setindex!(o::Observable, val)\nBase.getindex(o::Observable)\nonany(f, os...)\nBase.map!(f, o::Observable, os...)\nconnect!(o1::Observable, o2::Observable)\nBase.map(f, o::Observable, os...; init)\nthrottle(dt, o::Observable)"
 },
 
 {
