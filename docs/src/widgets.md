@@ -42,6 +42,8 @@ toggle
 
 ```@docs
 filepicker
+opendialog
+savedialog
 ```
 
 ## Range input
