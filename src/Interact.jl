@@ -26,18 +26,9 @@ function InteractBase.libraries(::Bulma)
     vcat(InteractBase.font_awesome, InteractBase.style_css, bulmalib)
 end
 
-const themes = Dict(
-    :nativehtml => InteractBase.NativeHTML(),
-    :bulma => Bulma()
-)
-
-function InteractBase.settheme!(s::Symbol)
-    (s in keys(themes)) || error("Theme $s is not supported")
-    settheme!(themes[s])
-end
-
 function __init__()
-    settheme!(:bulma)
+    InteractBase.registertheme!(:bulma, Bulma())
+    settheme!(Bulma())
     nothing
 end
 
