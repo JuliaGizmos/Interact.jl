@@ -1,7 +1,7 @@
 # # Tutorial
 #md #
-#md # This tutorial is available in the Jupyter notebook format, togeter with other example notebooks, in the doc folder.
-#md # To open Jupyter notebook in the correct folder simply type:
+#md # This tutorial is available in the Jupyter notebook format, together with other example notebooks, in the doc folder.
+#md # To open the Jupyter notebook in the correct folder, simply type:
 #md # ```julia
 #md # using IJulia, Interact
 #md # notebook(dir = Interact.notebookdir)
