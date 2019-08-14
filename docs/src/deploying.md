@@ -30,7 +30,7 @@ cd(joinpath(dirname(pathof(WebIO)), "..", "packages"))
 
 ## Electron window
 
-To deploy the app as a standalone Electron window, one would use [Blink.jl](https://github.com/JunoLab/Blink.jl):
+To deploy the app as a standalone Electron window, use [Blink.jl](https://github.com/JunoLab/Blink.jl):
 
 ```julia
 using Interact, Blink
