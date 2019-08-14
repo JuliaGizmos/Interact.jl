@@ -1,33 +1,31 @@
 # Interact
 
-Interact allows to create small GUIs in Julia based on web technology. These GUIs can be deployed in jupyter notebooks, in the Juno IDE plot pane, in an Electron window or in the browser.
+Interact uses web technologies to let you create straightforward graphical user interfaces (GUIs) for your Julia code. These GUIs can be used in jupyter notebooks, in the Juno IDE plot pane, in an Electron window, or in the browser.
 
-To understand how to use it go through the [Tutorial](@ref). The tutorial is also available [here](https://github.com/JuliaGizmos/Interact.jl/blob/master/doc/notebooks/tutorial.ipynb) as a Jupyter notebook.
+To understand how to use it, go through the [Tutorial](@ref), which is also available [here](https://github.com/JuliaGizmos/Interact.jl/blob/master/doc/notebooks/tutorial.ipynb) as a Jupyter notebook.
 
-[InteractBase](https://github.com/piever/InteractBase.jl), [Knockout](https://github.com/JuliaGizmos/Knockout.jl) and [WebIO](https://github.com/JuliaGizmos/WebIO.jl) provide the logic that allows the communication between Julia and Javascript and the organization of the widgets.
+[InteractBase](https://github.com/piever/InteractBase.jl), [Knockout](https://github.com/JuliaGizmos/Knockout.jl), and [WebIO](https://github.com/JuliaGizmos/WebIO.jl) provide the widgets and allow for communication between Julia and Javascript.
 
 ## Overview
 
 Creating an app in Interact requires three ingredients:
 
-- [Observables](@ref): references that can listen to changes in other references
-- [Widgets](@ref): the graphical elements that make up the app
-- [Layout](@ref): tools to assemble together different widgets
+- [Observables](@ref): references that listen to changes in other references
+- [Widgets](@ref): interactive graphical elements
+- [Layout](@ref): tools for combining various widgets in a display
 
-To get a quick overview of how these tools work together, go to [Tutorial](@ref).
+The [Tutorial](@ref) provides a quick overview of how these tools work together.
 
 ## CSS framework
 
-Interact widgets are by default styled with the [Bulma](https://bulma.io/) CSS framework (the previously supported [UIkit](https://getuikit.com/) backend is now deprecated). Bulma is a pure CSS framework (no extra Javascript), which leaves Julia fully in control of manipulating the DOM (which in turn means less surface area for bugs).
+Interact widgets are styled with the [Bulma](https://bulma.io/) CSS framework by default (the previously-supported [UIkit](https://getuikit.com/) backend is now deprecated). Because Bulma is a pure CSS framework (no extra Javascript), Julia is fully in control of manipulating the DOM, which leaves less surface area for bugs.
 
-To use unstyled widgets in the middle of the session (or to style them again) simply do:
+To switch between unstyled and Bulma-styled widgets in the middle of a session, use the following:
 
 ```julia
 settheme!(:nativehtml)
 settheme!(:bulma)
 ```
-
-respectively.
 
 ## Deployment
 

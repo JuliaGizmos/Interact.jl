@@ -1,13 +1,13 @@
 # Layout
 
 Several utilities are provided to create and align
-various web elements on the DOM.
+various web elements in the DOM.
 
 ## Example Usage
 ```julia
 using Interact
 
-el1 =button("Hello world!")
+el1 = button("Hello world!")
 el2 = button("Goodbye world!")
 
 el3 = hbox(el1, el2) # aligns horizontally
