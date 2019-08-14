@@ -26,9 +26,12 @@ display(ui)
 
 # Note that `display` works in a [Jupyter notebook](https://github.com/JuliaLang/IJulia.jl) or in [Atom/Juno IDE](https://github.com/JunoLab/Juno.jl).
 # Interact can also be deployed in Jupyter Lab, but that requires installing an extension first:
-cd(Pkg.dir("WebIO", "assets"))
-;jupyter labextension install webio
-;jupyter labextension enable webio/jupyterlab_entry
+using Pkg
+Pkg.add("WebIO")
+using WebIO
+cd(joinpath(dirname(pathof(WebIO)), "..", "packages"))
+;jupyter labextension link webio
+;jupyter labextension install jupyter-lab-provider
 # To deploy the app as a standalone Electron window, one would use [Blink.jl](https://github.com/JunoLab/Blink.jl):
 using Blink
 w = Window()

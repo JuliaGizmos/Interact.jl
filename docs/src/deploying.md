@@ -20,9 +20,12 @@ display(ui)
 Note that using Interact in Jupyter Lab requires installing an extension first:
 
 ```julia
-cd(Pkg.dir("WebIO", "assets"))
-;jupyter labextension install webio
-;jupyter labextension enable webio/jupyterlab_entry
+using Pkg
+Pkg.add("WebIO")
+using WebIO
+cd(joinpath(dirname(pathof(WebIO)), "..", "packages"))
+;jupyter labextension link webio
+;jupyter labextension install jupyter-lab-provider
 ```
 
 ## Electron window
