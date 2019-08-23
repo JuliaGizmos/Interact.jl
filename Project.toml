@@ -1,0 +1,30 @@
+name = "Interact"
+uuid = "c601a237-2ae4-5e1e-952c-7a85b0c7eef1"
+version = "0.10.3"
+
+[deps]
+CSSUtil = "70588ee8-6100-5070-97c1-3cb50ed05fe8"
+InteractBase = "d3863d7c-f0c8-5437-a7b4-3ae773c01009"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+Knockout = "bcebb21b-c2e3-54f8-a781-646b90f6d2cc"
+Observables = "510215fc-4207-5dde-b226-833fc4488ee2"
+OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
+Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
+WebIO = "0f1e0344-ec1d-5b48-a673-e5cf874b6c29"
+Widgets = "cc8bc4a8-27d6-5769-a93b-9d913e69aa62"
+
+[compat]
+julia = "0.7, 1"
+JSON = "≥ 0.7"
+InteractBase = "≥ 0.10.1"
+WebIO = "≥ 0.3.1"
+OrderedCollections = "1"
+Widgets = "≥ 0.5.0"
+Reexport = "≥ 0.1.0"
+Observables = "≥ 0.2.2"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
