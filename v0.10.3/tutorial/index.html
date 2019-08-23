@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Tutorial · Interact</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link href="../assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>Interact</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="../search/"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="../">Introduction</a></li><li><a class="toctext" href="../observables/">Observables</a></li><li><a class="toctext" href="../widgets/">Widgets</a></li><li><a class="toctext" href="../custom_widgets/">Custom widgets</a></li><li><a class="toctext" href="../modifiers/">Modifiers</a></li><li><a class="toctext" href="../layout/">Layout</a></li><li><a class="toctext" href="../deploying/">Deploying the web app</a></li><li class="current"><a class="toctext" href>Tutorial</a><ul class="internal"><li><a class="toctext" href="#Installing-everything-1">Installing everything</a></li><li><a class="toctext" href="#Displaying-a-widget-1">Displaying a widget</a></li><li><a class="toctext" href="#Adding-behavior-1">Adding behavior</a></li><li><a class="toctext" href="#What-widgets-are-there?-1">What widgets are there?</a></li><li><a class="toctext" href="#Creating-custom-widgets-1">Creating custom widgets</a></li><li><a class="toctext" href="#A-simpler-approach-for-simpler-cases-1">A simpler approach for simpler cases</a></li><li><a class="toctext" href="#Widget-layout-1">Widget layout</a></li><li><a class="toctext" href="#Update-widgets-as-function-of-other-widgets-1">Update widgets as function of other widgets</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li><a href>Tutorial</a></li></ul><a class="edit-page" href="https://github.com/JuliaGizmos/Interact.jl/blob/master/docs/src/tutorial.jl"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>Tutorial</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="Tutorial-1" href="#Tutorial-1">Tutorial</a></h1><p>This tutorial is available in the Jupyter notebook format, together with other example notebooks, in the doc folder. To open the Jupyter notebook in the correct folder, simply type:</p><pre><code class="language-julia">using IJulia, Interact
+notebook(dir = Interact.notebookdir)</code></pre><p>in your Julia REPL. You can also view it online <a href="https://github.com/JuliaGizmos/Interact.jl/blob/master/doc/notebooks/tutorial.ipynb">here</a>.</p><h2><a class="nav-anchor" id="Installing-everything-1" href="#Installing-everything-1">Installing everything</a></h2><p>To install Interact, simply type</p><pre><code class="language-julia">Pkg.add(&quot;Interact&quot;)</code></pre><p>in the REPL.</p><p>The basic behavior is as follows: Interact provides a series of widgets. Each widget has an output that can be directly inspected or used to trigger some callbacks (i.e. run some code as soon as the widget changes value): the abstract supertype that gives this behavior is called <code>AbstractObservable</code>. Let&#39;s see this in practice.</p><h2><a class="nav-anchor" id="Displaying-a-widget-1" href="#Displaying-a-widget-1">Displaying a widget</a></h2><pre><code class="language-julia">using Interact
+ui = button()
+display(ui)</code></pre><p>Note that <code>display</code> works in a <a href="https://github.com/JuliaLang/IJulia.jl">Jupyter notebook</a> or in <a href="https://github.com/JunoLab/Juno.jl">Atom/Juno IDE</a>. Interact can also be deployed in Jupyter Lab, but that requires installing an extension first:</p><pre><code class="language-julia">cd(Pkg.dir(&quot;WebIO&quot;, &quot;assets&quot;))
+;jupyter labextension install webio
+;jupyter labextension enable webio/jupyterlab_entry</code></pre><p>To deploy the app as a standalone Electron window, one would use <a href="https://github.com/JunoLab/Blink.jl">Blink.jl</a>:</p><pre><code class="language-julia">using Blink
+w = Window()
+body!(w, ui);</code></pre><p>The app can also be served in a webpage via <a href="https://github.com/JuliaWeb/Mux.jl">Mux.jl</a>:</p><pre><code class="language-julia">using Mux
+WebIO.webio_serve(page(&quot;/&quot;, req -&gt; ui), rand(8000:9000)) # serve on a random port</code></pre><h2><a class="nav-anchor" id="Adding-behavior-1" href="#Adding-behavior-1">Adding behavior</a></h2><p>The value of our button can be inspected using <code>getindex</code>:</p><pre><code class="language-julia">ui[]</code></pre><p>In the case of a button, the observable represents the number of times it has been clicked: click on it and check the value again. For now however this button doesn&#39;t do anything. This can be changed by adding callbacks to it.</p><p>To add some behavior to the widget we can use the <code>on</code> construct. <code>on</code> takes two arguments, a function and an <code>AbstractObservable</code>. As soon as the observable is changed, the function is called with the latest value.</p><pre><code class="language-julia">on(println, ui)</code></pre><p>If you click again on the button you will see it printing the number of times it has been clicked so far.</p><p><em>Tip</em>: anonymous function are very useful in this programming paradigm. For example, if you want the button to say &quot;Hello!&quot; when pressed, you should use:</p><pre><code class="language-julia">on(n -&gt; println(&quot;Hello!&quot;), ui)</code></pre><p><em>Tip n. 2</em>: using the <code>[]</code> syntax you can also set the value of the widget:</p><pre><code class="language-julia">ui[] = 33;</code></pre><h3><a class="nav-anchor" id="Observables:-the-implementation-of-a-widget&#39;s-output-1" href="#Observables:-the-implementation-of-a-widget&#39;s-output-1">Observables: the implementation of a widget&#39;s output</a></h3><p>The updatable container that only has the output of the widget but not the widget itself is a <code>Observable</code> and can be accessede using <code>observe(ui)</code>, though it should normally not be necessary to do so. To learn more about <code>Observables</code> and <code>AbstractObservable</code>, check out their documentation <a href="https://juliagizmos.github.io/Observables.jl/latest/">here</a>.</p><h2><a class="nav-anchor" id="What-widgets-are-there?-1" href="#What-widgets-are-there?-1">What widgets are there?</a></h2><p>Once you have grasped this paradigm, you can play with any of the many widgets available:</p><pre><code class="language-julia">filepicker() |&gt; display # value is the path of selected file
+textbox(&quot;Write here&quot;) |&gt; display # value is the text typed in by the user
+autocomplete([&quot;Mary&quot;, &quot;Jane&quot;, &quot;Jack&quot;]) |&gt; display # as above, but you can autocomplete words
+checkbox(label = &quot;Check me!&quot;) |&gt; display # value is a boolean describing whether it&#39;s ticked
+toggle(label = &quot;I have read and agreed&quot;) |&gt; display # same as a checkbox but styled differently
+slider(1:100, label = &quot;To what extent?&quot;, value = 33) |&gt; display # value is the number selected</code></pre><p>As well as the option widgets, that allow to choose among options:</p><pre><code class="language-julia">dropdown([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]) |&gt; display # value is option selected
+togglebuttons([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]) |&gt; display # value is option selected
+radiobuttons([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]) |&gt; display # value is option selected</code></pre><p>The option widgets can also take as input a dictionary (ordered dictionary is preferrable, to avoid items getting scrambled), in which case the label displays the key while the output stores the value:</p><pre><code class="language-julia">s = dropdown(OrderedDict(&quot;a&quot; =&gt; &quot;Value 1&quot;, &quot;b&quot; =&gt; &quot;Value 2&quot;))
+display(s)</code></pre><pre><code class="language-julia">s[]</code></pre><h2><a class="nav-anchor" id="Creating-custom-widgets-1" href="#Creating-custom-widgets-1">Creating custom widgets</a></h2><p>Interact allows the creation of custom composite widgets starting from simpler ones. Let&#39;s say for example that we want to create a widget that has three sliders and a color that is updated to match the RGB value we gave with the sliders.</p><pre><code class="language-julia">import Colors
+using Plots
+
+function mycolorpicker()
+    r = slider(0:255, label = &quot;red&quot;)
+    g = slider(0:255, label = &quot;green&quot;)
+    b = slider(0:255, label = &quot;blue&quot;)
+    output = Interact.@map Colors.RGB(&amp;r/255, &amp;g/255, &amp;b/255)
+    plt = Interact.@map plot(sin, color = &amp;output)
+    wdg = Widget([&quot;r&quot; =&gt; r, &quot;g&quot; =&gt; g, &quot;b&quot; =&gt; b], output = output)
+    @layout! wdg hbox(plt, vbox(:r, :g, :b)) ## custom layout: by default things are stacked vertically
+end</code></pre><p>And now you can simply instantiate the widget with</p><pre><code class="language-julia">mycolorpicker()</code></pre><p>Note the <code>&amp;r</code> syntax: it means automatically update the widget as soon as the slider changes value. See <a href="../observables/#Observables.@map"><code>Interact.@map</code></a> for more details. If instead we wanted to only update the plot when a button is pressed we would do:</p><pre><code class="language-julia">function mycolorpicker()
+    r = slider(0:255, label = &quot;red&quot;)
+    g = slider(0:255, label = &quot;green&quot;)
+    b = slider(0:255, label = &quot;blue&quot;)
+    update = button(&quot;Update plot&quot;)
+    output = Interact.@map (&amp;update; Colors.RGB(r[]/255, g[]/255, b[]/255))
+    plt = Interact.@map plot(sin, color = &amp;output)
+    wdg = Widget([&quot;r&quot; =&gt; r, &quot;g&quot; =&gt; g, &quot;b&quot; =&gt; b, &quot;update&quot; =&gt; update], output = output)
+    @layout! wdg hbox(plt, vbox(:r, :g, :b, :update)) ## custom layout: by default things are stacked vertically
+end</code></pre><h2><a class="nav-anchor" id="A-simpler-approach-for-simpler-cases-1" href="#A-simpler-approach-for-simpler-cases-1">A simpler approach for simpler cases</a></h2><p>While the approach sketched above works for all sorts of situations, there is a specific macro to simplify it in some specific case. If you just want to update some result (maybe a plot) as a function of some parameters (discrete or continuous) simply write <code>@manipulate</code> before the <code>for</code> loop. Discrete parameters will be replaced by <code>togglebuttons</code> and continuous parameters by <code>slider</code>: the result will be updated as soon as you click on a button or move the slider:</p><pre><code class="language-julia">width, height = 700, 300
+colors = [&quot;black&quot;, &quot;gray&quot;, &quot;silver&quot;, &quot;maroon&quot;, &quot;red&quot;, &quot;olive&quot;, &quot;yellow&quot;, &quot;green&quot;, &quot;lime&quot;, &quot;teal&quot;, &quot;aqua&quot;, &quot;navy&quot;, &quot;blue&quot;, &quot;purple&quot;, &quot;fuchsia&quot;]
+color(i) = colors[i%length(colors)+1]
+ui = @manipulate for nsamples in 1:200,
+        sample_step in slider(0.01:0.01:1.0, value=0.1, label=&quot;sample step&quot;),
+        phase in slider(0:0.1:2pi, value=0.0, label=&quot;phase&quot;),
+        radii in 0.1:0.1:60
+    cxs_unscaled = [i*sample_step + phase for i in 1:nsamples]
+    cys = sin.(cxs_unscaled) .* height/3 .+ height/2
+    cxs = cxs_unscaled .* width/4pi
+    dom&quot;svg:svg[width=$width, height=$height]&quot;(
+        (dom&quot;svg:circle[cx=$(cxs[i]), cy=$(cys[i]), r=$radii, fill=$(color(i))]&quot;()
+            for i in 1:nsamples)...
+    )
+end</code></pre><p>or, if you want a plot with some variables taking discrete values:</p><pre><code class="language-julia">using Plots
+
+x = y = 0:0.1:30
+
+freqs = OrderedDict(zip([&quot;pi/4&quot;, &quot;π/2&quot;, &quot;3π/4&quot;, &quot;π&quot;], [π/4, π/2, 3π/4, π]))
+
+mp = @manipulate for freq1 in freqs, freq2 in slider(0.01:0.1:4π; label=&quot;freq2&quot;)
+    y = @. sin(freq1*x) * sin(freq2*x)
+    plot(x, y)
+end</code></pre><h2><a class="nav-anchor" id="Widget-layout-1" href="#Widget-layout-1">Widget layout</a></h2><p>To create a full blown web-app, you should learn the layout tools that the CSS framework you are using provides. See for example the <a href="https://bulma.io/documentation/columns/">columns</a> and <a href="https://bulma.io/documentation/layout/">layout</a> section of the Bulma docs. You can use <a href="https://github.com/JuliaGizmos/WebIO.jl">WebIO</a> to create from Julia the HTML required to create these layouts.</p><p>However, this can be overwhelming at first (especially for users with no prior experience in web design). A simpler solution is <a href="https://github.com/JuliaGizmos/CSSUtil.jl">CSSUtil</a>, a package that provides some tools to create simple layouts.</p><pre><code class="language-julia">loadbutton = filepicker()
+hellobutton = button(&quot;Hello!&quot;)
+goodbyebutton = button(&quot;Good bye!&quot;)
+ui = vbox( # put things one on top of the other
+    loadbutton,
+    hbox( # put things one next to the other
+        pad(1em, hellobutton), # to allow some white space around the widget
+        pad(1em, goodbyebutton),
+    )
+)
+display(ui)</code></pre><h2><a class="nav-anchor" id="Update-widgets-as-function-of-other-widgets-1" href="#Update-widgets-as-function-of-other-widgets-1">Update widgets as function of other widgets</a></h2><p>Sometimes the full structure of the GUI is not known in advance. For example, let&#39;s imagine we want to load a DataFrame and create a button per column. Not to make it completely trivial, as soon as a button is pressed, we want to plot a histogram of the corresponding column.</p><p><em>Important note</em>: this app needs to run in Blink, as the browser doesn&#39;t allow us to get access to the local path of a file.</p><p>We start by adding a <code>filepicker</code> to choose the file, and only once we have a file we want to update the GUI. this can be done as follows:</p><pre><code class="language-julia">loadbutton = filepicker()
+columnbuttons = Observable{Any}(dom&quot;div&quot;())</code></pre><p><code>columnbuttons</code> is the <code>div</code> object that will contain all the relevant buttons. it is an <code>Observable</code> as we want its value to change over time. To add behavior, we can use <code>map!</code>:</p><pre><code class="language-julia">using CSV, DataFrames
+data = Observable{Any}(DataFrame)
+map!(CSV.read, data, loadbutton)</code></pre><p>Now as soon as a file is uploaded, the <code>Observable</code> <code>data</code> gets updated with the correct value. Now, as soon as <code>data</code> is updated, we want to update our buttons.</p><pre><code class="language-julia">function makebuttons(df)
+    buttons = button.(names(df))
+    dom&quot;div&quot;(hbox(buttons))
+end
+
+map!(makebuttons, columnbuttons, data)</code></pre><p>We are almost done, we only need to add a callback to the buttons. The cleanest way is to do it during button initialization, meaning during our <code>makebuttons</code> step:</p><pre><code class="language-julia">using Plots
+plt = Observable{Any}(plot()) # the container for our plot
+function makebuttons(df)
+    buttons = button.(string.(names(df)))
+    for (btn, name) in zip(buttons, names(df))
+        map!(t -&gt; histogram(df[name]), plt, btn)
+    end
+    dom&quot;div&quot;(hbox(buttons))
+end</code></pre><p>To put it all together:</p><pre><code class="language-julia">using CSV, DataFrames, Interact, Plots
+loadbutton = filepicker()
+columnbuttons = Observable{Any}(dom&quot;div&quot;())
+data = Observable{Any}(DataFrame)
+plt = Observable{Any}(plot())
+map!(CSV.read, data, loadbutton)
+
+function makebuttons(df)
+    buttons = button.(string.(names(df)))
+    for (btn, name) in zip(buttons, names(df))
+        map!(t -&gt; histogram(df[name]), plt, btn)
+    end
+    dom&quot;div&quot;(hbox(buttons))
+end
+
+map!(makebuttons, columnbuttons, data)
+
+ui = dom&quot;div&quot;(loadbutton, columnbuttons, plt)</code></pre><p>And now to serve it in Blink:</p><pre><code class="language-julia">using Blink
+w = Window()
+body!(w, ui)</code></pre><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p><footer><hr/><a class="previous" href="../deploying/"><span class="direction">Previous</span><span class="title">Deploying the web app</span></a></footer></article></body></html>
