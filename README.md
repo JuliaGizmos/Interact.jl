@@ -68,6 +68,15 @@ using IJulia
 notebook()
 ```
 
+## Explore the wider widget ecosystem
+
+- `CSSUtil`: wraps CSS functionality in easy Julia functions. Also renders
+  markdown (and LaTeX).
+- `TableView`: show a spreadsheet view of any Table datatype
+- `CodeMirror`: syntax highlighting and code editing within Interact
+- _Your cool package_. Let us know by opening an issue to add your
+  WebIO/Interact-based package here!
+
 ## Learning more
 
 To learn more, check out the [documentation](https://JuliaGizmos.github.io/Interact.jl/latest/) and the list of [all available widgets](https://juliagizmos.github.io/Interact.jl/latest/widgets/).
