@@ -3,7 +3,14 @@
 [![Build Status](https://travis-ci.org/JuliaGizmos/Interact.jl.svg?branch=master)](https://travis-ci.org/JuliaGizmos/Interact.jl)
 [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://JuliaGizmos.github.io/Interact.jl/latest)
 
-Web-based widgets that talk to Julia. Use them for quick interactive explorations, to publish science, or to create complex reusable widgets using existing ones!
+*Play with Julia code and share the fun!*
+
+This package is a collection of web-based widgets that you can use to:
+
+- Do quick code experiments where you can tweak the inputs
+- Teach or share science
+- Make simple UIs for your projects, and [publish them over the Web](#as-a-standalone-web-page)
+- Make your own reusable widgets and publish them with your Julia library!
 
 ## Getting started
 
@@ -47,35 +54,59 @@ function app(req) # req is a Mux request dictionary
 end
 webio_serve(app, port=8000)
 ```
+
+#### Bonus: Publish something to Heroku!
+
+Check out [this repository](https://github.com/abhishalya/interact-deploy) which has a script to publish Interact app to Heroku with a simple command!
+
 # Usage
+
 ## @manipulate
 
 The simplest way to use Interact is via the `@manipulate` macro.
 
+![interacting with sliders and toggles](doc/imgs/psos.gif)
+
+The syntax of `@manipulate` is
+
 ```julia
-@manipulate for i=1:10, f=[sin, cos]
-	f(i)
+@manipulate for var1=<object>, var2=<object>, etc...
+    # do something with a, b, etc...
 end
 ```
 
-[<img src="https://user-images.githubusercontent.com/6333339/41034492-a797bb62-6981-11e8-9c36-d7cb1f4a6f81.png" width="489">](https://vimeo.com/273565899)
+Here `<object>` can be one of the following:
+
+- **A Range**: (any `AbstractRange` of Real numbers): this will create a slider using which you can select one value for the variable from the range.
+- **An Array**: This will create a series of toggle buttons which you can select one at a time.
+- **A Dictionary**: Same as the above, but keys are used as the labels for the buttons, the value corresponding to the selected key will be the value of the variable.
+- **A String**: This will create a text box with the given string as the default value, you can edit the string to update the value of the variable.
+- **A boolean**: This will create a checkbox which is checked if the value is true, unchecked if it is false. You can toggle the checkbox to change the value of this variable.
+- **A number**: This will create a spinbox where you can input, increment or decrement a number. Note that an Integer will only allow input of integers.
+- **An Interact widget**: (advanced) you can choose from any of the other widgets that are here. Check out the [big list of widgets](https://juliagizmos.github.io/Interact.jl/latest/widgets/) here.
+- **An Observable**: An [Observable](https://juliagizmos.github.io/Observables.jl/stable/) can be used here to assign its current value to the variable. Any update to the variable will trigger an update to the `@manipulate`. Note that the result of an `@manipulate` is also an observable!
+
 ## Example notebooks
 
-The best way to learn to use the interactive widgets is to try out the example notebooks and the tutorial in the doc/notebooks/ directory. Start up IJulia from doc/notebooks/:
+The great resource to learn to use the various features of Interact is to try out the example notebooks and the tutorial in the doc/notebooks/ directory. Start up IJulia from doc/notebooks/:
 
 ```julia
 using IJulia
-notebook()
+notebook(dir=".")
 ```
+
+[<img src="https://user-images.githubusercontent.com/6333339/41034492-a797bb62-6981-11e8-9c36-d7cb1f4a6f81.png" width="489">](https://vimeo.com/273565899)
 
 ## Explore the wider widget ecosystem
 
-- `CSSUtil`: wraps CSS functionality in easy Julia functions. Also renders
-  markdown (and LaTeX).
-- `TableView`: show a spreadsheet view of any Table datatype
-- `CodeMirror`: syntax highlighting and code editing within Interact
-- _Your cool package_. Let us know by opening an issue to add your
-  WebIO/Interact-based package here!
+Interact is built using [WebIO](https://github.com/JuliaGizmos/WebIO.jl) which is a "hub" package that supports an ecosystem of composable web-based widgets that all share the same availability on the Julia front-ends.
+
+Check out this [introduction notebook](https://gist.github.com/shashi/3c3bc877ab1b5096232586cfbba0ef8b) about the WebIO ecosystem if you want to learn about how you can customize your UI using HTML, JavaScript and CSS. It will also get you started on writing your own widgets that others can use.
+
+- [TableView.jl](https://github.com/JuliaComputing/TableView.jl): show a spreadsheet view of any Table datatype
+- [CSSUtil](https://github.com/JuliaGizmos/CSSUtil.jl): wraps CSS functionality in easy Julia functions. Also renders
+  markdown (and LaTeX). See the CSSUtil section in the introduction notebook linked above.
+- _Your cool package_. Let us know by opening an issue to add your WebIO/Interact-based package here!
 
 ## Learning more
 
