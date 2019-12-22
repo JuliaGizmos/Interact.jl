@@ -119,7 +119,7 @@ using Mux, WebIO
 function app(req) # req is a Mux request dictionary
  ...
 end
-webio_serve(app, port=8000)
+webio_serve(page("/", app), port=8000) # this will serve at http://localhost:8000/
 ```
 
 ### Bonus: Publish something to Heroku!
