@@ -93,7 +93,8 @@ WebIO.install_jupyter_nbextension()
 ```
 **Important:** If you performed this step while the Jupyter notebook server is running, you will need to restart it for the extension to take effect.
 
-The `WebIO.install_jupyter_nbextension([jupyter])` function takes the path to the `jupyter` binary as an optional argument. If omitted, the installation first tries to find `jupyter` in your OS's default path. If it does not exist there, it tries to find a version that was installed using Conda.jl (which is the default when IJulia is installed without having an existing Jupyter set up, or by forcing it to install a copy via Conda.) If you have a `jupyter` binary in your OS path but also have a version installed via Conda and want to use the one installed via Conda, then you can set this keyword argument to be `WebIO.find_jupyter_cmd(force_conda_jupyter=true)`. For more information about the Jupyter integration, see [WebIO's documentation](https://juliagizmos.github.io/WebIO.jl/latest/providers/ijulia/). There is [more troubleshooting information here](https://juliagizmos.github.io/WebIO.jl/latest/troubleshooting/not-detected/).
+> **If you have multiple Jupyter installations:**
+> The `WebIO.install_jupyter_nbextension([jupyter])` function takes the path to the `jupyter` binary as an optional argument. If omitted, the installation first tries to find `jupyter` in your OS's default path. If it does not exist there, it tries to find a version that was installed using Conda.jl (which is the default when IJulia is installed without having an existing Jupyter set up, or by forcing it to install a copy via Conda.) If you have a `jupyter` binary in your OS path but also have a version installed via Conda and want to use the one installed via Conda, then you can set this keyword argument to be `WebIO.find_jupyter_cmd(condajl=true)`. For more information about the Jupyter integration, see [WebIO's documentation](https://juliagizmos.github.io/WebIO.jl/latest/providers/ijulia/). There is [more troubleshooting information here](https://juliagizmos.github.io/WebIO.jl/latest/troubleshooting/not-detected/).
 
 ## IJulia + JupyterLab
 
@@ -105,7 +106,12 @@ WebIO.install_jupyter_labextension()
 ```
 **Important:** If you performed this step while the JupyterLab server is running, you will need to restart it for the extension to take effect.
 
-This function also takes the `jupyter` path as an optional argument. See the above subsection on installing on Jupyter notebooks for more description of the default behavior when this argument is omitted and pointers to troubleshooting information.
+This function also takes the `jupyter` path as an optional argument. See the above subsection on installing on Jupyter notebooks for more description of the default behavior when this argument is omitted and pointers to troubleshooting information. **tl;dr:** if you launch JupyterLab via `IJulia.jupyterlab()`, run
+```julia
+using WebIO
+WebIO.install_jupyter_labextension(condajl=true)
+```
+to force WebIO to be installed to the correct place.
 
 ## Within the Atom text editor
 
