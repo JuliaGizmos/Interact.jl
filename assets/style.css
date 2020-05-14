@@ -1,0 +1,45 @@
+th {
+    font-weight: bold;
+}
+
+td {
+    font-weight: normal;
+}
+
+.interact-flex-row {
+    display:flex; 
+    justify-content:center; 
+    align-items:center;
+}
+
+.interact-flex-row-left {
+    text-align: right;
+    margin: 0;
+}
+
+.interact-flex-row-center {
+    flex-grow:1; 
+}
+
+.interact-flex-row-right {
+    width: 4em;
+    margin: 0 0.5em;
+    overflow: hidden;
+}
+
+.rangeslider {
+    flex-grow: 1;
+}
+
+.rangeslider .interact-flex-row-center {
+    margin: 0 10px;
+}
+
+.rangeslider .interact-flex-row-right {
+    width: 0;
+    margin: 0;
+}
+
+.noUi-tooltip {
+    padding: 0 5px;
+}

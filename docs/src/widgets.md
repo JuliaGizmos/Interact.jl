@@ -64,7 +64,7 @@ button
 All of the inputs above are implemented wrapping the `input` tag of HTML5 which can be accessed more directly as follows:
 
 ```@docs
-InteractBase.input
+Interact.input
 ```
 
 ## Option input
@@ -84,7 +84,7 @@ tabs
 latex
 alert
 highlight
-InteractBase.notifications
+notifications
 togglecontent
 tabulator
 mask

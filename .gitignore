@@ -5,6 +5,11 @@ widgets_version
 docs/build/
 docs/site/
 docs/src/tutorial.md
-assets/
+assets/bulma*
+assets/all.js
+assets/prism*
+assets/nouislider*
+assets/katex*
+assets/auto-render.min.js
 deps/build.log
 Manifest.toml
