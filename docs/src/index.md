@@ -4,7 +4,7 @@ Interact allows to create small GUIs in Julia based on web technology. These GUI
 
 To understand how to use it go through the [Tutorial](@ref). The tutorial is also available [here](https://github.com/JuliaGizmos/Interact.jl/blob/master/doc/notebooks/tutorial.ipynb) as a Jupyter notebook.
 
-[InteractBase](https://github.com/piever/InteractBase.jl), [Knockout](https://github.com/JuliaGizmos/Knockout.jl) and [WebIO](https://github.com/JuliaGizmos/WebIO.jl) provide the logic that allows the communication between Julia and Javascript and the organization of the widgets.
+[Knockout](https://github.com/JuliaGizmos/Knockout.jl) and [WebIO](https://github.com/JuliaGizmos/WebIO.jl) provide the logic that allows the communication between Julia and Javascript and the organization of the widgets.
 
 ## Overview
 
@@ -31,7 +31,7 @@ respectively.
 
 ## Deployment
 
-InteractBase works with the following frontends:
+Interact works with the following frontends:
 
 - [Juno](http://junolab.org) - A flexible IDE for the 21st century
 - [IJulia](https://github.com/JuliaLang/IJulia.jl) - Jupyter notebooks (and Jupyter Lab) for Julia
