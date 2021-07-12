@@ -20,7 +20,7 @@ InteractBase = "≥ 0.10.1"
 WebIO = "≥ 0.3.1"
 OrderedCollections = "1"
 Widgets = "≥ 0.5.0"
-Reexport = "≥ 0.1.0"
+Reexport = "0.2, 1"
 Observables = "≥ 0.2.2"
 
 [extras]
