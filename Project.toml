@@ -1,6 +1,6 @@
 name = "Interact"
 uuid = "c601a237-2ae4-5e1e-952c-7a85b0c7eef1"
-version = "0.10.4"
+version = "0.10.5"
 
 [deps]
 CSSUtil = "70588ee8-6100-5070-97c1-3cb50ed05fe8"
