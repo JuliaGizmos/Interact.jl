@@ -2,17 +2,11 @@
 
 ## Installing Interact
 
-To install Interact, simply type
-
-```julia
-Pkg.add("Interact")
-```
-
-in the REPL.
+Install Interact with `using Pkg; Pkg.add("Interact")`, or `]add Interact` in the REPL.
 
 ## Usage
 
-The basic behavior (in Juno or Jupyter lab/notebook) is as follows:
+Try entering the following minimal example in Juno or Jupyter notebook:
 
 ```julia
 using Interact
