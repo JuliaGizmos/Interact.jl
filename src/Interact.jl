@@ -26,6 +26,21 @@ function InteractBase.libraries(::Bulma)
     vcat(InteractBase.font_awesome, InteractBase.style_css, bulmalib)
 end
 
+function InteractBase.slap_design!(widget::Scope, ::Bulma)
+    InteractBase.isijulia() ? import!(widget, bulma_confined_css) : import!(widget, bulma_css)
+    import!(widget, InteractBase.style_css)
+    jsasset = WebIO.JSAsset(InteractBase.font_awesome)
+    onmount(widget, js"""
+        function() {
+            if (document.querySelector("fa") === null) {
+                $jsasset
+            }
+        }
+        """
+    )
+    return widget
+end
+
 function __init__()
     InteractBase.registertheme!(:bulma, Bulma())
     settheme!(Bulma())
